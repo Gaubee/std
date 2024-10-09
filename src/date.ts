@@ -4,6 +4,9 @@
 export const date_clone = (date: Date): Date => {
     return new Date(date);
 };
+/**
+ * 人类可读的时间对象
+ */
 export type Duration = {
     year: number;
     month: number;
@@ -16,7 +19,10 @@ export type Duration = {
  * 向一个 date 中添加时间
  * 可以是负数
  */
-export const date_add = (date: Date, duration: Partial<Duration>): Date => {
+export const date_add_duration = (
+    date: Date,
+    duration: Partial<Duration>,
+): Date => {
     const {
         year = NaN,
         month = NaN,
@@ -65,4 +71,40 @@ export const date_to_duration = (date: Date): Duration => {
         seconds,
         milliseconds,
     };
+};
+/**
+ * 对一个 date 对象进行写入
+ */
+export const date_set_duration = (
+    date: Date,
+    duration: Partial<Duration>,
+): Date => {
+    const {
+        year = NaN,
+        month = NaN,
+        day = NaN,
+        minutes = NaN,
+        seconds = NaN,
+        milliseconds = NaN,
+    } = duration;
+
+    if (Number.isFinite(year)) {
+        date.setFullYear(year);
+    }
+    if (Number.isFinite(month)) {
+        date.setMonth(month - 1);
+    }
+    if (Number.isFinite(day)) {
+        date.setDate(day);
+    }
+    if (Number.isFinite(minutes)) {
+        date.setMinutes(minutes);
+    }
+    if (Number.isFinite(seconds)) {
+        date.setSeconds(seconds);
+    }
+    if (Number.isFinite(milliseconds)) {
+        date.setMilliseconds(milliseconds);
+    }
+    return date;
 };

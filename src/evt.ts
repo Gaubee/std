@@ -1,7 +1,8 @@
 import { iter_map_async } from "./collections.ts";
 
-// import "/ext/array.ext";
+/** Evt 的监听函数定义 */
 export type EvtFun<T> = (data: T) => unknown;
+/** Evt 移除监听函数定义 */
 export type EvtOff = () => boolean;
 /**
  * 个极简的事件监听,支持异步错误捕捉
@@ -27,7 +28,10 @@ export class Evt<T> implements AsyncIterable<T> {
             return;
         }
         const errors: unknown[] = [];
-        const results = await iter_map_async(this.#cbs.values(), (cb) => cb(data));
+        const results = await iter_map_async(
+            this.#cbs.values(),
+            (cb) => cb(data),
+        );
         for (const item of results) {
             if (item.status === "rejected") {
                 errors.push(...item.reason);

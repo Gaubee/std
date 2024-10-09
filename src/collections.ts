@@ -186,7 +186,7 @@ type IterableItem<A> = A extends Iterable<infer T> ? T : never;
  *
  * 注意，如果不存在，会抛出异常
  */
-export const iter_get_first = <T>(items: Iterable<T>) =>
+export const iter_get_first = <T>(items: Iterable<T>): T =>
   iter_get_first_or_default(items, () => {
     throw new RangeError("could not get first element");
   });
@@ -194,7 +194,7 @@ export const iter_get_first = <T>(items: Iterable<T>) =>
 /**
  * 取集合第一个元素
  */
-export const iter_get_first_or_null = <T>(items: Iterable<T>) =>
+export const iter_get_first_or_null = <T>(items: Iterable<T>): T | undefined =>
   iter_get_first_or_default(items, () => void 0);
 
 /**
