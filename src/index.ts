@@ -6,5 +6,6 @@ export * from "./event_target.ts";
 export * from "./evt.ts";
 export * from "./func.ts";
 export * from "./lrc.ts";
+export * from "./map.ts";
 export * from "./number.ts";
 export * from "./promise.ts";
