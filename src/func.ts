@@ -35,7 +35,14 @@ export const func_remember = <
 >(
     func: F,
     key?: K,
-) => {
+): F & {
+    readonly source: F;
+    readonly key: FunReturn<K> | undefined;
+    readonly runned: boolean;
+    readonly returnValue: ReturnType<F> | undefined;
+    reset(): void;
+    rerun(...args: Parameters<F>): ReturnType<F>;
+} => {
     let result: {
         key: FunReturn<K>;
         res: ReturnType<F>;

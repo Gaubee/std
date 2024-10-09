@@ -1,3 +1,7 @@
+/**
+ * 这是一些关于 EventTarget 的辅助函数
+ * @module
+ */
 type GetEventTargetEventMap<T> = T extends EventTarget
     ? GetAddEventListenerEventMap<T["addEventListener"]>
     : object;
@@ -9,11 +13,10 @@ type GetAddEventListenerEventMap<F> = F extends (
     : never;
 /**
  * 一个更加易用的 eventTarget.addEventListener 附加监听函数，返回一个 off 函数，用于 removeEventListener 移除监听
- * @param target
- * @param type
- * @param handler
- * @param options
- * @returns
+ * @example
+ * ```ts
+ * event_target_on(abort_signal, 'abort', ()=>{})
+ * ```
  */
 export const event_target_on = <
     T extends EventTarget,
@@ -25,7 +28,7 @@ export const event_target_on = <
     type: K,
     handler: (ev: EV) => void,
     options?: boolean | AddEventListenerOptions,
-) => {
+): () => void => {
     target.addEventListener(
         type as string,
         handler as EventListenerOrEventListenerObject,

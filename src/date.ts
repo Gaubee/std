@@ -1,7 +1,7 @@
 /**
  * 克隆时间
  */
-export const date_clone = (date: Date) => {
+export const date_clone = (date: Date): Date => {
     return new Date(date);
 };
 export type Duration = {
@@ -16,7 +16,7 @@ export type Duration = {
  * 向一个 date 中添加时间
  * 可以是负数
  */
-export const date_add = (date: Date, duration: Partial<Duration>) => {
+export const date_add = (date: Date, duration: Partial<Duration>): Date => {
     const {
         year = NaN,
         month = NaN,
@@ -46,6 +46,9 @@ export const date_add = (date: Date, duration: Partial<Duration>) => {
     return date;
 };
 
+/**
+ * 将一个 date 解码成 duration 对象
+ */
 export const date_to_duration = (date: Date): Duration => {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;

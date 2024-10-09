@@ -21,7 +21,7 @@ type AGNext<T> = T extends AsyncGenerator<unknown, unknown, infer N> ? N
 export const ag_done = async <T extends AsyncGenerator>(
     ag: T,
     each?: (value: AGValue<T>) => AGNext<T>,
-) => {
+): Promise<AGReturn<T>> => {
     let next: any;
     while (true) {
         const item = await ag.next(next);
@@ -34,12 +34,38 @@ export const ag_done = async <T extends AsyncGenerator>(
     }
 };
 
+export type GetPromiseThenTResult1<F> = F extends
+    (onfulfilled: (...args: any[]) => infer TResult1) => any ? TResult1
+    : undefined;
+export type GetPromiseThenTResult2<F> = F extends
+    (onfulfilled: any, onrejected: (...args: any[]) => infer TResult1) => any
+    ? TResult1
+    : never;
+
 /**
  * 持续迭代一个异步迭代器直到结束，接受 promise.then 的参数
  */
-export const ag_then = <T extends AsyncGenerator>(
+export const ag_then = <
+    T extends AsyncGenerator,
+    ARGS extends Parameters<Promise<AGReturn<T>>["then"]> = Parameters<
+        Promise<AGReturn<T>>["then"]
+    >,
+>(
     ag: T,
-    ...args: Parameters<Promise<AGReturn<T>>["then"]>
-) => {
-    return ag_done(ag).then(...args);
+    ...args: ARGS
+): Promise<
+    ReturnType<
+        FilterNotNull<ARGS>[number]
+    >
+> => {
+    return ag_done(ag).then(...args) as any;
 };
+
+type FilterNotNull<A> = A extends (infer T)[] ? NonNullable<T>[] : [];
+
+// const r = await ag_then(
+//     (async function* () {
+//     })(),
+//     () => 1 as const,
+//     () => false,
+// );

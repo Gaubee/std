@@ -1,6 +1,6 @@
 {
     "name": "@dweb/gaubee-util",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "tasks": {
         "build": "deno run -A ./dnt.ts",
         "pub": "deno publish --allow-slow-types"
@@ -28,8 +28,7 @@
         ],
         "rules": {
             "exclude": [
-                "no-explicit-any",
-                "no-slow-types"
+                "no-explicit-any"
             ]
         }
     }
