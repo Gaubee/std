@@ -1,0 +1,21 @@
+{
+    "tasks": {
+        "build": "deno run -A ./dnt.ts"
+    },
+    "imports": {
+        "@deno/dnt": "jsr:@deno/dnt@^0.41.3"
+    },
+    "exports": {
+        "./ag": "./src/ag.ts",
+        "./bigint": "./src/bigint.ts",
+        "./collections": "./src/collections.ts",
+        "./date": "./src/date.ts",
+        "./event_target": "./src/event_target.ts",
+        "./evt": "./src/evt.ts",
+        "./func": "./src/func.ts",
+        "./lrc": "./src/lrc.ts",
+        "./number": "./src/number.ts",
+        "./promise": "./src/promise.ts",
+        ".": "./src/index.ts"
+    }
+}

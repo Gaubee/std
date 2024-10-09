@@ -1,15 +1,12 @@
 import { build, emptyDir } from "@deno/dnt";
+import denoJson from "./deno.json" with { type: "json" };
 
 await emptyDir("./npm");
 
 await build({
-  entryPoints: [
-    //
-    { name: "./lrc", path: "./src/lrc.ts" },
-    { name: "./collections", path: "./src/collections.ts" },
-    { name: "./evt", path: "./src/evt.ts" },
-    { name: "./func", path: "./src/func.ts" },
-  ],
+  entryPoints: Object.entries(denoJson.exports).map(([name, path]) => {
+    return { name, path };
+  }),
   outDir: "./npm",
   test: true,
   shims: {
