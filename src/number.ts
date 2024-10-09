@@ -1,7 +1,7 @@
 /**
  * 计算两个数的最大公约数 greatest Common Divisor
  */
-export const number_gcd = (left: number, right: number) => {
+export const number_gcd = (left: number, right: number): number => {
     if (!Number.isFinite(left) || !Number.isFinite(right)) {
         return NaN;
     }

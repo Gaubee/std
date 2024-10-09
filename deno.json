@@ -1,6 +1,9 @@
 {
+    "name": "@dweb/gaubee-util",
+    "version": "0.1.0",
     "tasks": {
-        "build": "deno run -A ./dnt.ts"
+        "build": "deno run -A ./dnt.ts",
+        "pub": "deno publish --allow-slow-types"
     },
     "imports": {
         "@deno/dnt": "jsr:@deno/dnt@^0.41.3"
@@ -18,5 +21,16 @@
         "./number": "./src/number.ts",
         "./promise": "./src/promise.ts",
         ".": "./src/index.ts"
+    },
+    "lint": {
+        "include": [
+            "./src"
+        ],
+        "rules": {
+            "exclude": [
+                "no-explicit-any",
+                "no-slow-types"
+            ]
+        }
     }
 }

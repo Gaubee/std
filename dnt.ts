@@ -16,8 +16,8 @@ await build({
   packageManager: "pnpm",
   package: {
     // package.json properties
-    name: "@gaubee/util",
-    version: Deno.args[0],
+    name: denoJson.name,
+    version: denoJson.version,
     description: "an util-lib for your application",
     license: "MIT",
     repository: {

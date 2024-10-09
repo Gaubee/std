@@ -1,6 +1,6 @@
 type GetEventTargetEventMap<T> = T extends EventTarget
     ? GetAddEventListenerEventMap<T["addEventListener"]>
-    : {};
+    : object;
 type GetAddEventListenerEventMap<F> = F extends (
     type: infer K,
     listener: (this: any, ev: infer E) => any,

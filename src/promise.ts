@@ -3,7 +3,9 @@ import { event_target_on } from "./event_target.ts";
 export const delay = (
     ms: number,
     options?: { signal?: AbortSignal | null },
-) => {
+): Promise<void> & {
+    cancel(cause?: unknown): void;
+} => {
     const job = Promise.withResolvers<void>();
     const ti = setTimeout(job.resolve, ms);
     const result = Object.assign(job.promise, {

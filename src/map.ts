@@ -2,7 +2,7 @@
 export const map_to_array = <K, V, R>(
     map: Map<K, V>,
     mapper: (value: V, key: K) => R,
-) => {
+): R[] => {
     const arr: R[] = [];
     map.forEach((value, key) => {
         arr.push(mapper(value, key));
@@ -23,7 +23,7 @@ export const map_get_or_put = <T extends CommonMap<K, V>, K, V>(
     map: T,
     key: K,
     put: (key: K, map: T) => V,
-) => {
+): V => {
     let value: V;
     if (map.has(key)) {
         value = map.get(key)!;
@@ -39,14 +39,14 @@ export const map_get_or_put = <T extends CommonMap<K, V>, K, V>(
  * 使用该函数进行异步创建是会互斥上锁的（如果外部修改了map，写入了值，那么最终会以外部修改为准）
  */
 export const map_get_or_put_async = async <
-    T extends CommonMap<K, Awaited<V>>,
+    T extends CommonMap<K, V>,
     K,
     V,
 >(
     map: T,
     key: K,
-    put: (key: K, map: T) => PromiseLike<Awaited<V>> | Awaited<V>,
-): Promise<Awaited<V>> => {
+    put: (key: K, map: T) => PromiseLike<V> | V,
+): Promise<V> => {
     while (true) {
         const pre_lock = (map as any)[locks_keys]?.get(key);
         if (pre_lock != null) {

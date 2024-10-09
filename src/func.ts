@@ -94,7 +94,7 @@ export const func_wrap = <F extends Fun, R>(
         },
         next: () => ReturnType<F>,
     ) => R,
-) => {
+): (this: ThisParameterType<F>, ...args: Parameters<F>) => R => {
     return function (this: ThisParameterType<F>, ...args: Parameters<F>) {
         const context = {
             target: func,
