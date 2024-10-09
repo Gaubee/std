@@ -16,7 +16,7 @@ await build({
   packageManager: "pnpm",
   package: {
     // package.json properties
-    name: "@gaubee/util",
+    name: denoJson.name,
     version: denoJson.version,
     description: "个人项目经验，主要特点在于对原型链的扩展，以及对异步的简化",
     license: "MIT",
