@@ -1,6 +1,8 @@
 # @gaubee/util
 
-这是我项目开发经验沉淀下来的经验。
+个人项目经验，主要特点在于对原型链的扩展，以及对异步的简化
+
+[docs 文档](https://jsr.io/@dweb/gaubee-util/doc)
 
 ### 风格理念
 
@@ -12,10 +14,3 @@
 但同时，这个库也给出了非污染的方案，你可以按需导入使用。
 
 在当下，使用污染原型链的方案，主要用于最上层应用级别，如果你的开发是给别人做库，那么我也建议你别污染原型链，否则会给它人带来负担。
-
-### API
-
-- `@gaubee/util/lrc`
-- `@gaubee/util/func`
-- `@gaubee/util/evt`
-- `@gaubee/util/collections`

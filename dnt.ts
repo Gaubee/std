@@ -10,13 +10,13 @@ await build({
   outDir: "./npm",
   test: true,
   shims: {
-    deno: false,
+    deno: { test: true },
   },
   typeCheck: false,
   packageManager: "pnpm",
   package: {
     // package.json properties
-    name: denoJson.name,
+    name: "@gaubee/util",
     version: denoJson.version,
     description: "an util-lib for your application",
     license: "MIT",
