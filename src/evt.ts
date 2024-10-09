@@ -1,4 +1,4 @@
-import { mapAsync } from "./collections.ts";
+import { iter_map_async } from "./collections.ts";
 
 // import "/ext/array.ext";
 export type EvtFun<T> = (data: T) => unknown;
@@ -27,7 +27,7 @@ export class Evt<T> implements AsyncIterable<T> {
             return;
         }
         const errors: unknown[] = [];
-        const results = await mapAsync(this.#cbs.values(), (cb) => cb(data));
+        const results = await iter_map_async(this.#cbs.values(), (cb) => cb(data));
         for (const item of results) {
             if (item.status === "rejected") {
                 errors.push(...item.reason);
