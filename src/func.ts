@@ -1,3 +1,4 @@
+// deno-lint-ignore-file ban-types
 /**
  * 函数转化，实现将 this 可以作为第一个参数来传参
  */
@@ -18,19 +19,22 @@ export const curryThisFn = <T, ARGS extends readonly unknown[], R>(
     };
 };
 
-type Fun<T = any, ARGS extends unknown[] = any[], R extends unknown = any> = (
-    this: T,
-    ...args: ARGS
-) => R;
-type FunReturn<F> = F extends Fun ? ReturnType<F> : undefined;
+/**
+ * 类型安全的函数定义
+ */
+export type Func<This = any, Arguments extends unknown[] = any[], Return extends unknown = any> = (
+    this: This,
+    ...args: Arguments
+) => Return;
+type FunReturn<F> = F extends Func ? ReturnType<F> : undefined;
 /**
  * 让一个函数的返回结果是缓存的
  * @param key 自定义缓存key生成器，如果生成的key不一样，那么缓存失效
  * @returns
  */
 export const func_remember = <
-    F extends Fun,
-    K extends Fun<ThisParameterType<F>, Parameters<F>>,
+    F extends Func,
+    K extends Func<ThisParameterType<F>, Parameters<F>>,
 >(
     func: F,
     key?: K,
@@ -90,7 +94,7 @@ export const func_remember = <
  * @param func 目标函数
  * @param wrapper 包裹函数，第一个参数是 context，可以获得详细的上下文；第二个参数是 next，可以用于快速执行“目标函数”
  */
-export const func_wrap = <F extends Fun, R>(
+export const func_wrap = <F extends Func, R>(
     func: F,
     wrapper: (
         context: {
@@ -113,17 +117,34 @@ export const func_wrap = <F extends Fun, R>(
         );
     };
 };
+
+type PrototypeToThis<T> = T extends String ? string
+    : T extends Number ? number
+    : T extends Boolean ? boolean
+    : T extends BigInt ? bigint
+    : T extends Symbol ? symbol
+    : T;
 /**
  * 向某一个对象配置函数属性
  */
-export const extendsMethod = (
-    target: object,
+export const extendsMethod = <T extends object>(
+    target: T,
     prop: PropertyKey,
-    method: Fun,
+    method: Func<PrototypeToThis<T>>,
 ): void => {
     Object.defineProperty(target, prop, {
         configurable: true,
         writable: true,
         value: method,
+    });
+};
+
+/**
+ * 向某一个对象配置getter属性
+ */
+export const extendsGetter = <T extends object>(target: T, prop: PropertyKey, getter: Func<PrototypeToThis<T>, []>) => {
+    Object.defineProperty(target, prop, {
+        configurable: true,
+        get: getter,
     });
 };

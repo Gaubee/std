@@ -1,6 +1,6 @@
 {
     "name": "@gaubee/util",
-    "version": "0.5.1",
+    "version": "0.6.0",
     "tasks": {
         "build": "deno run -A ./dnt.ts",
         "pub-npm": "cd npm && npm publish --access public",
