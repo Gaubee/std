@@ -1,12 +1,20 @@
+import fs from "node:fs";
 import { build, emptyDir } from "@deno/dnt";
 import denoJson from "./deno.json" with { type: "json" };
-
 await emptyDir("./npm");
+import "./src/collections.global.ts";
 
 await build({
-  entryPoints: Object.entries(denoJson.exports).map(([name, path]) => {
-    return { name, path };
-  }),
+  entryPoints: [
+    ...Object.entries(denoJson.exports).map(([name, path]) => {
+      return { name, path };
+    }),
+    ...fs.readdirSync("./src").mapNotNull((name) => {
+      if (name.endsWith("global.ts")) {
+        return { name: `./${name.slice(0, -3)}`, path: `./src/${name}` };
+      }
+    }),
+  ],
   outDir: "./npm",
   test: true,
   shims: {

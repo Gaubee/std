@@ -18,11 +18,10 @@ export const curryThisFn = <T, ARGS extends readonly unknown[], R>(
     };
 };
 
-type Fun<T = unknown, ARGS extends unknown[] = any[], R extends unknown = any> =
-    (
-        this: T,
-        ...args: ARGS
-    ) => R;
+type Fun<T = any, ARGS extends unknown[] = any[], R extends unknown = any> = (
+    this: T,
+    ...args: ARGS
+) => R;
 type FunReturn<F> = F extends Fun ? ReturnType<F> : undefined;
 /**
  * 让一个函数的返回结果是缓存的
@@ -113,4 +112,18 @@ export const func_wrap = <F extends Fun, R>(
             () => Reflect.apply(func, context.this, context.arguments),
         );
     };
+};
+/**
+ * 向某一个对象配置函数属性
+ */
+export const extendsMethod = (
+    target: object,
+    prop: PropertyKey,
+    method: Fun,
+): void => {
+    Object.defineProperty(target, prop, {
+        configurable: true,
+        writable: true,
+        value: method,
+    });
 };
