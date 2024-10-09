@@ -17,6 +17,13 @@ type AGNext<T> = T extends AsyncGenerator<unknown, unknown, infer N> ? N
 
 /**
  * 持续迭代一个异步迭代器直到结束
+ * @example
+ * ```ts
+ * // const r: number
+ * const r = await ag_done((async function* () {
+ *     return 1;
+ * })());
+ * ```
  */
 export const ag_done = async <T extends AsyncGenerator>(
     ag: T,
@@ -34,16 +41,19 @@ export const ag_done = async <T extends AsyncGenerator>(
     }
 };
 
-export type GetPromiseThenTResult1<F> = F extends
-    (onfulfilled: (...args: any[]) => infer TResult1) => any ? TResult1
-    : undefined;
-export type GetPromiseThenTResult2<F> = F extends
-    (onfulfilled: any, onrejected: (...args: any[]) => infer TResult1) => any
-    ? TResult1
-    : never;
-
 /**
  * 持续迭代一个异步迭代器直到结束，接受 promise.then 的参数
+ *
+ * @example
+ * ```ts
+ * // const r: 1 | boolean
+ * const r = await ag_then(
+ *     (async function* () {
+ *     })(),
+ *     () => 1 as const,
+ *     () => false,
+ * );
+ * ```
  */
 export const ag_then = <
     T extends AsyncGenerator,
@@ -62,10 +72,3 @@ export const ag_then = <
 };
 
 type FilterNotNull<A> = A extends (infer T)[] ? NonNullable<T>[] : [];
-
-// const r = await ag_then(
-//     (async function* () {
-//     })(),
-//     () => 1 as const,
-//     () => false,
-// );
