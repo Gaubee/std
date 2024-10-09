@@ -18,7 +18,7 @@ await build({
     // package.json properties
     name: "@gaubee/util",
     version: denoJson.version,
-    description: "an util-lib for your application",
+    description: "个人项目经验，主要特点在于对原型链的扩展，以及对异步的简化",
     license: "MIT",
     repository: {
       type: "git",
