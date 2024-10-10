@@ -236,7 +236,7 @@ export const iter_reduce = <TS extends Iterable<T>, T = IterableItem<TS>, R = un
   values: TS,
   callbackfn: (previousValue: R, currentValue: T, currentIndex: number, values: TS) => R,
   initialValue: R,
-) => {
+): R => {
   let index = 0;
   for (const value of values) {
     initialValue = callbackfn(initialValue, value, index++, values);
@@ -259,7 +259,7 @@ export const iter_map_reduce = <
   mapfn: (value: T, index: number, values: TS) => MS,
   reducefn: (previousValue: R, currentValue: M, currentIndex: number, values: MS) => R,
   initialValue: R,
-) => {
+): R => {
   let mapIndex = 0;
   let reduceIndex = 0;
   for (const source of sources) {

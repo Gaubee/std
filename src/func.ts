@@ -142,7 +142,11 @@ export const extendsMethod = <T extends object>(
 /**
  * 向某一个对象配置getter属性
  */
-export const extendsGetter = <T extends object>(target: T, prop: PropertyKey, getter: Func<PrototypeToThis<T>, []>) => {
+export const extendsGetter = <T extends object>(
+    target: T,
+    prop: PropertyKey,
+    getter: Func<PrototypeToThis<T>, []>,
+): void => {
     Object.defineProperty(target, prop, {
         configurable: true,
         get: getter,

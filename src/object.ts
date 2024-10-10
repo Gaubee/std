@@ -3,14 +3,14 @@
  *
  * 通过选中对象中的指定键来创建一个新的对象。
  */
-export const obj_pick = <T extends object, K extends keyof T = keyof T>(
+export const obj_pick = <T extends object, KS extends (keyof T)[] = (keyof T)[]>(
     obj: T,
-    ...props: K[]
-) => {
+    ...props: KS
+): Pick<T, KS[number]> => {
     const result = props.reduce((result, prop) => {
         result[prop] = obj[prop];
         return result;
-    }, {} as Pick<T, K>);
+    }, {} as Pick<T, KS[number]>);
     return result;
 };
 /**
@@ -30,7 +30,7 @@ export const obj_pick = <T extends object, K extends keyof T = keyof T>(
 export const obj_omit = <T extends object, KS extends (keyof T)[] = (keyof T)[]>(
     obj: T,
     ...props: KS
-) => {
+): Omit<T, KS[number]> => {
     const result = {} as Omit<T, KS[number]>;
     /// 首先对key做安全处理
     const omitKeys = new Set<string | symbol>();
@@ -59,7 +59,7 @@ export const obj_omit = <T extends object, KS extends (keyof T)[] = (keyof T)[]>
 /**
  * 让一个对象的属性成为惰性求值的属性
  */
-export const obj_lazify = <T extends object>(obj: T) => {
+export const obj_lazify = <T extends object>(obj: T): T => {
     const desps = Object.getOwnPropertyDescriptors(obj);
     for (const [prop, desp] of Object.entries(desps)) {
         if (desp.get !== undefined && desp.set === undefined && desp.configurable) {
