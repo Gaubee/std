@@ -1,6 +1,6 @@
 {
     "name": "@gaubee/util",
-    "version": "0.7.2",
+    "version": "0.8.0",
     "tasks": {
         "build": "deno run -A ./dnt.ts",
         "npm": "deno task build && deno task pub-npm",
