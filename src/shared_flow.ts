@@ -1,5 +1,5 @@
 import { iter_map_async } from "./collections.ts";
-import { Func } from "./func.ts";
+import type { Func } from "./func.ts";
 import { type ReadableDefaultStreamWithController, rs_with_controller } from "./readable_stream.ts";
 
 /** SharedFlow 的监听函数定义 */

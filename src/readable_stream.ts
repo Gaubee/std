@@ -17,6 +17,13 @@ interface ReadableByteWithController {
     <R>(strategy?: QueuingStrategy<R> & { type?: undefined }): ReadableDefaultStreamWithController<R>;
     (strategy?: QueuingStrategy<Uint8Array> & { type: "bytes" }): ReadableByteStreamWithController;
 }
+/**
+ * 一个易用的 ReadableStream 构造函数
+ * - 直接暴露了 controller 对象
+ * - pull/cancel 使用 SharedFlow 来暴露
+ * @param strategy
+ * @returns
+ */
 const withController: ReadableByteWithController = <R>(strategy?: QueuingStrategy<R> & { type?: "bytes" }) => {
     const result = obj_lazify<any>({
         get onPull() {
