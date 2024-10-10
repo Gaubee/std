@@ -55,3 +55,26 @@ export const obj_omit = <T extends object, KS extends (keyof T)[] = (keyof T)[]>
     }
     return result;
 };
+
+/**
+ * 让一个对象的属性成为惰性求值的属性
+ */
+export const obj_lazify = <T extends object>(obj: T) => {
+    const desps = Object.getOwnPropertyDescriptors(obj);
+    for (const [prop, desp] of Object.entries(desps)) {
+        if (desp.get !== undefined && desp.set === undefined && desp.configurable) {
+            const source_get = desp.get;
+            const cache_get = function (this: T) {
+                const cache = source_get.call(this);
+                delete desp.get;
+                delete desp.set;
+                desp.value = cache;
+                Object.defineProperty(obj, prop, desp);
+                return cache;
+            };
+            desp.get = cache_get;
+            Object.defineProperty(obj, prop, desp);
+        }
+    }
+    return obj;
+};
