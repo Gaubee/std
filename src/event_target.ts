@@ -1,6 +1,5 @@
 /**
  * 这是一些关于 EventTarget 的辅助函数
- * @module
  */
 type GetEventTargetEventMap<T> = T extends EventTarget
     ? GetAddEventListenerEventMap<T["addEventListener"]>

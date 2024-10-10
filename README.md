@@ -2,6 +2,44 @@
 
 ## [docs 文档](https://jsr.io/@gaubee/util/doc)
 
+**install:**
+
+```bash
+npm install @gaubee/util
+pnpm install @gaubee/util
+yarn install @gaubee/util
+deno add npm:@gaubee/util
+bun add @gaubee/util
+
+deno add jsr:@gaubee/util
+npx jsr add @gaubee/util
+yarn dlx jsr add @gaubee/util
+pnpm dlx jsr add @gaubee/util
+bunx jsr add @gaubee/util
+```
+
+**example:**
+
+```ts
+import * as gutil from "@gaubee/util";
+import { ag_done } from "@gaubee/util/ag";
+import { bigint_gcd } from "@gaubee/util/bigint";
+import { iter_map_not_null } from "@gaubee/util/collections";
+import { date_add_duration } from "@gaubee/util/date";
+import { binary_to_hex_string } from "@gaubee/util/encoding";
+import { event_target_on } from "@gaubee/util/event_target";
+import { func_remember } from "@gaubee/util/func";
+import { Lrc } from "@gaubee/util/lrc";
+import { map_get_or_put_async } from "@gaubee/util/map";
+import { number_gcd } from "@gaubee/util/number";
+import { obj_lazify } from "@gaubee/util/object";
+import { delay } from "@gaubee/util/promise";
+import { rs_with_controller } from "@gaubee/util/readable_stream";
+import { SharedFlow } from "@gaubee/util/shared_flow";
+
+const flow = new SharedFlow<string>();
+```
+
 ### 简介
 
 1. 个人项目经验，涵盖大量常用函数集合，建议与 deno 的 [`@std/*`](https://jsr.io/@std) 互为补充。

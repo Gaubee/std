@@ -1,7 +1,6 @@
 import { map_get_or_put, map_get_or_put_async } from "./map.ts";
 
 /**
- * @module
  * 一个极简的 Least Recently Used 缓存
  * @example
  * ```ts
