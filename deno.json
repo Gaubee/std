@@ -17,13 +17,14 @@
         "./date": "./src/date.ts",
         "./encoding": "./src/encoding.ts",
         "./event_target": "./src/event_target.ts",
-        "./evt": "./src/evt.ts",
         "./func": "./src/func.ts",
         "./lrc": "./src/lrc.ts",
         "./map": "./src/map.ts",
         "./number": "./src/number.ts",
         "./object": "./src/object.ts",
         "./promise": "./src/promise.ts",
+        "./readable_stream": "./src/readable_stream.ts",
+        "./shared_flow": "./src/shared_flow.ts",
         ".": "./src/index.ts"
     },
     "fmt": {
