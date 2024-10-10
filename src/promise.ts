@@ -1,4 +1,5 @@
 import { event_target_on } from "./event_target.ts";
+import { func_wrap } from "./func.ts";
 
 export const delay = (
     ms: number,
@@ -12,14 +13,16 @@ export const delay = (
     }
 
     const job = Promise.withResolvers<void>();
-    const ti = setTimeout(job.resolve, ms);
+    let resolve = job.resolve;
+    let reject = job.reject;
+    const ti = setTimeout(() => resolve(), ms);
     const result = Object.assign(job.promise, {
         cancel(cause?: unknown) {
             clearTimeout(ti);
             if (cause == null) {
-                job.resolve();
+                resolve();
             } else {
-                job.reject();
+                reject(cause);
             }
         },
     });
@@ -27,7 +30,15 @@ export const delay = (
         const off = event_target_on(signal, "abort", () => {
             result.cancel(signal.reason);
         });
-        job.promise.finally(off);
+        // 不使用 promise.finally ，因为它会创建一个新的 promise
+        resolve = func_wrap(resolve, (_, next) => {
+            off();
+            next();
+        });
+        reject = func_wrap(reject, (_, next) => {
+            off();
+            next();
+        });
     }
     return result;
 };

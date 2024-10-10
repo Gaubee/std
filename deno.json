@@ -1,6 +1,6 @@
 {
     "name": "@gaubee/util",
-    "version": "0.8.0",
+    "version": "0.9.0",
     "tasks": {
         "build": "deno run -A ./dnt.ts",
         "npm": "deno task build && deno task pub-npm",
@@ -50,6 +50,7 @@
     "compilerOptions": {
         "lib": [
             "deno.window",
+            "dom",
             "ESNext"
         ]
     }
