@@ -1,4 +1,6 @@
-// deno-lint-ignore-file no-explicit-any
+/**
+ * 遍历 map 对象，将结果聚合 array 对象返回
+ */
 export const map_to_array = <K, V, R>(
     map: Map<K, V>,
     mapper: (value: V, key: K) => R,
@@ -58,8 +60,7 @@ export const map_get_or_put_async = async <
             return map.get(key)!;
         }
     }
-    const locks: Map<any, Promise<void>> =
-        ((map as any)[locks_keys] ??= new Map());
+    const locks: Map<any, Promise<void>> = ((map as any)[locks_keys] ??= new Map());
     const lock = Promise.withResolvers<void>();
     locks.set(key, lock.promise);
     try {

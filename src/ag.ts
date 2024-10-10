@@ -1,3 +1,6 @@
+/**
+ * AsyncGeneratorFunction
+ */
 export const AGF = (() => {
     try {
         Function(

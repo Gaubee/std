@@ -8,9 +8,10 @@ export type SharedFlowFun<T> = (data: T) => unknown;
 export type SharedFlowOff = () => boolean;
 export type SharedFlowListenOptions = { key?: unknown; onDispose?: Func };
 /**
+ * @module
  * 个极简的事件监听, 支持异步错误捕捉
  * 对流有着极好的支持，支持背压，因此你甚至可以把它当作一个流发射器
- *
+ * 
  * @example
  * ```ts
  * const flow = new SharedFlow<number>();

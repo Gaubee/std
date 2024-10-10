@@ -1,6 +1,23 @@
 import { event_target_on } from "./event_target.ts";
 import { func_wrap } from "./func.ts";
 
+/**
+ * setTimeout/clearTimeout 的 promise 版本
+ * @example
+ * ```ts
+ * const d = delay(1000)
+ *
+ * await d; // is promise
+ *
+ * d.cancel(); // clearTimeout
+ *
+ * d.cancel('some reason'); // clearTimeout and reject promise
+ *
+ * const ac = new AbortController()
+ * const d = delay(1000, { signal: ac.signal }) // with AbortSignal
+ * ac.abort('some reason'); // clearTimeout and reject promise
+ * ```
+ */
 export const delay = (
     ms: number,
     options?: { signal?: AbortSignal | null },

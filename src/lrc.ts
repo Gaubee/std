@@ -1,7 +1,27 @@
 import { map_get_or_put, map_get_or_put_async } from "./map.ts";
 
 /**
+ * @module
  * 一个极简的 Least Recently Used 缓存
+ * @example
+ * ```ts
+ * const lrc = new Lrc()
+ * function getTime() {
+ *      lrc.getOrPut('time', ()=>{
+ *           return Date.now()
+ *      })
+ * }
+ * const time1 = getTime()
+ * // hit cache
+ * const time2 = getTime()
+ * time1 === time2
+ *
+ * // remove all cache
+ * lrc.clear(0)
+ *
+ * const time3 = getTime()
+ * time1 !== time3
+ * ```
  */
 export class Lrc<K, V> {
     constructor(

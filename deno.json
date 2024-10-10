@@ -1,6 +1,6 @@
 {
     "name": "@gaubee/util",
-    "version": "0.9.1",
+    "version": "0.9.2",
     "tasks": {
         "build": "deno run -A ./dnt.ts",
         "npm": "deno task build && deno task pub-npm",
@@ -46,6 +46,10 @@
             "LICENSE",
             "README.md",
             "src/**/*.ts"
+        ],
+        "exclude": [
+            "src/**/*.bench.ts",
+            "src/**/*.test.ts"
         ]
     },
     "compilerOptions": {
