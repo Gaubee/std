@@ -1,8 +1,9 @@
 {
     "name": "@gaubee/util",
-    "version": "0.7.0",
+    "version": "0.7.1",
     "tasks": {
         "build": "deno run -A ./dnt.ts",
+        "npm": "deno task build && deno task pub-npm",
         "pub-npm": "cd npm && npm publish --access public",
         "pub": "deno publish --allow-slow-types"
     },
@@ -48,6 +49,7 @@
     },
     "compilerOptions": {
         "lib": [
+            "deno.window",
             "ESNext"
         ]
     }

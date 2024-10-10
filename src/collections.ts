@@ -216,7 +216,7 @@ export const iter_get_first_or_default = <T, R>(
  * 遍历集合，返回 PromiseSettledResult。
  * 等同于 Promise.allSettled([...items].map(...))
  */
-export const iter_map_async = <TS extends Iterable<T>, T = unknown, R = unknown>(
+export const iter_map_async = <TS extends Iterable<T>, T = IterableItem<TS>, R = unknown>(
   values: TS,
   callbackfn: (value: T, index: number, values: TS) => R,
 ): Promise<PromiseSettledResult<Awaited<R>>[]> => {
@@ -232,7 +232,7 @@ export const iter_map_async = <TS extends Iterable<T>, T = unknown, R = unknown>
  * 遍历集合进行 归约操作。
  * 等同于 Array<T>.reduce
  */
-export const iter_reduce = <TS extends Iterable<T>, T = unknown, R = unknown>(
+export const iter_reduce = <TS extends Iterable<T>, T = IterableItem<TS>, R = unknown>(
   values: TS,
   callbackfn: (previousValue: R, currentValue: T, currentIndex: number, values: TS) => R,
   initialValue: R,
@@ -248,7 +248,13 @@ export const iter_reduce = <TS extends Iterable<T>, T = unknown, R = unknown>(
  * 对集合进行 拆分然后归约 的操作。
  * 类似于 Array<T>.map.flat.reduce
  */
-export const iter_map_reduce = <TS extends Iterable<T>, MS extends Iterable<M>, T = unknown, M = unknown, R = unknown>(
+export const iter_map_reduce = <
+  TS extends Iterable<T>,
+  MS extends Iterable<M>,
+  T = IterableItem<TS>,
+  M = IterableItem<MS>,
+  R = unknown,
+>(
   sources: TS,
   mapfn: (value: T, index: number, values: TS) => MS,
   reducefn: (previousValue: R, currentValue: M, currentIndex: number, values: MS) => R,
@@ -270,7 +276,7 @@ export const iter_map_reduce = <TS extends Iterable<T>, MS extends Iterable<M>, 
  *
  * 支持任何可迭代的对象
  */
-export const iter_map_not_null = <TS extends Iterable<T>, T = unknown, R = unknown>(
+export const iter_map_not_null = <TS extends Iterable<T>, T = IterableItem<TS>, R = unknown>(
   values: TS,
   callbackfn: (
     value: T,

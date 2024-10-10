@@ -6,6 +6,11 @@ export const delay = (
 ): Promise<void> & {
     cancel(cause?: unknown): void;
 } => {
+    const signal = options?.signal;
+    if (signal?.aborted) {
+        throw signal.reason;
+    }
+
     const job = Promise.withResolvers<void>();
     const ti = setTimeout(job.resolve, ms);
     const result = Object.assign(job.promise, {
@@ -18,7 +23,6 @@ export const delay = (
             }
         },
     });
-    const signal = options?.signal;
     if (signal != null) {
         const off = event_target_on(signal, "abort", () => {
             result.cancel(signal.reason);
