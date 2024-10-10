@@ -216,16 +216,53 @@ export const iter_get_first_or_default = <T, R>(
  * 遍历集合，返回 PromiseSettledResult。
  * 等同于 Promise.allSettled([...items].map(...))
  */
-export const iter_map_async = <T extends Iterable<unknown>, R>(
-  items: T,
-  callbackfn: (value: IterableItem<T>, index: number, source: T) => R,
+export const iter_map_async = <TS extends Iterable<T>, T = unknown, R = unknown>(
+  values: TS,
+  callbackfn: (value: T, index: number, values: TS) => R,
 ): Promise<PromiseSettledResult<Awaited<R>>[]> => {
   const result: R[] = [];
   let index = 0;
-  for (const item of items) {
-    result.push(callbackfn(item as IterableItem<T>, index++, items));
+  for (const item of values) {
+    result.push(callbackfn(item, index++, values));
   }
   return Promise.allSettled(result);
+};
+
+/**
+ * 遍历集合进行 归约操作。
+ * 等同于 Array<T>.reduce
+ */
+export const iter_reduce = <TS extends Iterable<T>, T = unknown, R = unknown>(
+  values: TS,
+  callbackfn: (previousValue: R, currentValue: T, currentIndex: number, values: TS) => R,
+  initialValue: R,
+) => {
+  let index = 0;
+  for (const value of values) {
+    initialValue = callbackfn(initialValue, value, index++, values);
+  }
+  return initialValue;
+};
+
+/**
+ * 对集合进行 拆分然后归约 的操作。
+ * 类似于 Array<T>.map.flat.reduce
+ */
+export const iter_map_reduce = <TS extends Iterable<T>, MS extends Iterable<M>, T = unknown, M = unknown, R = unknown>(
+  sources: TS,
+  mapfn: (value: T, index: number, values: TS) => MS,
+  reducefn: (previousValue: R, currentValue: M, currentIndex: number, values: MS) => R,
+  initialValue: R,
+) => {
+  let mapIndex = 0;
+  let reduceIndex = 0;
+  for (const source of sources) {
+    const values = mapfn(source, mapIndex++, sources);
+    for (const value of values) {
+      initialValue = reducefn(initialValue, value, reduceIndex++, values);
+    }
+  }
+  return initialValue;
 };
 
 /**
@@ -233,21 +270,21 @@ export const iter_map_async = <T extends Iterable<unknown>, R>(
  *
  * 支持任何可迭代的对象
  */
-export const iter_map_not_null = <T extends Iterable<unknown>, R>(
-  items: T,
+export const iter_map_not_null = <TS extends Iterable<T>, T = unknown, R = unknown>(
+  values: TS,
   callbackfn: (
-    value: NonNullable<IterableItem<T>>,
+    value: T,
     index: number,
-    source: T,
+    values: TS,
   ) => R,
 ): Array<NonNullable<R>> => {
   const result: NonNullable<R>[] = [];
-  let pos = 0;
-  for (const item of items) {
+  let index = 0;
+  for (const value of values) {
     const r = callbackfn(
-      item as NonNullable<IterableItem<T>>,
-      pos++,
-      items,
+      value,
+      index++,
+      values,
     );
     if (r != null) {
       result.push(r);
