@@ -5,7 +5,7 @@ import { str_reverse } from "./string.ts";
  */
 export const GF = (() => {
     try {
-        Function(
+        return Function(
             str_reverse("rotcurtsnoc.)}{)(*noitcnuf( nruter"),
         )();
     } catch {
@@ -18,7 +18,7 @@ export const GF = (() => {
  */
 export const AGF = (() => {
     try {
-        Function(
+        return Function(
             str_reverse("rotcurtsnoc.)}{)(*noitcnuf cnysa( nruter"),
         )();
     } catch {
