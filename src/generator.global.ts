@@ -1,4 +1,4 @@
-import { ag_done, ag_then, AGF } from "./ag.ts";
+import { ag_done, ag_then, AGF } from "./generator.ts";
 import { curryThisFn, extendsMethod } from "./func.ts";
 
 const done = curryThisFn(ag_done);

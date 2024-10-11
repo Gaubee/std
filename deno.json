@@ -1,6 +1,6 @@
 {
     "name": "@gaubee/util",
-    "version": "0.9.4",
+    "version": "0.10.0",
     "tasks": {
         "build": "deno run -A ./dnt.ts",
         "npm": "deno task build && deno task pub-npm",
@@ -11,13 +11,13 @@
         "@deno/dnt": "jsr:@deno/dnt@^0.41.3"
     },
     "exports": {
-        "./ag": "./src/ag.ts",
         "./bigint": "./src/bigint.ts",
         "./collections": "./src/collections.ts",
         "./date": "./src/date.ts",
         "./encoding": "./src/encoding.ts",
         "./event_target": "./src/event_target.ts",
         "./func": "./src/func.ts",
+        "./generator": "./src/generator.ts",
         "./lrc": "./src/lrc.ts",
         "./map": "./src/map.ts",
         "./number": "./src/number.ts",
@@ -25,6 +25,7 @@
         "./promise": "./src/promise.ts",
         "./readable_stream": "./src/readable_stream.ts",
         "./shared_flow": "./src/shared_flow.ts",
+        "./string": "./src/string.ts",
         ".": "./src/index.ts"
     },
     "fmt": {

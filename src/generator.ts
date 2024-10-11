@@ -1,10 +1,25 @@
+import { str_reverse } from "./string.ts";
+
+/**
+ * GeneratorFunction
+ */
+export const GF = (() => {
+    try {
+        Function(
+            str_reverse("rotcurtsnoc.)}{)(*noitcnuf( nruter"),
+        )();
+    } catch {
+        return (function* () {}).constructor;
+    }
+})() as GeneratorFunction;
+
 /**
  * AsyncGeneratorFunction
  */
 export const AGF = (() => {
     try {
         Function(
-            "return (async function*(){}).constructor",
+            str_reverse("rotcurtsnoc.)}{)(*noitcnuf cnysa( nruter"),
         )();
     } catch {
         return (async function* () {}).constructor;

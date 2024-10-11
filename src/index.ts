@@ -1,4 +1,4 @@
-export * from "./ag.ts";
+export * from "./generator.ts";
 export * from "./bigint.ts";
 export * from "./collections.ts";
 export * from "./date.ts";
@@ -12,3 +12,4 @@ export * from "./object.ts";
 export * from "./promise.ts";
 export * from "./readable_stream.ts";
 export * from "./shared_flow.ts";
+export * from "./string.ts";

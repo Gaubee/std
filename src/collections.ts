@@ -298,3 +298,29 @@ export const iter_map_not_null = <TS extends Iterable<T>, T = IterableItem<TS>, 
   }
   return result;
 };
+
+/**
+ * 类似与 map not null，但只取第一个
+ *
+ * 支持任何可迭代的对象
+ */
+export const iter_first_not_null = <TS extends Iterable<T>, T = IterableItem<TS>, R = unknown>(
+  values: TS,
+  callbackfn: (
+    value: T,
+    index: number,
+    values: TS,
+  ) => R,
+): R | undefined => {
+  let index = 0;
+  for (const value of values) {
+    const r = callbackfn(
+      value,
+      index++,
+      values,
+    );
+    if (r != null) {
+      return r;
+    }
+  }
+};
