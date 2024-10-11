@@ -16,6 +16,7 @@ interface CommonMap<K, V> {
     has(key: K): boolean;
     get(key: K): V | undefined;
     set(key: K, value: V): unknown;
+    delete(key: K): boolean;
 }
 
 /**
@@ -32,6 +33,21 @@ export const map_get_or_put = <T extends CommonMap<K, V>, K, V>(
     } else {
         value = put(key, map);
         map.set(key, value);
+    }
+    return value;
+};
+
+/**
+ * 删除一个map中的值，同时返回它
+ */
+export const map_delete_and_get = <T extends CommonMap<K, V>, K, V>(
+    map: T,
+    key: K,
+): V | undefined => {
+    let value: V | undefined;
+    if (map.has(key)) {
+        value = map.get(key);
+        map.delete(key);
     }
     return value;
 };

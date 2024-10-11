@@ -59,3 +59,12 @@ export const delay = (
     }
     return result;
 };
+
+export const promise_try = async <R>(fn: () => R): Promise<PromiseSettledResult<Awaited<R>>> => {
+    try {
+        const value = await fn();
+        return { status: "fulfilled", value };
+    } catch (reason) {
+        return { status: "rejected", reason };
+    }
+};

@@ -1,0 +1,33 @@
+{
+    "name": "@gaubee/util",
+    "version": "0.12.0",
+    "exports": {
+        "./bigint": "./src/bigint.ts",
+        "./collections": "./src/collections.ts",
+        "./date": "./src/date.ts",
+        "./encoding": "./src/encoding.ts",
+        "./event_target": "./src/event_target.ts",
+        "./func": "./src/func.ts",
+        "./generator": "./src/generator.ts",
+        "./lrc": "./src/lrc.ts",
+        "./map": "./src/map.ts",
+        "./number": "./src/number.ts",
+        "./object": "./src/object.ts",
+        "./promise": "./src/promise.ts",
+        "./pure_event": "./src/pure_event.ts",
+        "./readable_stream": "./src/readable_stream.ts",
+        "./string": "./src/string.ts",
+        ".": "./src/index.ts"
+    },
+    "publish": {
+        "include": [
+            "LICENSE",
+            "README.md",
+            "src/**/*.ts"
+        ],
+        "exclude": [
+            "src/**/*.bench.ts",
+            "src/**/*.test.ts"
+        ]
+    }
+}

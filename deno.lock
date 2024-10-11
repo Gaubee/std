@@ -20,8 +20,7 @@
       "jsr:@std/path@^0.225.2": "jsr:@std/path@0.225.2",
       "jsr:@std/path@^1.0.4": "jsr:@std/path@1.0.5",
       "jsr:@ts-morph/bootstrap@^0.24.0": "jsr:@ts-morph/bootstrap@0.24.0",
-      "jsr:@ts-morph/common@^0.24.0": "jsr:@ts-morph/common@0.24.0",
-      "npm:@types/node": "npm:@types/node@18.16.19"
+      "jsr:@ts-morph/common@^0.24.0": "jsr:@ts-morph/common@0.24.0"
     },
     "jsr": {
       "@david/code-block-writer@13.0.2": {
@@ -114,12 +113,6 @@
           "jsr:@std/fs@^0.229.3",
           "jsr:@std/path@^0.225.2"
         ]
-      }
-    },
-    "npm": {
-      "@types/node@18.16.19": {
-        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
-        "dependencies": {}
       }
     }
   },

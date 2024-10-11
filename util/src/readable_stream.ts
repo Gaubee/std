@@ -1,17 +1,17 @@
-import { SharedFlow } from "./shared_flow.ts";
+import { PureEvent } from "./pure_event.ts";
 import { obj_lazify } from "./object.ts";
 
 export interface ReadableDefaultStreamWithController<R> {
     stream: ReadableStream<R>;
     controller: ReadableStreamDefaultController<R>;
-    onPull: SharedFlow<void>;
-    onCancel: SharedFlow<any>;
+    onPull: PureEvent<void>;
+    onCancel: PureEvent<any>;
 }
 export interface ReadableByteStreamWithController {
     stream: ReadableStream<Uint8Array>;
     controller: ReadableByteStreamController;
-    onPull: SharedFlow<void>;
-    onCancel: SharedFlow<any>;
+    onPull: PureEvent<void>;
+    onCancel: PureEvent<any>;
 }
 interface ReadableByteWithController {
     <R>(strategy?: QueuingStrategy<R> & { type?: undefined }): ReadableDefaultStreamWithController<R>;
@@ -20,17 +20,17 @@ interface ReadableByteWithController {
 /**
  * 一个易用的 ReadableStream 构造函数
  * - 直接暴露了 controller 对象
- * - pull/cancel 使用 SharedFlow 来暴露
+ * - pull/cancel 使用 Evt 来暴露
  * @param strategy
  * @returns
  */
 const withController: ReadableByteWithController = <R>(strategy?: QueuingStrategy<R> & { type?: "bytes" }) => {
     const result = obj_lazify<any>({
         get onPull() {
-            return new SharedFlow();
+            return new PureEvent();
         },
         get onCancel() {
-            return new SharedFlow();
+            return new PureEvent();
         },
     });
     result.stream = new ReadableStream({

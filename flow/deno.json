@@ -1,0 +1,22 @@
+{
+    "name": "@gaubee/flow",
+    "version": "0.12.0",
+    "exports": {
+        "./shared_flow": "./src/shared_flow.ts",
+        ".": "./src/index.ts"
+    },
+    "license": "MIT",
+    "publish": {
+        "include": [
+            "README.md",
+            "src/**/*.ts"
+        ],
+        "exclude": [
+            "src/**/*.bench.ts",
+            "src/**/*.test.ts"
+        ]
+    },
+    "imports": {
+        "@gaubee/util": "../util"
+    }
+}
