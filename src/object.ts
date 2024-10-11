@@ -7,12 +7,42 @@ export const obj_pick = <T extends object, KS extends (keyof T)[] = (keyof T)[]>
     obj: T,
     ...props: KS
 ): Pick<T, KS[number]> => {
-    const result = props.reduce((result, prop) => {
+    const result = {} as Pick<T, KS[number]>;
+    for (const prop of props) {
         result[prop] = obj[prop];
-        return result;
-    }, {} as Pick<T, KS[number]>);
+    }
     return result;
 };
+/**
+ * Creates a new object by selecting the specified keys from the provided object
+ * and mapping them to new keys as specified in the alias object.
+ *
+ * 通过选中对象中的指定键，并根据 alias 对象重命名来创建一个新的对象。
+ * @example
+ * ```ts
+ * const sym_k = Symbol("k");
+ * const obj = { a: 5, b: 6, c: 7, d: 8, 0: true, 1: false, [sym_k]: "sym" };
+ * const obj2 = obj_pick_as(obj, { aa: "a", cc: "c", zero: 0, k: sym_k });
+ *
+ * obj2.aa == obj.a
+ * ```
+ */
+export const obj_pick_as = <
+    T extends object,
+    const A extends Alias<T>,
+>(obj: T, alias: A): PickAs<T, A> => {
+    const result = {} as PickAs<T, A>;
+
+    for (const newKey in alias) {
+        const oldKey = alias[newKey];
+        result[newKey] = obj[oldKey];
+    }
+
+    return result;
+};
+type Alias<T extends object> = Record<PropertyKey, keyof T>;
+export type PickAs<T extends object, A extends Alias<T>> = { [K in keyof A]: T[A[K]] };
+
 /**
  * Creates a new object by excluding the specified keys from the provided object.
  *
