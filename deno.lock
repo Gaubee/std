@@ -192,11 +192,7 @@
         "dependencies": [
           "jsr:@deno/dnt@~0.41.3",
           "jsr:@std/collections@^1.0.8",
-          "jsr:@std/fmt@^1.0.2",
-          "jsr:@std/fs@^1.0.4",
-          "jsr:@std/jsonc@^1.0.1",
-          "jsr:@std/path@^1.0.6",
-          "jsr:@std/yaml@^1.0.5"
+          "jsr:@std/path@^1.0.6"
         ]
       },
       "nodekit": {

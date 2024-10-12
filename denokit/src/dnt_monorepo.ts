@@ -2,11 +2,10 @@ import fs from "node:fs";
 import node_path from "node:path";
 import { build, emptyDir } from "@deno/dnt";
 import { iter_map_not_null } from "@gaubee/util/collections";
-import { globToRegExp } from "@std/path";
+import { globToRegExp, isGlob } from "@std/path";
 import { $ } from "@gaubee/nodekit/shell";
 import { normalizeFilePath } from "@gaubee/nodekit/path";
 import { readJson, writeJson, writeYaml } from "@gaubee/nodekit/config_file";
-import { isGlob } from "@std/path";
 import { deepMerge } from "@std/collections";
 // import type { str_replace_start } from "@gaubee/util/string";
 const createResolver = (baseDir: string) => (...paths: string[]) =>
