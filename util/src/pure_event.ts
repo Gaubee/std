@@ -61,6 +61,7 @@ export type PureEventOncePromiseWithResolvers<T> = Promise<T> & {
  * // remove listen and run dispatch function
  * console.log(await off()); // { status: "fulfilled", value: 123 }
  *
+ * /// once
  * // add one time listen with callback function
  * pevent.once((data) => console.log("once", data));
  * // add one time listen without callback function and return promise

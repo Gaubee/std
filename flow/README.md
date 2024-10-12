@@ -1,5 +1,7 @@
 # @gaubee/flow
 
+启发于 kotlin 的 flow，针对 js/ts 开发人员设计的接口，通常可以作为一个事件管理器
+
 ## [docs 文档](https://jsr.io/@gaubee/flow/doc)
 
 **install:**

@@ -1,0 +1,18 @@
+{
+  "name": "@gaubee/nodekit",
+  "version": "0.1.0",
+  "exports": {
+    "./config_file": "./src/config_file.ts",
+    "./fs": "./src/fs.ts",
+    "./ignore": "./src/ignore.ts",
+    "./path": "./src/path.ts",
+    "./shell": "./src/shell.ts",
+    ".": "./src/index.ts"
+  },
+  "imports": {
+    "@std/fmt": "jsr:@std/fmt@^1.0.2",
+    "@std/jsonc": "jsr:@std/jsonc@^1.0.1",
+    "@std/path": "jsr:@std/path@^1.0.6",
+    "@std/yaml": "jsr:@std/yaml@^1.0.5"
+  }
+}

@@ -2,13 +2,15 @@ import fs from "node:fs";
 import node_path from "node:path";
 import { build, emptyDir } from "@deno/dnt";
 import { iter_map_not_null } from "@gaubee/util/collections";
-import { globToRegExp } from "jsr:@std/path@1/glob-to-regexp";
-import { $, normalize } from "./shell.ts";
-import { readJson, writeJson, writeYaml } from "./config_file.ts";
+import { globToRegExp } from "@std/path";
+import { $ } from "@gaubee/nodekit/shell";
+import { normalizeFilePath } from "@gaubee/nodekit/path";
+import { readJson, writeJson, writeYaml } from "@gaubee/nodekit/config_file";
 import { isGlob } from "@std/path";
 import { deepMerge } from "@std/collections";
 // import type { str_replace_start } from "@gaubee/util/string";
-const createResolver = (baseDir: string) => (...paths: string[]) => normalize(node_path.resolve(baseDir, ...paths));
+const createResolver = (baseDir: string) => (...paths: string[]) =>
+    normalizeFilePath(node_path.resolve(baseDir, ...paths));
 
 /**
  * 将一个 deno-monorepo 编译成 pnpm monorepo
@@ -26,9 +28,9 @@ export const dntMonorepo = async (
         keepTempImportMapJson?: boolean;
     } = {},
 ): Promise<void> => {
-    const rootDir = normalize(options.rootDir ?? Deno.cwd());
+    const rootDir = normalizeFilePath(options.rootDir ?? Deno.cwd());
     const resolveRootDir = createResolver(rootDir);
-    const npmDir = normalize(options.npmDir ?? resolveRootDir(".npm"));
+    const npmDir = normalizeFilePath(options.npmDir ?? resolveRootDir(".npm"));
     const resolveNpmDir = createResolver(npmDir);
     const rootDenoJson = readJson<any>(resolveRootDir("deno.json"), () =>
         readJson(resolveRootDir("deno.jsonc"), () => {
@@ -46,9 +48,9 @@ export const dntMonorepo = async (
         const nodeDir = resolveNpmDir(packageName);
         const resolveNodeDir = createResolver(nodeDir);
         const denoJson = readJson(resolveDenoDir("deno.json"), () => readJson(resolveDenoDir("deno.jsonc")));
-        const packageJson = readJson(resolveDenoDir("package.json"), () => ({}));
+        const packageJson = readJson<any>(resolveDenoDir("package.json"), () => ({}));
         return {
-            alias: normalize(node_path.relative(rootDir, denoDir)),
+            alias: normalizeFilePath(node_path.relative(rootDir, denoDir)),
             name: denoJson.name as string,
             version: denoJson.version as string,
             denoDir,
@@ -211,7 +213,7 @@ export const dntMonorepo = async (
     }
 
     for (const workspace of workspaces) {
-        if (aliasFilter(workspace.alias)) {
+        if (workspace.packageJson.private != true && aliasFilter(workspace.alias)) {
             console.log(`%cstart building %c${workspace.alias}`, "color:gray", "color:green");
             await buildPackage(workspace, improt_map_json_path);
         }

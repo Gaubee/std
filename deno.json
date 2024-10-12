@@ -16,7 +16,8 @@
     "workspace": [
         "flow",
         "util",
-        "denokit"
+        "denokit",
+        "nodekit"
     ],
     "exclude": [
         ".npm"
