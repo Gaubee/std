@@ -1,6 +1,7 @@
-import { iter_map_async } from "./collections.ts";
+import { iter_map_async_try } from "./collections.ts";
 import type { Func } from "./func.ts";
 import { iter_map_not_null } from "./index.ts";
+import { obj_delegate_by } from "./object.ts";
 import { promise_try } from "./promise.ts";
 
 /** PureEvent 的监听函数定义 */
@@ -9,19 +10,70 @@ type PureEventOffResult = boolean | Promise<PromiseSettledResult<unknown>>;
 /** PureEvent 移除监听函数定义 */
 export type PureEventOff = () => PureEventOffResult;
 /** PureEvent 监听函数可选参数 */
-export type PureEventListenOptions = {
+export interface PureEventListenOptions {
     /** 自定义事件索引 */
     key?: unknown;
     /** 销毁事件时的自定义函数 */
     onDispose?: Func;
+}
+/** PureEvent 监听函数可选参数 */
+export interface PureEventOnceOptions<T> extends PureEventListenOptions {
+    filter?: (data: T) => boolean;
+}
+
+export type PureEventOncePromiseWithResolvers<T> = Promise<T> & {
+    resolve(data: T): void;
+    reject(reason?: unknown): void;
 };
 
 /**
- * 一个极简的事件监听器
+ * 一个现代化的单事件监听器
  *
  * 对异步与错误捕捉有着一流的支持
  *
  * 可自定义移除事件时的触发器
+ *
+ * @example
+ * ```ts
+ * import { PureEvent } from "@gaubee/util/pure_event";
+ * const pevent = new PureEvent<string>();
+ *
+ * /// basic
+ * // add listen
+ * const off = pevent.on((data) => console.log("on", data));
+ * // dispatch listen
+ * pevent.emit("hi");
+ * // remove listen
+ * off();
+ *
+ * // add listen with custom key
+ * pevent.on((data) => console.log("on", data), { key: "key1" });
+ * // remove listen with custom key
+ * pevent.off("key1");
+ *
+ * // add listen width dispose function
+ * const off = pevent.on((data) => console.log("on", data), {
+ *   onDispose: async () => {
+ *     console.log("off");
+ *     return 123;
+ *   },
+ * });
+ * // remove listen and run dispatch function
+ * console.log(await off()); // { status: "fulfilled", value: 123 }
+ *
+ * // add one time listen with callback function
+ * pevent.once((data) => console.log("once", data));
+ * // add one time listen without callback function and return promise
+ * pevent.once().then((data) => console.log("once.then", data));
+ *
+ * // best practices for multiple events:
+ * // use explicit properties instead of event name mappings
+ * class YourClass {
+ *      onStart = new PureEvent<void>()
+ *      onData = new PureEvent<void>()
+ *      onEnd = new PureEvent<void>()
+ * }
+ * ```
  */
 export class PureEvent<T> {
     //#region 核心
@@ -111,7 +163,7 @@ export class PureEvent<T> {
             return;
         }
         const errors: unknown[] = [];
-        const results = await iter_map_async(
+        const results = await iter_map_async_try(
             this.events.values(),
             (cb) => cb.cb(data),
         );
@@ -125,62 +177,95 @@ export class PureEvent<T> {
         }
     }
     //#endregion
-    once(cb?: null): Promise<T> & { resolve(data: T): void; reject(reason?: unknown): void };
-    once(cb: PureEventFun<T>): PureEventOff;
-    once(cb?: PureEventFun<T> | null) {
+    once(options?: PureEventOnceOptions<T>): PureEventOncePromiseWithResolvers<T>;
+    once(cb?: null, options?: PureEventOnceOptions<T>): PureEventOncePromiseWithResolvers<T>;
+    once(cb: PureEventFun<T>, options?: PureEventOnceOptions<T>): PureEventOff;
+    once(cb_or_options?: PureEventFun<T> | PureEventOnceOptions<T> | null, options?: PureEventOnceOptions<T>) {
+        let cb: PureEventFun<T> | undefined;
+        if (typeof cb_or_options === "function") {
+            cb = cb_or_options;
+        } else if (cb_or_options != null) {
+            options = cb_or_options;
+        }
+
+        const filter = options?.filter ?? (() => true);
+
+        /// callback mode
         if (cb == null) {
-            const job = Promise.withResolvers<T>();
+            const onDispose = options?.onDispose;
             const off = this.on((data) => {
-                off();
-                job.resolve(data);
+                if (filter(data)) {
+                    off();
+                    promiseWithResolvers.resolve(data);
+                }
+            }, {
+                ...options,
+                onDispose() {
+                    if (false === resolved) {
+                        promiseWithResolvers.reject(new Error("listener dispose"));
+                    }
+                    onDispose?.();
+                },
             });
-            return Object.assign(job.promise, {
+
+            const job = Promise.withResolvers<T>();
+            let resolved = false;
+            const promiseWithResolvers = Object.assign(job.promise, {
                 resolve(data: T) {
+                    resolved = true;
                     job.resolve(data);
                 },
                 reject(reason?: unknown) {
                     job.reject(reason);
                 },
-            }) as unknown;
+            });
+
+            return promiseWithResolvers;
         }
-        const off = this.on((data) => {
-            off();
-            cb(data);
-        });
+
+        /// promise mode
+        const off = this.on(async (data) => {
+            if (filter(data)) {
+                const disposeReturn = off();
+                if (disposeReturn !== false) {
+                    try {
+                        return cb(data);
+                    } finally {
+                        if (disposeReturn instanceof Promise) {
+                            await disposeReturn;
+                        }
+                    }
+                }
+            }
+        }, options);
         return off as unknown;
     }
 }
 
 /**
  * PureEvent 的委托类，基于委托，可以实现更新委托内核
+ *
+ * @example
+ * ```ts
+ * const pevent_source = new PureEvent<string>()
+ * const pevent_delegate = new PureEventDelegate<string>()
+ * pevent_delegate.byPureEvent = pevent_source
+ *
+ * pevent_source.on((data) => console.log('by source', data))
+ * pevent_delegate.on((data) => console.log('by delegate', data))
+ *
+ * pevent_source.emit('from source')
+ * pevent_delegate.emit('from delegate')
+ * ```
  */
-export class PureEventDelegate<T> implements PureEvent<T> {
-    constructor(public byPureEvent: PureEvent<T>) {}
-    get events(): PureEvent<T>["events"] {
-        return this.byPureEvent.events;
-    }
-    get size(): PureEvent<T>["size"] {
-        throw new Error("Method not implemented.");
-    }
-    get emit(): PureEvent<T>["emit"] {
-        return this.byPureEvent.emit;
-    }
-    get on(): PureEvent<T>["on"] {
-        return this.byPureEvent.on;
-    }
-    get once(): PureEvent<T>["once"] {
-        return this.byPureEvent.once;
-    }
-    get has(): PureEvent<T>["has"] {
-        return this.byPureEvent.has;
-    }
-    get off(): PureEvent<T>["off"] {
-        return this.byPureEvent.off;
-    }
-    get clean(): PureEvent<T>["clean"] {
-        return this.byPureEvent.clean;
-    }
-    get cleanSync(): PureEvent<T>["cleanSync"] {
-        return this.byPureEvent.cleanSync;
+export class PureEventDelegate<T> extends PureEvent<T> {
+    constructor(public byPureEvent: PureEvent<T> = new PureEvent()) {
+        super();
     }
 }
+
+obj_delegate_by<PureEvent<any>, PureEventDelegate<any>>(
+    PureEventDelegate.prototype,
+    PureEvent.prototype,
+    (target) => target.byPureEvent,
+);

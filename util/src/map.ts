@@ -12,7 +12,7 @@ export const map_to_array = <K, V, R>(
     return arr;
 };
 
-interface CommonMap<K, V> {
+export interface CommonMap<K, V> {
     has(key: K): boolean;
     get(key: K): V | undefined;
     set(key: K, value: V): unknown;

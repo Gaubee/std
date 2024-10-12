@@ -2,7 +2,7 @@
     "tasks": {
         "build": "deno run -A ./dnt.ts",
         "npm": "deno task build && deno task pub-npm",
-        "pub-npm": "cd npm && npm publish --access public",
+        "pub-npm": "cd .npm && pnpm -r publish --access public --no-git-checks",
         "pub": "deno publish --allow-slow-types"
     },
     "compilerOptions": {
@@ -10,11 +10,13 @@
             "deno.window",
             "dom",
             "ESNext"
-        ]
+        ],
+        "noImplicitOverride": true
     },
     "workspace": [
         "flow",
-        "util"
+        "util",
+        "denokit"
     ],
     "exclude": [
         ".npm"
@@ -31,6 +33,10 @@
         }
     },
     "imports": {
-        "@deno/dnt": "jsr:@deno/dnt@^0.41.3"
+        "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
+        "@std/fs": "jsr:@std/fs@^1.0.4",
+        "@std/path": "jsr:@std/path@^1.0.6",
+        "@std/yaml": "jsr:@std/yaml@^1.0.5",
+        "zx": "npm:zx@^8.1.9"
     }
 }

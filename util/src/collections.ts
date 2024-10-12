@@ -216,7 +216,7 @@ export const iter_get_first_or_default = <T, R>(
  * 遍历集合，返回 PromiseSettledResult。
  * 等同于 Promise.allSettled([...items].map(...))
  */
-export const iter_map_async = <TS extends Iterable<T>, T = IterableItem<TS>, R = unknown>(
+export const iter_map_async_try = <TS extends Iterable<T>, T = IterableItem<TS>, R = unknown>(
   values: TS,
   callbackfn: (value: T, index: number, values: TS) => R,
 ): Promise<PromiseSettledResult<Awaited<R>>[]> => {
@@ -226,6 +226,18 @@ export const iter_map_async = <TS extends Iterable<T>, T = IterableItem<TS>, R =
     result.push(callbackfn(item, index++, values));
   }
   return Promise.allSettled(result);
+};
+
+export const iter_map_async = <TS extends Iterable<T>, T = IterableItem<TS>, R = unknown>(
+  values: TS,
+  callbackfn: (value: T, index: number, values: TS) => R,
+): Promise<Awaited<R>[]> => {
+  const result: R[] = [];
+  let index = 0;
+  for (const item of values) {
+    result.push(callbackfn(item, index++, values));
+  }
+  return Promise.all(result);
 };
 
 /**

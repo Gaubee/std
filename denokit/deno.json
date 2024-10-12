@@ -1,0 +1,11 @@
+{
+    "name": "@gaubee/denokit",
+    "version": "0.1.0",
+    "exports":{
+        "./shell":"./src/shell.ts",
+        ".": "./src/index.ts"
+    },
+    "imports": {
+        "@std/fmt": "jsr:@std/fmt@^1.0.2"
+    }
+}
