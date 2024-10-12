@@ -65,6 +65,8 @@ export type PureEventOncePromiseWithResolvers<T> = Promise<T> & {
  * pevent.once((data) => console.log("once", data));
  * // add one time listen without callback function and return promise
  * pevent.once().then((data) => console.log("once.then", data));
+ * // add one time listen with filter function
+ * pevent.once({ filter(data){ return data == "match" } }).then((data) => console.log("once filter", data));
  *
  * // best practices for multiple events:
  * // use explicit properties instead of event name mappings
