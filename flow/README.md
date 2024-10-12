@@ -30,9 +30,9 @@ const stream = shared_flow.stream();
 shared_flow.emit("hi");
 
 for await (const data of stream) {
-  console.log(data);
-  // break loop will remove listen
-  break;
+    console.log(data);
+    // break loop will remove listen
+    break;
 }
 
 // 基本用法
@@ -43,9 +43,9 @@ shared_flow.emit("hi");
 shared_flow.on((data) => console.log("on", data), { key: "key1" });
 // 监听的时候可以自定义移除监听时的函数
 shared_flow.on((data) => console.log("on", data), {
-  onDispose: () => {
-    console.log("off");
-  },
+    onDispose: () => {
+        console.log("off");
+    },
 });
 
 // 单次监听，回调函数模式

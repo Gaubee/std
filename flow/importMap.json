@@ -1,5 +1,5 @@
 {
     "imports": {
-        "@gaubee/util":"npm:@gaubee/util@*"
+        "@gaubee/util": "npm:@gaubee/util@*"
     }
 }

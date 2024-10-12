@@ -54,7 +54,8 @@ import { rs_with_controller } from "@gaubee/util/readable_stream";
 > 虽然大家都说“不要污染原型链”，但是辩证看待，我建议你在合适的时候，“应该充分利用原型链”。
 > 在原型链上扩展函数，通过链式调用，可以达到很多符合直觉的开发体验。
 >
-> 并且，随着 [shadowrealm 提案](https://github.com/tc39/proposal-shadowrealm) 的演进，未来污染原型链在复杂项目里头就将不再是问题。
+> 并且，随着 [shadowrealm 提案](https://github.com/tc39/proposal-shadowrealm)
+> 的演进，未来污染原型链在复杂项目里头就将不再是问题。
 
-由于 jsr 上不允许上传污染全局的模块，所以如果需要，请使用 [npm 版本](https://www.npmjs.com/package/@gaubee/util)。
-**npm 版本还包含了 commonjs 的直接支持**。
+由于 jsr 上不允许上传污染全局的模块，所以如果需要，请使用 [npm 版本](https://www.npmjs.com/package/@gaubee/util)。 **npm
+版本还包含了 commonjs 的直接支持**。

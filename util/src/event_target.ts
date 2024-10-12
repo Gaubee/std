@@ -1,8 +1,7 @@
 /**
  * 这是一些关于 EventTarget 的辅助函数
  */
-type GetEventTargetEventMap<T> = T extends EventTarget
-    ? GetAddEventListenerEventMap<T["addEventListener"]>
+type GetEventTargetEventMap<T> = T extends EventTarget ? GetAddEventListenerEventMap<T["addEventListener"]>
     : object;
 type GetAddEventListenerEventMap<F> = F extends (
     type: infer K,

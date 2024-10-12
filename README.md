@@ -4,8 +4,7 @@
 
 ## Packages
 
-The following list contains links to the Standard Library's packages and
-documentation:
+The following list contains links to the Standard Library's packages and documentation:
 
 | Package                             | Latest version                                                            |
 | ----------------------------------- | ------------------------------------------------------------------------- |
@@ -14,6 +13,5 @@ documentation:
 
 ## Releases
 
-Package versions >=1.0.0 follow [Semantic Versioning](https://semver.org/), and
-package versions <1.0.0 follow
+Package versions >=1.0.0 follow [Semantic Versioning](https://semver.org/), and package versions <1.0.0 follow
 [this proposal](https://github.com/semver/semver/pull/923).

@@ -22,7 +22,9 @@
         ".npm"
     ],
     "fmt": {
-        "lineWidth": 120
+        "lineWidth": 120,
+        "useTabs": false,
+        "indentWidth": 4
     },
     "lint": {
         "rules": {
@@ -31,12 +33,5 @@
                 "ban-ts-comment"
             ]
         }
-    },
-    "imports": {
-        "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
-        "@std/fs": "jsr:@std/fs@^1.0.4",
-        "@std/path": "jsr:@std/path@^1.0.6",
-        "@std/yaml": "jsr:@std/yaml@^1.0.5",
-        "zx": "npm:zx@^8.1.9"
     }
 }
