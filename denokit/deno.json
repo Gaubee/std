@@ -2,9 +2,7 @@
   "name": "@gaubee/denokit",
   "version": "0.4.0",
   "exports": {
-    "./config_file": "./src/config_file.ts",
     "./dnt_monorepo": "./src/dnt_monorepo.ts",
-    "./shell": "./src/shell.ts",
     ".": "./src/index.ts"
   },
   "imports": {
