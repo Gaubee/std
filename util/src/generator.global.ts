@@ -8,7 +8,7 @@ extendsMethod(AGF.prototype, "done", done);
 extendsMethod(AGF.prototype, "then", then);
 
 declare global {
-    interface AsyncGenerator<T = unknown, TReturn = any, TNext = unknown> extends AsyncIterator<T, TReturn, TNext> {
+    interface AsyncGenerator<T = unknown, TReturn = any, TNext = any> extends AsyncIteratorObject<T, TReturn, TNext> {
         done: typeof done;
         then: typeof then;
     }

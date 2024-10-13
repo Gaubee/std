@@ -68,3 +68,5 @@ export const promise_try = async <R>(fn: () => R): Promise<PromiseSettledResult<
         return { status: "rejected", reason };
     }
 };
+
+export type PromiseMaybe<T> = PromiseLike<Awaited<T>> | Awaited<T>;

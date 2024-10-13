@@ -11,8 +11,16 @@ export interface CreateShellOptions {
     cwd?: string;
     env?: Record<string, string>;
 }
+export interface CommandOptions extends Omit<child_process.CommonSpawnOptions, "stdio"> {
+    stdio?: (cp: CommandStdIO) => unknown;
+}
+
+type RequiredNonNullable<T> = {
+    readonly [P in keyof T]-?: NonNullable<T[P]>;
+};
+export type CommandStdIO = RequiredNonNullable<Pick<child_process.ChildProcess, "stdin" | "stderr" | "stdout">>;
 export interface Shell {
-    (command: string, options: Deno.CommandOptions | string[] | string): Promise<void>;
+    (command: string, args: string[] | string, options?: CommandOptions): Promise<unknown>;
     /**
      * 当前所处目录
      */
@@ -47,17 +55,16 @@ export const $$: (options: CreateShellOptions) => Shell = (options: CreateShellO
     const $ = Object.assign(
         async (
             command: string,
-            options: child_process.CommonSpawnOptions | string[] | string,
+            args: string[] | string,
+            options?: CommandOptions,
         ) => {
             let safe_cmd = command;
             let safe_args: string[] = [];
-            const safe_options: child_process.CommonSpawnOptions = {};
-            if (Array.isArray(options)) {
-                safe_args = options;
-            } else if (typeof options === "string") {
-                safe_args = options.trim().split(/\s+/);
-            } else {
-                Object.assign(safe_options, options);
+            const safe_options: child_process.CommonSpawnOptions = obj_omit(options ?? {}, "stdio");
+            if (Array.isArray(args)) {
+                safe_args = args;
+            } else if (typeof args === "string") {
+                safe_args = args.trim().split(/\s+/);
             }
             console.info(
                 colors.blue("⫸"),
@@ -74,9 +81,10 @@ export const $$: (options: CreateShellOptions) => Shell = (options: CreateShellO
                 }
             }
             const cp = child_process.spawn(safe_cmd, safe_args, {
+                stdio: options?.stdio ? "pipe" : "inherit",
                 ...safe_options,
-                stdio: "inherit",
             });
+            options?.stdio?.(cp as CommandStdIO);
             const job = Promise.withResolvers<void>();
             cp.addListener("exit", (code, signal) => {
                 if (code != null && code != 0) {
