@@ -7,7 +7,7 @@ const normalize_path = (path: string) => path.startsWith("file://") ? fileURLToP
 /**
  * read json or jsonc file
  */
-export const readJson = <T extends object = any>(path: string, defaultValue?: () => T): T => {
+export const readJson = <T = any>(path: string, defaultValue?: () => T): T => {
     try {
         return JSONC.parse(fs.readFileSync(normalize_path(path), "utf8")) as T;
     } catch (e) {
@@ -20,11 +20,11 @@ export const readJson = <T extends object = any>(path: string, defaultValue?: ()
 /**
  * write json file
  */
-export const writeJson = <T extends object>(
+export const writeJson = <T>(
     path: string,
     data: T,
     options?: {
-        replacer: (this: any, key: string, value: any) => any;
+        replacer?: (this: any, key: string, value: any) => any;
         space?: number | string;
     },
 ): void => {
@@ -49,7 +49,7 @@ export const readYaml = <T extends object = any>(path: string, defaultValue?: ()
  * write yaml file
  * @returns
  */
-export const writeYaml = <T extends object>(
+export const writeYaml = <T>(
     path: string,
     data: T,
     options?: YAML.StringifyOptions,

@@ -106,11 +106,11 @@ export const $$: (options: CreateShellOptions) => Shell = (options: CreateShellO
                 ) {
                     entries.push(entry);
                     if (log) {
-                        const log_args = [entry.relativepath];
+                        const log_args = [entry.relativePath];
                         if (entry.isDirectory) {
                             log_args[0] = colors.green(log_args[0]);
                         }
-                        if (entry.stats.isSymbolicLink()) {
+                        if (entry.isSymbol) {
                             log_args.unshift(colors.blue("⇱"));
                         }
                         console.log(colors.gray("-"), ...log_args);

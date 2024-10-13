@@ -18,7 +18,7 @@ export type IgnoreStyle = "git" | "npm" | "glob" | "search";
  */
 export class Ignore {
     #rules;
-    get rules() {
+    get rules(): readonly string[] {
         return Object.freeze(this.#rules.slice());
     }
     #isMatch;
@@ -47,7 +47,7 @@ export class Ignore {
             };
         }
     }
-    static fromIgnoreFile(filepath: string) {
+    static fromIgnoreFile(filepath: string): Ignore {
         filepath = normalizeFilePath(filepath);
         const rules = fs
             .readFileSync(filepath, "utf-8")
