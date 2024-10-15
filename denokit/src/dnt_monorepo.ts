@@ -4,12 +4,13 @@ import { build, emptyDir } from "@deno/dnt";
 import { iter_map_not_null } from "@gaubee/util/collections";
 import { globToRegExp, isGlob } from "@std/path";
 import { $ } from "@gaubee/nodekit/shell";
-import { normalizeFilePath } from "@gaubee/nodekit/path";
+import { createResolver, normalizeFilePath } from "@gaubee/nodekit/path";
 import { readJson, writeJson, writeYaml } from "@gaubee/nodekit/config_file";
 import { deepMerge } from "@std/collections";
+import type { PackageJsonLoose } from "@gaubee/nodekit/pnpm";
+import type { DenoJson, ImportMap } from "./types.ts";
+import { obj_lazify } from "@gaubee/util/object";
 // import type { str_replace_start } from "@gaubee/util/string";
-const createResolver = (baseDir: string) => (...paths: string[]) =>
-    normalizeFilePath(node_path.resolve(baseDir, ...paths));
 
 /**
  * 将一个 deno-monorepo 编译成 pnpm monorepo
@@ -23,18 +24,26 @@ export const dntMonorepo = async (
         npmDir?: string;
         /** 需要构建哪些项目 */
         filter?: string | string[];
-        /** 是否要保留临时项目 importMap.json 文件 */
-        keepTempImportMapJson?: boolean;
+        /** 清空输出文件夹 */
+        clean?: boolean;
     } = {},
 ): Promise<void> => {
     const rootDir = normalizeFilePath(options.rootDir ?? Deno.cwd());
     const resolveRootDir = createResolver(rootDir);
     const npmDir = normalizeFilePath(options.npmDir ?? resolveRootDir(".npm"));
+    if (options.clean && fs.existsSync(npmDir)) {
+        fs.rmSync(npmDir, { recursive: true });
+    }
+    fs.mkdirSync(npmDir, { recursive: true });
     const resolveNpmDir = createResolver(npmDir);
-    const rootDenoJson = readJson<any>(resolveRootDir("deno.json"), () =>
-        readJson(resolveRootDir("deno.jsonc"), () => {
-            throw new Error("fail to load deno project config file");
-        }));
+    const rootDenoJson = readJson<DenoJson>(
+        resolveRootDir("deno.json"),
+        () =>
+            readJson(resolveRootDir("deno.jsonc"), () => {
+                throw new Error("fail to load deno project config file");
+            }),
+    );
+    const rootPackageJson = readJson<PackageJsonLoose>(resolveRootDir("deno.json"), () => ({}));
     if (false === Array.isArray(rootDenoJson.workspace)) {
         throw new Error("dntMonorepo required deno project has workspace");
     }
@@ -46,19 +55,26 @@ export const dntMonorepo = async (
         const resolveDenoDir = createResolver(denoDir);
         const nodeDir = resolveNpmDir(packageName);
         const resolveNodeDir = createResolver(nodeDir);
-        const denoJson = readJson(resolveDenoDir("deno.json"), () => readJson(resolveDenoDir("deno.jsonc")));
-        const packageJson = readJson<any>(resolveDenoDir("package.json"), () => ({}));
-        return {
-            alias: normalizeFilePath(node_path.relative(rootDir, denoDir)),
-            name: denoJson.name as string,
-            version: denoJson.version as string,
-            denoDir,
-            resolveDenoDir,
-            nodeDir,
-            resolveNodeDir,
-            denoJson,
-            packageJson,
-        };
+        const denoJson = readJson<DenoJson>(resolveDenoDir("deno.json"), () => readJson(resolveDenoDir("deno.jsonc")));
+        const packageJson = readJson<PackageJsonLoose>(resolveDenoDir("package.json"), () => ({}));
+
+        return obj_lazify(
+            {
+                alias: normalizeFilePath(node_path.relative(rootDir, denoDir)),
+                name: denoJson.name as string,
+                /**可以在路径中使用的 name */
+                get safeName() {
+                    return this.alias.replace("@", "").replace("/", "__");
+                },
+                version: denoJson.version as string,
+                denoDir,
+                resolveDenoDir,
+                nodeDir,
+                resolveNodeDir,
+                denoJson,
+                packageJson,
+            } as const,
+        );
     };
     type Workspace = ReturnType<typeof createWorkspace>;
 
@@ -71,16 +87,24 @@ export const dntMonorepo = async (
             packages: rootDenoJson.workspace,
         },
     );
-    /// 生成共享的 import_map.json 文件
-    const npmImportMapJson = {
-        imports: Object.fromEntries(workspaces.map((w) => {
-            return [w.name, "npm:" + w.name + "@*"];
-        })),
+    const importMapBeforeJson = importMapFromDenoJsonAndPackageJson(rootDenoJson, rootPackageJson);
+    const importMapAfterJson = {
+        imports: {
+            ...Object.fromEntries(workspaces.map((w) => {
+                return [w.name, "npm:" + w.name + "@*"];
+            })),
+        },
+    } satisfies ImportMap;
+    /**
+     * 如果项目由有自己的 imports 配置，那么混合自有的 imports 配置
+     * importMap的混合优先级：
+     * rootDenoJson < rootPackageJson < workspaceDenoJson < workspacePackageJson < pnpm/deno-workspaces
+     */
+    const buildImportMap = (importMap: ImportMap): ImportMap => {
+        return deepMerge(deepMerge(importMapBeforeJson as any, importMap as any), importMapAfterJson);
     };
-    const improt_map_json_path = resolveNpmDir("import_map.npm.json");
-    writeJson(improt_map_json_path, npmImportMapJson);
 
-    const buildPackage = async (workspace: Workspace, importMap: string) => {
+    const buildPackage = async (workspace: Workspace) => {
         const {
             alias: packageName,
             resolveDenoDir,
@@ -102,48 +126,10 @@ export const dntMonorepo = async (
             }),
         ];
 
-        /// 如果项目由有自己的 imports 配置，那么混合自有的 imports 配置
-        let tmpImportMap: string | undefined;
-        if (denoJson.imports || denoJson.importMap) {
-            const tmp_import_map_file_name = `.import_map.npm.${crypto.randomUUID()}.json`;
-            if (denoJson.imports) {
-                /// 在项目目录下，和 deno.json 同级的目录，创建 临时文件
-                tmpImportMap = resolveDenoDir(tmp_import_map_file_name);
-
-                writeJson(
-                    tmpImportMap,
-                    deepMerge({
-                        imports: denoJson.imports,
-                    }, readJson(importMap)),
-                );
-            } else if (denoJson.importMap) {
-                /// 到 denoJson.importMap 文件同级目录的地方创建 临时文件
-                tmpImportMap = resolveDenoDir(denoJson.importMap, "..", tmp_import_map_file_name);
-                writeJson(
-                    tmpImportMap,
-                    deepMerge(
-                        readJson(resolveDenoDir(denoJson.importMap)),
-                        readJson(importMap),
-                    ),
-                );
-            }
-        }
-
-        // /// 修复 import 配置
-        // {
-        //     const importMapJson = readJson(tmpImportMap ?? importMap);
-        //     for (const [key, version] of Object.entries(importMapJson.imports as Record<string, string>)) {
-        //         if (version.startsWith("jsr:")) {
-        //             /// @TODO dnt should support jsr
-        //             importMapJson.imports[key] = "npm:@jsr/" +
-        //                 str_replace_start(version, "jsr:", "").replace("@", "").replace(
-        //                     "/",
-        //                     "__",
-        //                 );
-        //         }
-        //     }
-        //     writeJson(tmpImportMap ?? importMap, importMapJson);
-        // }
+        /// 生成 import_map.json 文件
+        const importMapJson = buildImportMap(importMapFromDenoJsonAndPackageJson(denoJson, packageJson));
+        const import_map_file = resolveNpmDir(`import_map.npm.${workspace.safeName}.json`);
+        writeJson(import_map_file, importMapJson);
 
         await build({
             entryPoints: entryPoints,
@@ -152,13 +138,13 @@ export const dntMonorepo = async (
             shims: {
                 deno: false,
             },
-            importMap: tmpImportMap ?? importMap,
+            importMap: import_map_file,
             typeCheck: false,
             packageManager: "pnpm",
             skipNpmInstall: true,
             package: {
-                name: denoJson.name,
-                version: denoJson.version,
+                name: workspace.name,
+                version: workspace.version,
                 license: "MIT",
                 repository: {
                     type: "git",
@@ -182,11 +168,6 @@ export const dntMonorepo = async (
                 );
             },
         });
-
-        /// 编译完后，移除临时文件
-        if (tmpImportMap && !options.keepTempImportMapJson) {
-            Deno.removeSync(tmpImportMap);
-        }
 
         /// 最后需要对 packageJson 做一些依赖修复工作，修复成 pnpm-workspace 标准
         {
@@ -214,13 +195,14 @@ export const dntMonorepo = async (
     for (const workspace of workspaces) {
         if (workspace.packageJson.private != true && aliasFilter(workspace.alias)) {
             console.log(`%cstart building %c${workspace.alias}`, "color:gray", "color:green");
-            await buildPackage(workspace, improt_map_json_path);
+            await buildPackage(workspace);
         }
     }
 
     // pnpm install
     $.cd(npmDir);
-    await $("pnpm", "install");
+    console.log("$.cwd", $.cwd, await $`pwd`.text());
+    await $`pnpm install`.printCommand();
 };
 
 const gen_filter_func = (filter: string) => {
@@ -230,4 +212,21 @@ const gen_filter_func = (filter: string) => {
     } else {
         return (alias: string) => alias === filter;
     }
+};
+
+const importMapFromDenoJsonAndPackageJson = (denoJson: DenoJson, packageJson: PackageJsonLoose): ImportMap => {
+    return {
+        imports: {
+            ...denoJson.imports,
+            ...Object.fromEntries(
+                Object.entries(deepMerge(packageJson.devDependencies ?? {}, packageJson.dependencies ?? {}))
+                    .map(
+                        ([name, version]) => {
+                            return [name, `npm:${name}@${version}`];
+                        },
+                    ),
+            ),
+        },
+        scopes: denoJson.scopes ?? {},
+    } satisfies ImportMap;
 };

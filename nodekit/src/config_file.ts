@@ -4,6 +4,17 @@ import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 const normalize_path = (path: string) => path.startsWith("file://") ? fileURLToPath(path) : path;
 
+export const writeText = (path: string, content: string): void => {
+    path = normalize_path(path);
+    try {
+        fs.writeFileSync(normalize_path(path), content);
+    } catch (e) {
+        if (e instanceof Error && e.message.startsWith("ENOENT:")) {
+            throw new Error(e.message + " " + path);
+        }
+        throw e;
+    }
+};
 /**
  * read json or jsonc file
  */
@@ -23,12 +34,13 @@ export const readJson = <T = any>(path: string, defaultValue?: () => T): T => {
 export const writeJson = <T>(
     path: string,
     data: T,
-    options?: {
-        replacer?: (this: any, key: string, value: any) => any;
-        space?: number | string;
-    },
+    options?: JsonStringifyOptions,
 ): void => {
-    fs.writeFileSync(normalize_path(path), JSON.stringify(data, options?.replacer, options?.space ?? 2));
+    writeText(path, JSON.stringify(data, options?.replacer, options?.space ?? 2));
+};
+export type JsonStringifyOptions = {
+    replacer?: (this: any, key: string, value: any) => any;
+    space?: number | string;
 };
 
 /**
@@ -52,7 +64,8 @@ export const readYaml = <T extends object = any>(path: string, defaultValue?: ()
 export const writeYaml = <T>(
     path: string,
     data: T,
-    options?: YAML.StringifyOptions,
+    options?: YamlStringifyOptions,
 ): void => {
-    fs.writeFileSync(normalize_path(path), YAML.stringify(data, options));
+    writeText(path, YAML.stringify(data, options));
 };
+export type YamlStringifyOptions = YAML.StringifyOptions;

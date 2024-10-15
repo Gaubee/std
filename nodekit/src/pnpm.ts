@@ -1,7 +1,8 @@
-import { Buffer } from "node:buffer";
+import { obj_omit } from "@gaubee/util/object";
+import { normalizeFilePath, resolveCwd } from "./path.ts";
 import { $ } from "./shell.ts";
-
 export interface PnpmPublishOptions {
+    cwd?: string;
     /**
      * Tells the registry whether this package should
      * be published as public or restricted
@@ -101,9 +102,10 @@ export interface PnpmPublishOptions {
  * run command `pnpm publish`,
  * Visit https://pnpm.io/9.x/cli/publish for documentation about this command.
  */
-export const pnpm_publish = async (options: PnpmPublishOptions) => {
-    const args = ["--json"];
-    for (const [key, value] of Object.entries(options)) {
+export const pnpm_publish = async (options: PnpmPublishOptions): Promise<void> => {
+    const args = ["publish", "--json"];
+    const cli_options = obj_omit(options, "cwd");
+    for (const [key, value] of Object.entries(cli_options)) {
         if (value == null) {
             continue;
         }
@@ -117,31 +119,61 @@ export const pnpm_publish = async (options: PnpmPublishOptions) => {
         }
     }
 
-    const job = Promise.withResolvers<PublishResult>();
+    const job = Promise.withResolvers<void>();
     try {
-        await $("pnpm", args, {
-            stdio: async (io) => {
-                const chunks = [];
-                for await (const chunk of io.stdout) {
-                    chunks.push(chunk);
-                }
-                const result = Buffer.concat(chunks);
-                job.resolve(JSON.parse(result.toString("utf8")));
-            },
+        const cwd = options.cwd ? resolveCwd(normalizeFilePath(options.cwd)) : undefined;
+        await $.spawn("pnpm", args, {
+            shell: true,
+            cwd: cwd,
         });
+        job.resolve();
     } catch (e) {
         job.reject(e);
     }
     return job.promise;
 };
 
-export type PublishResult = PublishError | PublishSuccess;
-export interface PublishError {
-    error: {
-        code: string;
-        message: string;
+export type PackageJsonLoose = {
+    name?: string;
+    version?: string;
+    description?: string;
+    main?: string;
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+    optionDependencies?: Record<string, string>;
+    peerDependencies?: Record<string, string>;
+    scripts?: { [key: string]: string };
+    repository?: {
+        type: string;
+        url: string;
     };
-}
-export interface PublishSuccess {
+    keywords?: string[];
+    author?: string;
+    license?: string;
+    bugs?: {
+        url?: string;
+        email?: string;
+    };
+    homepage?: string;
+    engines?: {
+        node?: string;
+        npm?: string;
+        yarn?: string;
+    };
+    private?: boolean;
+    files?: string[];
+    bin?: { [key: string]: string } | string;
+    man?: string | string[];
+    directories?: {
+        lib?: string;
+        bin?: string;
+        man?: string;
+        doc?: string;
+        example?: string;
+    };
+    publishConfig?: {
+        registry?: string;
+        tag?: string;
+    };
     [key: string]: unknown;
-}
+};

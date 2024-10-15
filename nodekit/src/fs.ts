@@ -5,7 +5,7 @@ import { Ignore } from "./ignore.ts";
 import { type JsonStringifyOptions, readJson, writeJson, type YamlStringifyOptions } from "./config_file.ts";
 import { writeYaml } from "./config_file.ts";
 import type { Buffer } from "node:buffer";
-import { obj_lazify } from "../../util/src/object.ts";
+import { obj_lazify } from "@gaubee/util/object";
 import process from "node:process";
 
 export type WalkOptions = {
