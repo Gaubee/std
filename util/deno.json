@@ -1,6 +1,6 @@
 {
     "name": "@gaubee/util",
-    "version": "0.14.0",
+    "version": "0.14.1",
     "exports": {
         "./bigint": "./src/bigint.ts",
         "./collections": "./src/collections.ts",

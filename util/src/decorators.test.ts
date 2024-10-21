@@ -1,4 +1,4 @@
-import { accessor, Class, field, getter, setter } from "./decorators.ts";
+import { accessor, Class, field, getter, setter,method } from "./decorators.ts";
 import { curryThisFn, func_remember, uncurryThisFn } from "./func.ts";
 @Class((A, c) => {
   c.metadata;
@@ -69,12 +69,6 @@ class A {
   get mmm() {
     return this.#mmm;
   }
-@(function(t,c){
-    queueMicrotask(()=>{
-
-    console.log('t === A.prototype.ccccA',t === A.prototype.ccccA)
-})
-})
   ccccA(a:number){
 
   }

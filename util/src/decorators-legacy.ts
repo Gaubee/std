@@ -1,3 +1,7 @@
+/**
+ * 该模块为旧版 decorators 提供了一个桥接方案，使它可以运作在新版 decorators 中
+ * @module
+ */
 import type {
     ClassAccessorDecorator,
     ClassDecorator,
@@ -18,60 +22,107 @@ type PropertyKey<T> =
 /**
  * 参考 {@link MethodDecorator}
  */
-export type ClassAccessorLegacyDecorator<T> = (
+export type ClassAccessorLegacyDecorator<T, V> = (
     target: T,
     property: PropertyKey<T>,
-    descriptor: RequiredKeys<PropertyDescriptor, "get" | "set">,
-) => void;
+    descriptor: RequiredKeys<TypedPropertyDescriptor<V>, "get" | "set">,
+) => void | TypedPropertyDescriptor<V>;
 /**
  * 用于在标准 accessor-decorators 中使用旧版的 decorators
  */
 export const legacyAccessor = <C extends Class, V>(
     Class: C,
-    builder: ClassAccessorLegacyDecorator<InstanceType<C>>,
+    builder: ClassAccessorLegacyDecorator<InstanceType<C>, V>,
 ): ClassAccessorDecorator<InstanceType<C>, V> => {
     return (_, context) => {
-        builder(Class.prototype, context.name, Object.getOwnPropertyDescriptor(Class.prototype, context.name) as any);
+        const newDesc = builder(
+            Class.prototype,
+            context.name,
+            Object.getOwnPropertyDescriptor(Class.prototype, context.name) as any,
+        );
+        if (newDesc != null) {
+            Object.defineProperty(Class.prototype, context.name, newDesc);
+        }
     };
 };
 
 /**
  * 参考 {@link MethodDecorator}
  */
-export type ClassGetterLegacyDecorator<T extends object> = (
+export type ClassGetterLegacyDecorator<T extends object, V> = (
     target: T,
     property: PropertyKey<T>,
-    descriptor: RequiredKeys<PropertyDescriptor, "get">,
-) => void;
+    descriptor: RequiredKeys<TypedPropertyDescriptor<V>, "get">,
+) => void | TypedPropertyDescriptor<V>;
 /**
  * 用于在标准 accessor-getter 中使用旧版的 decorators
  */
 export const legacyGetter = <C extends Class, V>(
     Class: C,
-    builder: ClassGetterLegacyDecorator<InstanceType<C>>,
+    builder: ClassGetterLegacyDecorator<InstanceType<C>, V>,
 ): ClassGetterDecorator<InstanceType<C>, V> => {
     return (_, context) => {
-        builder(Class.prototype, context.name, Object.getOwnPropertyDescriptor(Class.prototype, context.name) as any);
+        const newDesc = builder(
+            Class.prototype,
+            context.name,
+            Object.getOwnPropertyDescriptor(Class.prototype, context.name) as any,
+        );
+        if (newDesc != null) {
+            Object.defineProperty(Class.prototype, context.name, newDesc);
+        }
     };
 };
 
 /**
  * 参考 {@link MethodDecorator}
  */
-export type ClassSetterLegacyDecorator<T extends object> = (
+export type ClassSetterLegacyDecorator<T extends object, V> = (
     target: T,
     property: PropertyKey<T>,
-    descriptor: RequiredKeys<PropertyDescriptor, "set">,
-) => void;
+    descriptor: RequiredKeys<TypedPropertyDescriptor<V>, "set">,
+) => void | TypedPropertyDescriptor<V>;
 /**
  * 用于在标准 accessor-setter 中使用旧版的 decorators
  */
 export const legacySetter = <C extends Class, V>(
     Class: C,
-    builder: ClassSetterLegacyDecorator<InstanceType<C>>,
+    builder: ClassSetterLegacyDecorator<InstanceType<C>, V>,
 ): ClassSetterDecorator<InstanceType<C>, V> => {
     return (_, context) => {
-        builder(Class.prototype, context.name, Object.getOwnPropertyDescriptor(Class.prototype, context.name) as any);
+        const newDesc = builder(
+            Class.prototype,
+            context.name,
+            Object.getOwnPropertyDescriptor(Class.prototype, context.name) as any,
+        );
+        if (newDesc != null) {
+            Object.defineProperty(Class.prototype, context.name, newDesc);
+        }
+    };
+};
+/**
+ * 参考 {@link PropertyDecorator}
+ */
+export type ClassMethodLegacyDecorator<T extends object, M> = (
+    target: T,
+    property: PropertyKey<T>,
+    descriptor: RequiredKeys<TypedPropertyDescriptor<M>, "value">,
+) => void;
+/**
+ * 用于在标准 accessor-method 中使用旧版的 decorators
+ */
+export const legacyMethod = <C extends Class, M extends Func<InstanceType<C>>>(
+    Class: C,
+    builder: ClassMethodLegacyDecorator<InstanceType<C>, M>,
+): ClassMethodDecorator<InstanceType<C>, M> => {
+    return (_, context) => {
+        const newDesc = builder(
+            Class.prototype,
+            context.name as PropertyKey<InstanceType<C>>,
+            Object.getOwnPropertyDescriptor(Class.prototype, context.name) as any,
+        );
+        if (newDesc != null) {
+            Object.defineProperty(Class.prototype, context.name, newDesc);
+        }
     };
 };
 
@@ -106,28 +157,4 @@ export type ClassLegacyDecorator<C extends Class> = (
  */
 export const legacyClass = <C extends Class>(builder: ClassLegacyDecorator<C>): ClassDecorator<C> => {
     return builder;
-};
-
-/**
- * 参考 {@link PropertyDecorator}
- */
-export type ClassMethodLegacyDecorator<T extends object, M> = (
-    target: T,
-    property: PropertyKey<T>,
-    descriptor: RequiredKeys<TypedPropertyDescriptor<M>, "value">,
-) => void;
-/**
- * 用于在标准 accessor-method 中使用旧版的 decorators
- */
-export const legacyMethod = <C extends Class, M extends Func<InstanceType<C>>>(
-    Class: C,
-    builder: ClassMethodLegacyDecorator<InstanceType<C>, M>,
-): ClassMethodDecorator<InstanceType<C>, M> => {
-    return (_, context) => {
-        builder(
-            Class.prototype,
-            context.name as PropertyKey<InstanceType<C>>,
-            Object.getOwnPropertyDescriptor(Class.prototype, context.name) as any,
-        );
-    };
 };

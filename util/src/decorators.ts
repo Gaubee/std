@@ -132,11 +132,21 @@ export type ClassMethodDecorator<T, M extends Method<T>> = (
  * @param builder
  * @returns
  */
-export const method = <T, M extends Method<T>>(
+export const method = Object.assign(<T extends object, M extends Method<T>>(
     builder: ClassMethodDecorator<T, M>,
 ): ClassMethodDecorator<T, M> => {
     return builder;
-};
+}, {
+    bindThis: <T extends object, M extends Method<T>>(): ClassMethodDecorator<T, M> =>
+        method<T, M>((target, context) => {
+            if (context.private) {
+                throw new Error("private method no suport to bind this.");
+            }
+            context.addInitializer(function () {
+                Reflect.set(this, context.name, target.bind(this));
+            });
+        }),
+});
 
 type Class = abstract new (...args: any) => any;
 export type ClassDecorator<C extends Class> = (
