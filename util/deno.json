@@ -1,10 +1,12 @@
 {
     "name": "@gaubee/util",
-    "version": "0.13.0",
+    "version": "0.14.0",
     "exports": {
         "./bigint": "./src/bigint.ts",
         "./collections": "./src/collections.ts",
         "./date": "./src/date.ts",
+        "./decorators-legacy": "./src/decorators-legacy.ts",
+        "./decorators": "./src/decorators.ts",
         "./encoding": "./src/encoding.ts",
         "./event_target": "./src/event_target.ts",
         "./func": "./src/func.ts",

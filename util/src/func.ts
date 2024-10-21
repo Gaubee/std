@@ -22,10 +22,12 @@ export const curryThisFn = <T, ARGS extends readonly unknown[], R>(
 /**
  * 类型安全的函数定义
  */
-export type Func<This = any, Arguments extends unknown[] = any[], Return extends unknown = any> = (
-    this: This,
-    ...args: Arguments
-) => Return;
+export type Func<This = any, Arguments extends readonly unknown[] = any[], Return extends unknown = any> =
+    Arguments["length"] extends 0 ? (this: This) => Return
+        : (
+            this: This,
+            ...args: Arguments
+        ) => Return;
 type FunReturn<F> = F extends Func ? ReturnType<F> : undefined;
 /**
  * 让一个函数的返回结果是缓存的

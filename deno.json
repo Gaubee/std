@@ -20,7 +20,8 @@
         "nodekit"
     ],
     "exclude": [
-        ".npm"
+        ".npm",
+        "docs"
     ],
     "fmt": {
         "lineWidth": 120,

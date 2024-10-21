@@ -1,0 +1,5 @@
+# @gaubee/denokit
+
+一个面向 deno 开发者专门打造的工具集，因为 deno 对 node 的兼容性，所以这里只包含 deno 专有的部分，其余请参考 [@gaubee/nodekit](https://jsr.io/@gaubee/nodekit)
+
+## [docs 文档](https://jsr.io/@gaubee/nodekit/doc)
