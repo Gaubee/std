@@ -80,10 +80,10 @@ export const map_get_or_put_async = async <
     const lock = Promise.withResolvers<void>();
     locks.set(key, lock.promise);
     try {
-        const value = await put(key, map);
         if (map.has(key)) {
             return map.get(key)!;
         }
+        const value = await put(key, map);
         map.set(key, value);
         return value;
     } finally {

@@ -198,8 +198,8 @@ export class PureEvent<T> {
             const onDispose = options?.onDispose;
             const off = this.on((data) => {
                 if (filter(data)) {
-                    off();
                     promiseWithResolvers.resolve(data);
+                    off();
                 }
             }, {
                 ...options,
