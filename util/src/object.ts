@@ -213,3 +213,12 @@ const _delegate_by = <D extends object, T extends D>(
         }
     }
 };
+
+export const obj_assign_props: <A extends object, B extends object>(a: A, b: B) => A & B = <
+    A extends object,
+    B extends object,
+>(a: A, b: B) => {
+    const b_props = Object.getOwnPropertyDescriptors(b);
+    Object.defineProperties(a, b_props);
+    return a as A & B;
+};

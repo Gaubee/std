@@ -13,7 +13,7 @@
   "imports": {
     "@std/fmt": "jsr:@std/fmt@^1.0.2",
     "@std/jsonc": "jsr:@std/jsonc@^1.0.1",
-    "@std/path": "jsr:@std/path@^1.0.6",
+    "@std/path": "jsr:@std/path@^1.0.8",
     "@std/yaml": "jsr:@std/yaml@^1.0.5",
     "dax-sh": "jsr:@david/dax@^0.42.0"
   }

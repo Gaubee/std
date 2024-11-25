@@ -6,7 +6,7 @@ import { globToRegExp, isGlob } from "@std/path";
 import { $ } from "@gaubee/nodekit/shell";
 import { createResolver, normalizeFilePath } from "@gaubee/nodekit/path";
 import { readJson, writeJson, writeYaml } from "@gaubee/nodekit/config_file";
-import { deepMerge } from "@std/collections";
+import { deepMerge } from "@std/collections/deep-merge";
 import type { PackageJsonLoose } from "@gaubee/nodekit/pnpm";
 import type { DenoJson, ImportMap } from "./types.ts";
 import { obj_lazify } from "@gaubee/util/object";

@@ -66,7 +66,9 @@ export const func_remember = <
         }
         return result.res;
     };
+
     const once_fn_mix = Object.assign(once_fn as F, {
+        /// 注意，这的get
         get source() {
             return func;
         },
@@ -86,6 +88,12 @@ export const func_remember = <
             once_fn_mix.reset();
             return once_fn_mix(...args) as ReturnType<F>;
         },
+    });
+    Object.defineProperties(once_fn_mix, {
+        source: { value: func, writable: false, configurable: true, enumerable: true },
+        key: { get: () => result?.key, configurable: true, enumerable: true },
+        runned: { get: () => result != null, configurable: true, enumerable: true },
+        returnValue: { get: () => result?.res, configurable: true, enumerable: true },
     });
     return once_fn_mix;
 };

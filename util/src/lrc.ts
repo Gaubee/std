@@ -25,7 +25,7 @@ import { map_get_or_put, map_get_or_put_async } from "./map.ts";
 export class Lrc<K, V> {
     constructor(
         public cacheSize: number = 1000,
-        public clearThreshold = cacheSize * 1.2,
+        public clearThreshold: number = cacheSize * 1.2,
     ) {}
     #cache = new Map<K, V>();
     /**

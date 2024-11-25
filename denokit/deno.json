@@ -7,7 +7,7 @@
   },
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
-    "@std/collections": "jsr:@std/collections@^1.0.8",
-    "@std/path": "jsr:@std/path@^1.0.6"
+    "@std/collections": "jsr:@std/collections@^1.0.9",
+    "@std/path": "jsr:@std/path@^1.0.8"
   }
 }

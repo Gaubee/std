@@ -2,7 +2,7 @@ import fs from "node:fs";
 import node_path from "node:path";
 import ignore from "ignore";
 import { minimatch } from "minimatch";
-import { globToRegExp } from "@std/path";
+import { globToRegExp } from "@std/path/glob-to-regexp";
 import { normalizeFilePath } from "./path.ts";
 
 export type IgnoreStyle = "git" | "npm" | "glob" | "search";
