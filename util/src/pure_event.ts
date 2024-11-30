@@ -1,7 +1,7 @@
 import { iter_map_async_try } from "./collections.ts";
 import type { Func } from "./func.ts";
 import { iter_map_not_null } from "./index.ts";
-import { obj_delegate_by } from "./object.ts";
+import { obj_assign_props, obj_delegate_by } from "./object.ts";
 import { promise_try } from "./promise.ts";
 
 /** PureEvent 的监听函数定义 */
@@ -81,7 +81,10 @@ export type PureEventOncePromiseWithResolvers<T> = Promise<T> & {
 export class PureEvent<T> {
     //#region 核心
     /** 监听表 */
-    readonly events: Map<unknown, { cb: PureEventFun<T>; onDispose: Func | undefined; off: PureEventOff }> = new Map();
+    readonly events: Map<
+        unknown,
+        { cb: PureEventFun<T>; onDispose: Func | undefined; off: PureEventOff }
+    > = new Map();
     /** 有多少监听 */
     get size(): number {
         return this.events.size;
@@ -136,7 +139,10 @@ export class PureEvent<T> {
     }[] {
         const dels = iter_map_not_null(this.events, ([key, event]) => {
             this.events.delete(key);
-            return ({ key, disposeReturn: event.onDispose ? promise_try(event.onDispose) : undefined });
+            return {
+                key,
+                disposeReturn: event.onDispose ? promise_try(event.onDispose) : undefined,
+            };
         });
         return dels;
     }
@@ -144,10 +150,12 @@ export class PureEvent<T> {
      * 清理所有的监听，
      * 并等待所有的 disposeReturn 返回结果
      */
-    async clean(): Promise<{
-        key: unknown;
-        disposeReturn: undefined | PromiseSettledResult<unknown>;
-    }[]> {
+    async clean(): Promise<
+        {
+            key: unknown;
+            disposeReturn: undefined | PromiseSettledResult<unknown>;
+        }[]
+    > {
         const dels = this.cleanSync();
         const results: {
             key: unknown;
@@ -166,10 +174,7 @@ export class PureEvent<T> {
             return;
         }
         const errors: unknown[] = [];
-        const results = await iter_map_async_try(
-            this.events.values(),
-            (cb) => cb.cb(data),
-        );
+        const results = await iter_map_async_try(this.events.values(), (cb) => cb.cb(data));
         for (const item of results) {
             if (item.status === "rejected") {
                 errors.push(...item.reason);
@@ -181,9 +186,15 @@ export class PureEvent<T> {
     }
     //#endregion
     once(options?: PureEventOnceOptions<T>): PureEventOncePromiseWithResolvers<T>;
-    once(cb?: null, options?: PureEventOnceOptions<T>): PureEventOncePromiseWithResolvers<T>;
+    once(
+        cb?: null,
+        options?: PureEventOnceOptions<T>,
+    ): PureEventOncePromiseWithResolvers<T>;
     once(cb: PureEventFun<T>, options?: PureEventOnceOptions<T>): PureEventOff;
-    once(cb_or_options?: PureEventFun<T> | PureEventOnceOptions<T> | null, options?: PureEventOnceOptions<T>) {
+    once(
+        cb_or_options?: PureEventFun<T> | PureEventOnceOptions<T> | null,
+        options?: PureEventOnceOptions<T>,
+    ) {
         let cb: PureEventFun<T> | undefined;
         if (typeof cb_or_options === "function") {
             cb = cb_or_options;
@@ -196,20 +207,23 @@ export class PureEvent<T> {
         /// callback mode
         if (cb == null) {
             const onDispose = options?.onDispose;
-            const off = this.on((data) => {
-                if (filter(data)) {
-                    promiseWithResolvers.resolve(data);
-                    off();
-                }
-            }, {
-                ...options,
-                onDispose() {
-                    if (false === resolved) {
-                        promiseWithResolvers.reject(new Error("listener dispose"));
+            const off = this.on(
+                (data) => {
+                    if (filter(data)) {
+                        promiseWithResolvers.resolve(data);
+                        off();
                     }
-                    onDispose?.();
                 },
-            });
+                {
+                    ...options,
+                    onDispose() {
+                        if (false === resolved) {
+                            promiseWithResolvers.reject(new Error("listener dispose"));
+                        }
+                        onDispose?.();
+                    },
+                },
+            );
 
             const job = Promise.withResolvers<T>();
             let resolved = false;
@@ -245,6 +259,15 @@ export class PureEvent<T> {
     }
 }
 
+type PureEventWithApply<T> = PureEvent<T> & PureEvent<T>["on"];
+
+export const pureEvent = <T>(): PureEventWithApply<T> => {
+    const pe = new PureEvent<T>();
+    const on = pe.on.bind(pe);
+    Object.setPrototypeOf(on, Object.getPrototypeOf(pe));
+    return obj_assign_props(on, pe);
+};
+
 /**
  * PureEvent 的委托类，基于委托，可以实现更新委托内核
  *
@@ -266,6 +289,16 @@ export class PureEventDelegate<T> extends PureEvent<T> {
         super();
     }
 }
+type PureEventDelegateWithApply<T> =
+    & PureEventDelegate<T>
+    & PureEventDelegate<T>["on"];
+
+export const pureEventDelegate = <T>(): PureEventDelegateWithApply<T> => {
+    const pe = new PureEventDelegate<T>();
+    const on = pe.on.bind(pe);
+    Object.setPrototypeOf(on, Object.getPrototypeOf(pe));
+    return obj_assign_props(on, pe);
+};
 
 obj_delegate_by<PureEvent<any>, PureEventDelegate<any>>(
     PureEventDelegate.prototype,
