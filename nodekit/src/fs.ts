@@ -188,11 +188,11 @@ export function* walkAny(rootpath: string, options: WalkOptions = {}): Generator
     for (const dirpath of dirs) {
         /// 在被yiled后，可能会被删除
         try {
-            if (node_fs.statSync(rootpath).isDirectory() !== true) {
-                return;
+            if (node_fs.statSync(dirpath).isDirectory() !== true) {
+                continue;
             }
         } catch {
-            return;
+            continue;
         }
         if (deepth !== Infinity) {
             const relativedirpath = node_path.relative(dirpath, rootpath);

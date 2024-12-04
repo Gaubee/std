@@ -4,5 +4,6 @@
         "collections",
         "util",
         "std"
-    ]
+    ],
+    "sideEffect": false
 }
