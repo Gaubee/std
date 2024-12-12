@@ -32,7 +32,8 @@
         "rules": {
             "exclude": [
                 "no-explicit-any",
-                "ban-ts-comment"
+                "ban-ts-comment",
+                "no-namespace"
             ]
         }
     }

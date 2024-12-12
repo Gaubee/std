@@ -21,9 +21,7 @@ import { func_wrap } from "./func.ts";
 export const delay = (
     ms: number,
     options?: { signal?: AbortSignal | null },
-): Promise<void> & {
-    cancel(cause?: unknown): void;
-} => {
+): delay.Delayer => {
     const signal = options?.signal;
     if (signal?.aborted) {
         throw signal.reason;
@@ -59,6 +57,12 @@ export const delay = (
     }
     return result;
 };
+
+export namespace delay {
+    export type Delayer = Promise<void> & {
+        cancel(cause?: unknown): void;
+    };
+}
 
 export const promise_try = async <R>(fn: () => R): Promise<PromiseSettledResult<Awaited<R>>> => {
     try {
