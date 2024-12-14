@@ -27,12 +27,12 @@ type GetMapValue<T extends CommonMap> = T extends CommonMap<unknown, infer V> ? 
 /**
  * 读取一个map中的值，如果没有，就创建它
  */
-export const map_get_or_put = <T extends CommonMap, K extends GetMapKey<T>, V extends GetMapValue<T>>(
+export const map_get_or_put = <T extends CommonMap, K extends GetMapKey<T>>(
     map: T,
     key: K,
-    put: (key: K, map: T) => V,
-): V | GetMapValue<T> => {
-    let value: V | GetMapValue<T>;
+    put: (key: K, map: T) => GetMapValue<T>,
+): GetMapValue<T> => {
+    let value: GetMapValue<T>;
     if (map.has(key)) {
         value = map.get(key) as GetMapValue<T>;
     } else {
@@ -61,11 +61,11 @@ export const map_delete_and_get = <T extends CommonMap, K extends GetMapKey<T>>(
  * 读取一个map中的值，如果没有，就异步地创建它
  * 使用该函数进行异步创建是会互斥上锁的（如果外部修改了map，写入了值，那么最终会以外部修改为准）
  */
-export const map_get_or_put_async = async <T extends CommonMap, K extends GetMapKey<T>, V extends GetMapValue<T>>(
+export const map_get_or_put_async = async <T extends CommonMap, K extends GetMapKey<T>>(
     map: T,
     key: K,
-    put: (key: K, map: T) => PromiseMaybe<V>,
-): Promise<V | GetMapValue<T>> => {
+    put: (key: K, map: T) => PromiseMaybe<GetMapValue<T>>,
+): Promise<GetMapValue<T>> => {
     while (true) {
         const pre_lock = (map as any)[locks_keys]?.get(key);
         if (pre_lock != null) {
