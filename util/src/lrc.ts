@@ -1,4 +1,5 @@
 import { map_get_or_put, map_get_or_put_async } from "./map.ts";
+import type { PromiseMaybe } from "./promise.ts";
 
 /**
  * 一个极简的 Least Recently Used 缓存
@@ -49,8 +50,8 @@ export class Lrc<K, V> {
      */
     async getOrPutAsync(
         key: K,
-        getValue: () => Promise<V>,
-    ): Promise<V> {
+        getValue: () => PromiseMaybe<Awaited<V>>,
+    ): Promise<Awaited<V>> {
         let put = false;
         const value = await map_get_or_put_async(this.#cache, key, () => {
             put = true;
