@@ -214,6 +214,12 @@ const _delegate_by = <D extends object, T extends D>(
     }
 };
 
+/**
+ * 将b对象的属性附加到a上，不同于 Object.assign 赋值行为，这里是 设置属性描述，因此诸如 getter、setter 会一并过来，因此请注意 b 对象的属性是可以迁移的
+ * @param a
+ * @param b
+ * @returns
+ */
 export const obj_assign_props: <A extends object, B extends object>(a: A, b: B) => A & B = <
     A extends object,
     B extends object,
@@ -222,3 +228,44 @@ export const obj_assign_props: <A extends object, B extends object>(a: A, b: B) 
     Object.defineProperties(a, b_props);
     return a as A & B;
 };
+
+export type GetPropsOptions = {
+    excludeSymbols?: boolean;
+    enumerableOnly?: boolean;
+};
+type SafePropType<T> = T extends number ? `${number}` : T;
+export interface ObjectGetProps {
+    <T extends object>(a: T, opts: { excludeSymbols: true }): Array<SafePropType<keyof T> & string>;
+    <T extends object>(a: T, opts?: GetPropsOptions): Array<SafePropType<keyof T>>;
+}
+
+/**
+ * 获取对象的属性
+ *
+ * opts.excludeSymbols default is false
+ * opts.enumerableOnly default is true
+ */
+export const obj_props = (<T extends object>(a: T, opts?: GetPropsOptions) => {
+    const excludeSymbols = opts?.excludeSymbols ?? false;
+    const enumerableOnly = opts?.enumerableOnly ?? true;
+    if (enumerableOnly) {
+        if (excludeSymbols) {
+            return Object.keys(a);
+        }
+        const propDesMap = Object.getOwnPropertyDescriptors(a);
+        const props: Array<string | symbol> = [];
+        for (const prop in propDesMap) {
+            if (propDesMap[prop].enumerable) {
+                props.push(prop);
+            }
+        }
+        return props;
+    } else {
+        const props: Array<string | symbol> = Object.getOwnPropertyNames(a);
+        if (excludeSymbols) {
+            return props;
+        }
+        props.push(...Object.getOwnPropertySymbols(a));
+        return props;
+    }
+}) as ObjectGetProps;

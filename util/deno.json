@@ -1,6 +1,6 @@
 {
     "name": "@gaubee/util",
-    "version": "0.17.0",
+    "version": "0.18.0",
     "exports": {
         "./bigint": "./src/bigint.ts",
         "./collections": "./src/collections.ts",
@@ -13,6 +13,7 @@
         "./generator": "./src/generator.ts",
         "./lrc": "./src/lrc.ts",
         "./map": "./src/map.ts",
+        "./math": "./src/math.ts",
         "./number": "./src/number.ts",
         "./object": "./src/object.ts",
         "./promise": "./src/promise.ts",
