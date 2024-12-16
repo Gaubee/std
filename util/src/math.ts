@@ -9,8 +9,8 @@ export const math_clamp = (value: number, lower: number, upper: number): number 
  * equal
  * to 1, and linearly interpolates between them when value is between 0 and 1.
  */
-export const math_lerp = (value: number, lower: number, upper: number): number => {
-    return math_clamp(value, 0, 1) * (upper - lower) + lower;
+export const math_lerp = (value: number, from: number, to: number): number => {
+    return math_clamp(value, 0, 1) * (to - from) + from;
 };
 
 /** Returns the closer of two values a and b to the given value. */
