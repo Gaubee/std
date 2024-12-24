@@ -2,7 +2,7 @@ import node_fs from "node:fs";
 import node_path from "node:path";
 import { normalizeFilePath } from "./path.ts";
 import { Ignore } from "./ignore.ts";
-import { type JsonStringifyOptions, readJson, writeJson, type YamlStringifyOptions } from "./config_file.ts";
+import { type JsonStringifyOptions, readJson, readYaml, writeJson, type YamlStringifyOptions } from "./config_file.ts";
 import { writeYaml } from "./config_file.ts";
 import type { Buffer } from "node:buffer";
 import { obj_lazify } from "@gaubee/util/object";
@@ -86,6 +86,10 @@ export class FileEntry extends Entry {
     /** 以json/jsonc的格式读取文件 */
     readJson<T>(defaultValue?: () => T): T {
         return readJson<T>(this.path, defaultValue);
+    }
+    /** 以 yaml 的格式读取文件 */
+    readYaml<T>(defaultValue?: () => T): T {
+        return readYaml<T>(this.path, defaultValue);
     }
     /** 写入文件 */
     write(content: string | Uint8Array, encoding?: TextEncoding): void {

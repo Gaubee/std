@@ -56,7 +56,7 @@ export type JsonStringifyOptions = {
 /**
  * read yaml file
  */
-export const readYaml = <T extends object = any>(
+export const readYaml = <T = any>(
   path: string,
   defaultValue?: () => T
 ): T => {
