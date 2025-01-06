@@ -29,6 +29,18 @@ export type Func<This = any, Arguments extends readonly unknown[] = any[], Retur
             ...args: Arguments
         ) => Return;
 type FunReturn<F> = F extends Func ? ReturnType<F> : undefined;
+type KeyFun<F extends Func> = Func<ThisParameterType<F>, Parameters<F>>;
+export type FuncRemember<
+    F extends Func,
+    K extends (KeyFun<F> | void) = void,
+> = F & {
+    readonly source: F;
+    readonly key: FunReturn<K> | undefined;
+    readonly runned: boolean;
+    readonly returnValue: ReturnType<F> | undefined;
+    reset(): void;
+    rerun(...args: Parameters<F>): ReturnType<F>;
+};
 /**
  * 让一个函数的返回结果是缓存的
  * @param key 自定义缓存key生成器，如果生成的key不一样，那么缓存失效
@@ -36,18 +48,8 @@ type FunReturn<F> = F extends Func ? ReturnType<F> : undefined;
  */
 export const func_remember = <
     F extends Func,
-    K extends Func<ThisParameterType<F>, Parameters<F>>,
->(
-    func: F,
-    key?: K,
-): F & {
-    readonly source: F;
-    readonly key: FunReturn<K> | undefined;
-    readonly runned: boolean;
-    readonly returnValue: ReturnType<F> | undefined;
-    reset(): void;
-    rerun(...args: Parameters<F>): ReturnType<F>;
-} => {
+    K extends Func<ThisParameterType<F>, Parameters<F>> | void | void,
+>(func: F, key?: K): FuncRemember<F, K> => {
     let result: {
         key: FunReturn<K>;
         res: ReturnType<F>;
