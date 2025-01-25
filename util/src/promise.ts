@@ -137,7 +137,7 @@ export const promise_once_then = <P extends PromiseLike<any>, T = Awaited<P>>(
 export const promise_once_then_cancel = <P extends PromiseLike<any>, T = Awaited<P>>(
     promise: P,
     task: PromiseOnceThenTask<T>,
-) => {
+): void => {
     const state = _pot.get(promise);
     if (state?.state === "pending") {
         state.tasks.delete(task.key ?? task.resolve ?? task.reject);

@@ -10,13 +10,13 @@ import { PureEvent, PureEventWithApply } from "./pure_event.ts";
 // export const asyncDisposable = new AsyncDisposable();
 
 export class Disposable extends PureEvent<void> {
-    dispose() {
+    dispose(): Promise<void> {
         return this.emit();
     }
-    [Symbol.dispose]() {
+    [Symbol.dispose](): void {
         void this.emit();
     }
-    [Symbol.asyncDispose]() {
+    [Symbol.asyncDispose](): Promise<void> {
         return this.emit();
     }
 }
