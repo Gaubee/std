@@ -1,5 +1,7 @@
 import { event_target_on } from "./event_target.ts";
 import { func_wrap } from "./func.ts";
+import { PureEvent } from "./index.ts";
+import { IterableItem } from "./iterable.ts";
 import { map_get_or_put } from "./map.ts";
 
 /**
@@ -21,12 +23,10 @@ import { map_get_or_put } from "./map.ts";
  */
 export const delay = (
     ms: number,
-    options?: { signal?: AbortSignal | null },
+    options?: { signal?: AbortSignal | null; disposer?: PureEvent<void> },
 ): delay.Delayer => {
     const signal = options?.signal;
-    if (signal?.aborted) {
-        throw signal.reason;
-    }
+    signal?.throwIfAborted();
 
     const job = Promise.withResolvers<void>();
     let resolve = job.resolve;
@@ -44,8 +44,9 @@ export const delay = (
     });
     if (signal != null) {
         const off = event_target_on(signal, "abort", () => {
+            console.log("abort~~");
             result.cancel(signal.reason);
-        });
+        }, { once: true });
         // 不使用 promise.finally ，因为它会创建一个新的 promise
         resolve = func_wrap(resolve, (_, next) => {
             off();
@@ -55,6 +56,10 @@ export const delay = (
             off();
             next();
         });
+    }
+    const disposer = options?.disposer;
+    if (disposer != null) {
+        disposer.on(result.cancel);
     }
     return result;
 };
@@ -74,9 +79,9 @@ export const promise_try = async <R>(fn: () => R): Promise<PromiseSettledResult<
     }
 };
 
-export type PromiseMaybe<T> = PromiseLike<Awaited<T>> | Awaited<T>;
-export const isPromiseLike = (p: unknown): p is PromiseLike<unknown> =>
-    typeof p === "object" && p != null && "then" in p && typeof p.then === "function";
+export type PromiseMaybe<T> = PromiseLike<T> | T;
+export const isPromiseLike = <T = unknown>(value: unknown): value is PromiseLike<T> =>
+    value !== null && typeof (value as any)?.then === "function";
 
 type PromiseOnceThenState<T> = PromiseOnceThenRegister<T> | PromiseOnceThenResolved<T> | PromiseOnceThenReject<T>;
 type PromiseOnceThenRegister<T> = {
@@ -89,8 +94,8 @@ const _pot = new WeakMap<PromiseLike<unknown>, PromiseOnceThenState<any>>();
 
 export type PromiseOnceThenTask<T> = {
     key?: unknown;
-    onfulfilled?: null | ((value: T) => void);
-    onrejected?: null | ((error: any, value?: T) => void);
+    resolve?: null | ((value: T) => void);
+    reject?: null | ((error: any, value?: T) => void);
 };
 
 /**
@@ -106,7 +111,7 @@ export type PromiseOnceThenTask<T> = {
 export const promise_once_then = <P extends PromiseLike<any>, T = Awaited<P>>(
     promise: P,
     task: PromiseOnceThenTask<T>,
-) => {
+): () => void => {
     const state = map_get_or_put(_pot, promise, () => {
         const pending_state: PromiseOnceThenRegister<T> = { state: "pending", tasks: new Map() };
         promise.then((value: T) => {
@@ -119,38 +124,123 @@ export const promise_once_then = <P extends PromiseLike<any>, T = Awaited<P>>(
         return pending_state;
     });
     if (state.state === "pending") {
-        state.tasks.set(task.key, task);
+        state.tasks.set(task.key ?? task.resolve ?? task.reject, task);
+        return () => promise_once_then_cancel(promise, task);
     } else if (state.state === "resolved") {
         _promise_once_then_onfulfilled(state.value, [task]);
     } else if (state.state === "rejected") {
         _promise_once_then_onrejected(state.err, [task]);
     }
+    return () => {};
+};
+
+export const promise_once_then_cancel = <P extends PromiseLike<any>, T = Awaited<P>>(
+    promise: P,
+    task: PromiseOnceThenTask<T>,
+) => {
+    const state = _pot.get(promise);
+    if (state?.state === "pending") {
+        state.tasks.delete(task.key ?? task.resolve ?? task.reject);
+    }
 };
 
 const _promise_once_then_onfulfilled = <T>(value: T, tasks: Iterable<PromiseOnceThenTask<T>>) => {
     for (const task of tasks) {
-        if (task.onfulfilled == null) {
+        if (task.resolve == null) {
             continue;
         }
         try {
-            const res = task.onfulfilled(value);
+            const res = task.resolve(value);
             // 如果onfulfilled的返回值是一个promise，那么使用onrejected对其进行错误捕捉
-            if (isPromiseLike(res) && task.onrejected) {
-                res.then(null, task.onrejected);
+            if (isPromiseLike(res) && task.reject) {
+                res.then(null, task.reject);
             }
         } catch (err) {
-            task.onrejected?.(err, value);
+            task.reject?.(err, value);
         }
     }
 };
 
 const _promise_once_then_onrejected = <T>(err: unknown, tasks: Iterable<PromiseOnceThenTask<T>>) => {
     for (const task of tasks) {
-        if (task.onrejected == null) {
+        if (task.reject == null) {
             continue;
         }
         // 这里没有 onrejected 的错误捕捉，所以如果 onrejected 出错了，就成为 uncatched error
         // 这里不使用 onrejected 捕捉 onrejected
-        task.onrejected(err);
+        task.reject(err);
     }
+};
+
+export type PromiseRaceOptions<T> = {
+    ifEmpty?: () => PromiseMaybe<T>;
+};
+
+export const promise_safe_race = <
+    V extends Iterable<any>,
+    T = Awaited<IterableItem<V, unknown>>,
+>(
+    values: V,
+    options: PromiseRaceOptions<T> = {},
+): PromiseMaybe<T> => {
+    const promises: PromiseLike<T>[] = Array.isArray(values) ? values : [];
+    // 遍历第一遍，寻找是否是直接值，从而避免不必要的开销
+
+    // 注意这里一共只遍历一次 values，然后收集成 promises，因为迭代器的每一次遍历可能都不一样
+    for (const item of values) {
+        if (!isPromiseLike<T>(item)) {
+            return item as Awaited<T>;
+        }
+        if (promises !== values as any) {
+            promises.push(item);
+        }
+    }
+    const { promise, resolve, reject } = Promise.withResolvers<Awaited<T>>();
+    const registeredTasks = new Map<PromiseLike<T>, () => void>();
+    let settled = false;
+
+    // 清理所有注册的监听器
+    const cleanup = () => {
+        settled = true;
+        for (const cancel of registeredTasks.values()) {
+            cancel();
+        }
+        registeredTasks.clear();
+    };
+
+    // 统一解决函数
+    const settle = (result: any, isError: boolean) => {
+        if (settled) return;
+        cleanup();
+        isError ? reject(result) : resolve(result);
+    };
+
+    // 遍历第二遍，注册 promise 回调
+    for (const value of promises) {
+        // 因为使用 promise_once_then ，所以有可能立即执行了 settle 回调
+        if (settled) break;
+        // 注册监听
+        registeredTasks.set(
+            value,
+            promise_once_then(value, {
+                resolve: (val) => settle(val, false),
+                reject: (err) => settle(err, true),
+            }),
+        );
+    }
+
+    // 处理空迭代器的情况
+    // 原版的 Promise.race 会直接返回一个始终 pending 的 Promise
+    // 这里依赖类型安全与用户配置，进行返回或者异常抛出
+    if (!settled && registeredTasks.size === 0) {
+        const {
+            ifEmpty = () => {
+                reject(new TypeError("Argument is empty iterable"));
+                return promise;
+            },
+        } = options;
+        return ifEmpty();
+    }
+
+    return promise;
 };

@@ -8,6 +8,7 @@
         "./date": "./src/date.ts",
         "./decorators-legacy": "./src/decorators-legacy.ts",
         "./decorators": "./src/decorators.ts",
+        "./disposable": "./src/disposable.ts",
         "./encoding": "./src/encoding.ts",
         "./event_target": "./src/event_target.ts",
         "./func": "./src/func.ts",

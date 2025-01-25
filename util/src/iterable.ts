@@ -1,5 +1,4 @@
-
-type IterableItem<A> = A extends Iterable<infer T> ? T : never;
+export type IterableItem<A, OR = never> = A extends Iterable<infer T> ? T : OR;
 
 /**
  * 取集合第一个元素

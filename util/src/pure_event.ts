@@ -259,7 +259,7 @@ export class PureEvent<T> {
     }
 }
 
-type PureEventWithApply<T> = PureEvent<T> & PureEvent<T>["on"];
+export type PureEventWithApply<T> = PureEvent<T> & PureEvent<T>["on"];
 
 export const pureEvent = <T>(): PureEventWithApply<T> => {
     const pe = new PureEvent<T>();
