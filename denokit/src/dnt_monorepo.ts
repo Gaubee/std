@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import node_path from "node:path";
-import { build, emptyDir } from "@deno/dnt";
+import { build, BuildOptions, emptyDir } from "@deno/dnt";
 import { iter_map_not_null } from "@gaubee/util/collections";
 import { globToRegExp, isGlob } from "@std/path";
 import { $ } from "@gaubee/nodekit/shell";
@@ -25,6 +25,8 @@ export const dntMonorepo = async (
         filter?: string | string[];
         /** 清空输出文件夹 */
         clean?: boolean;
+        /** 构建使用的包管理器 */
+        packageManager?: BuildOptions['packageManager']
     } = {},
 ): Promise<void> => {
     const rootDir = normalizeFilePath(options.rootDir ?? Deno.cwd());
@@ -139,7 +141,7 @@ export const dntMonorepo = async (
             },
             importMap: import_map_file,
             typeCheck: false,
-            packageManager: "pnpm",
+            packageManager: options.packageManager,
             skipNpmInstall: true,
             package: {
                 name: workspace.name,

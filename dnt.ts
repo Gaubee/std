@@ -4,5 +4,6 @@ if (import.meta.main) {
         rootDir: import.meta.resolve("./"),
         filter: Deno.args[0],
         clean: Deno.args[0] === undefined,
+        packageManager: "pnpm",
     });
 }
