@@ -1,4 +1,7 @@
 // deno-lint-ignore-file ban-types
+
+import { isPromiseLike } from "./promise.ts";
+
 /**
  * 函数转化，实现将 this 可以作为第一个参数来传参
  */
@@ -163,4 +166,40 @@ export const extendsGetter = <T extends object>(
         configurable: true,
         get: getter,
     });
+};
+
+export interface FuncCatch {
+    <E = unknown, F extends Func = Func>(fn: F, errorParser?: (err: unknown) => E): FuncCatchWrapper<E, F>;
+}
+export type FuncCatchWrapper<E, F extends Func> =
+    & Func<
+        ThisParameterType<F>,
+        Parameters<F>,
+        FuncCatchReturn<E, ReturnType<F>>
+    >
+    & {
+        catchType<E>(errorParser?: (err: unknown) => E): FuncCatchWrapper<E, F>;
+    };
+export type FuncCatchReturn<E, R> = R extends PromiseLike<infer R> ? PromiseLike<[E, undefined] | [undefined, R]>
+    : [E, undefined] | [undefined, R];
+/** 包裹一个函数，并对其进行错误捕捉并返回 */
+export const func_catch: FuncCatch = <E = unknown, F extends Func = Func>(fn: F, errorParser?: (err: unknown) => E) => {
+    return Object.assign(function (this: ThisParameterType<F>) {
+        try {
+            const res: ReturnType<F> = fn.apply(this, arguments as any);
+            if (isPromiseLike(res)) {
+                return res.then(
+                    (value: unknown) => [undefined, value],
+                    (err: unknown) => [errorParser ? errorParser(err) : err as E, undefined],
+                );
+            }
+            return [undefined, res];
+        } catch (err) {
+            return [errorParser ? errorParser(err) : err as E, undefined];
+        }
+    }, {
+        catchType<E>(errorParser?: (err: unknown) => E) {
+            return func_catch(fn, errorParser);
+        },
+    }) as FuncCatchWrapper<E, F>;
 };
