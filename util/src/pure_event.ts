@@ -1,6 +1,6 @@
 import { iter_map_async_try } from "./collections.ts";
 import type { Func } from "./func.ts";
-import { iter_map_not_null } from "./index.ts";
+import { iter_map_not_null } from "./iterable.ts";
 import { obj_assign_props, obj_delegate_by } from "./object.ts";
 import { promise_try } from "./promise.ts";
 
@@ -95,9 +95,17 @@ export class PureEvent<T> {
     }
     /**
      * 附加监听
-     * 可以自定义唯一索引 key，如果重复，会移除之前的监听
+     * 同 watch
+     * @deprecated 使用 watch
      */
     on(cb: PureEventFun<T>, options?: PureEventListenOptions): PureEventOff {
+        return this.watch(cb, options);
+    }
+    /**
+     * 附加监听
+     * 可以自定义唯一索引 key，如果重复，会移除之前的监听
+     */
+    watch(cb: PureEventFun<T>, options?: PureEventListenOptions): PureEventOff {
         const key = options?.key ?? cb;
         this.off(key);
 
@@ -113,11 +121,19 @@ export class PureEvent<T> {
 
     /**
      * 移除指定监听
+     * 同 unwatch
+     * @deprecated 使用 unwatch
+     */
+    off(key: unknown): PureEventOffResult {
+        return this.unwatch(key);
+    }
+    /**
+     * 移除指定监听
      * 如果没有指定事件，那么返回false
      * 否则，如果没有自定义 移除监听器（onDispose），那么直接返回true
      * 否则返回 PromiseSettledResult
      */
-    off(key: unknown): PureEventOffResult {
+    unwatch(key: unknown): PureEventOffResult {
         const event = this.events.get(key);
         if (event == null) {
             return false;
@@ -259,7 +275,7 @@ export class PureEvent<T> {
     }
 }
 
-export type PureEventWithApply<T> = PureEvent<T> & PureEvent<T>["on"];
+export type PureEventWithApply<T> = PureEvent<T> & PureEvent<T>["watch"];
 
 export const pureEvent = <T>(): PureEventWithApply<T> => {
     const pe = new PureEvent<T>();
@@ -291,7 +307,7 @@ export class PureEventDelegate<T> extends PureEvent<T> {
 }
 type PureEventDelegateWithApply<T> =
     & PureEventDelegate<T>
-    & PureEventDelegate<T>["on"];
+    & PureEventDelegate<T>["watch"];
 
 export const pureEventDelegate = <T>(): PureEventDelegateWithApply<T> => {
     const pe = new PureEventDelegate<T>();

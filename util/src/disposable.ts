@@ -1,5 +1,5 @@
 import { obj_assign_props } from "./object.ts";
-import { PureEvent, PureEventWithApply } from "./pure_event.ts";
+import { PureEvent, type PureEventWithApply } from "./pure_event.ts";
 
 // export class AsyncDisposable {
 //     readonly disposer = pureEvent<void>();
@@ -21,7 +21,7 @@ export class Disposable extends PureEvent<void> {
     }
 }
 
-export type DisposableWithApply = PureEventWithApply<void> & Disposable;
+export type DisposableWithApply = Disposable & PureEventWithApply<void>;
 export const disposable = (): DisposableWithApply => {
     const pe = new Disposable();
     const on = pe.on.bind(pe);

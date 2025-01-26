@@ -38,7 +38,7 @@ export const abort_signal_merge = (..._signals: (AbortSignal | undefined | null)
 
 const signal_promise_cache = new Map<AbortSignal, Promise<never>>();
 export const abort_signal_promisify = (
-    input: AbortSignal | { signal: AbortSignal }, /*AbortController*/
+    input: AbortSignal | /*AbortController*/ { signal: AbortSignal },
 ): Promise<never> => {
     const signal = input instanceof AbortSignal ? input : input.signal;
     return map_get_or_put(signal_promise_cache, signal, () => {
