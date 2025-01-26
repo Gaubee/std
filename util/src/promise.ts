@@ -1,7 +1,7 @@
 import { event_target_on } from "./event_target.ts";
 import { func_wrap } from "./func.ts";
-import { PureEvent } from "./index.ts";
-import { IterableItem } from "./iterable.ts";
+import type { PureEvent } from "./pure_event.ts";
+import type { IterableItem } from "./iterable.ts";
 import { map_get_or_put } from "./map.ts";
 
 /**
