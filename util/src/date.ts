@@ -108,3 +108,86 @@ export const date_set_duration = (
     }
     return date;
 };
+
+export type FormatifyDate =
+    & {
+        year: string;
+        month: string;
+        day: string;
+        hour: string;
+        minute: string;
+        second: string;
+
+        hour12: string;
+    }
+    & ({
+        dayPart: "PM";
+        am: false;
+        pm: true;
+    } | {
+        dayPart: "AM";
+        am: true;
+        pm: false;
+    });
+
+/**将日期转化成易于格式化的信息 */
+export const date_formatify = (date: string | number | Date): FormatifyDate => {
+    date = date instanceof Date ? date : new Date(date);
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true, // 24 小时制
+    });
+
+    const [year, month, day, hour, minute, second, dayPart] = formatter.format(date).split(/[-\s,:]+/); // .replace(/[-]/g, ".").replace(/,/, "");
+    const pm = dayPart === "p.m.";
+    const am = !pm;
+    return {
+        year,
+        month,
+        day,
+        hour: pm ? `${+hour + 12}` : hour,
+        minute,
+        second,
+
+        hour12: hour,
+        dayPart: pm ? "PM" : "AM",
+        am,
+        pm,
+    } as FormatifyDate;
+};
+
+/**将日期根据指定模板进行格式化 */
+export const date_format = (format: string, date: string | number | Date): string => {
+    const formatify = date_formatify(date);
+    const trim0 = (str: string, t: string) => t.length === 1 ? str.replace(/^0/, "") : str;
+    return format
+        /// year = yyyy
+        .replace(/y{2,4}/, (t) => {
+            return formatify.year.slice(t.length - formatify.year.length);
+        })
+        /// month = mm
+        .replace(/m{1,2}/, (t) => {
+            return trim0(formatify.month, t);
+        })
+        /// day = dd
+        .replace(/d{1,2}/, (t) => {
+            return trim0(formatify.day, t);
+        })
+        /// hour = HH
+        .replace(/H{1,2}/, (t) => {
+            return trim0(formatify.hour, t);
+        })
+        /// minute = MM
+        .replace(/M{1,2}/, (t) => {
+            return trim0(formatify.minute, t);
+        })
+        /// second = SS
+        .replace(/S{1,2}/, (t) => {
+            return trim0(formatify.second, t);
+        });
+};

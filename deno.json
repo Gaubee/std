@@ -16,6 +16,8 @@
     "workspace": [
         "flow",
         "util",
+        "react",
+        "web",
         "denokit",
         "nodekit"
     ],

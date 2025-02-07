@@ -1,0 +1,105 @@
+import { arr_remove_first, map_get_or_put } from "@gaubee/util";
+import { adoptedStyleSheets } from "./adopted-style-sheets.mts";
+
+/**
+ * 一个对 CSSStyleSheet 的再包装，使得注入的样式更容易被管理
+ */
+export class CssSheetMap {
+    #css = new CSSStyleSheet();
+    #ruleMap = new Map<string, CSSRule>();
+    #ruleList: CSSRule[] = [];
+    setRule(selector: string, cssText: string) {
+        cssText = cssText.trim();
+        const ruleCssText = cssText.startsWith(selector) ? cssText : `${selector} {${cssText}}`;
+
+        const oldRule = this.#ruleMap.get(selector);
+        if (oldRule) {
+            if (oldRule.cssText === ruleCssText || oldRule.cssText === formatCssText(ruleCssText)) {
+                return;
+            }
+            const index = this.#ruleList.indexOf(oldRule);
+            this.#css.deleteRule(index);
+            this.#ruleList.splice(index, 1);
+        }
+        const index = this.#css.insertRule(ruleCssText, 0);
+        const rule = this.#css.cssRules.item(index)!;
+        this.#ruleMap.set(selector, rule);
+        this.#ruleList.unshift(rule);
+        this.#effect();
+    }
+    #effected = false;
+    #effect() {
+        if (this.#effected) {
+            if (this.#css.cssRules.length === 0) {
+                arr_remove_first(adoptedStyleSheets, this.#css);
+                this.#effected = false;
+            }
+        } else {
+            if (this.#css.cssRules.length > 0) {
+                adoptedStyleSheets.push(this.#css);
+                this.#effected = true;
+            }
+        }
+    }
+    deleteRule(selector: string) {
+        const rule = this.#ruleMap.get(selector);
+        if (!rule) {
+            return;
+        }
+        const index = this.#ruleList.indexOf(rule);
+        this.#css.deleteRule(index);
+        this.#ruleList.splice(index, 1);
+        this.#ruleMap.delete(selector);
+        this.#effect();
+    }
+
+    setRules(rules: Record<string, string | CSSProperties>) {
+        const selectors = Object.keys(rules);
+        for (const selector of selectors) {
+            let cssText = rules[selector];
+            if (typeof cssText === "object") {
+                cssText = formatStyle(cssText);
+            }
+            this.setRule(selector, cssText);
+        }
+        return (): void => {
+            for (const selector of selectors) {
+                this.deleteRule(selector);
+            }
+        };
+    }
+
+    #ref = new Map<string, Set<string | number>>();
+    refRule(rid: string | number, selector: string, cssText: string | (() => string)) {
+        const reasons = map_get_or_put(this.#ref, selector, () => {
+            this.setRule(selector, typeof cssText === "function" ? cssText() : cssText);
+            return new Set();
+        });
+        reasons.add(rid);
+    }
+    unrefRule(rid: string | number, selector: string) {
+        const reasons = this.#ref.get(selector);
+        if (reasons == null) {
+            return;
+        }
+        if (reasons.delete(rid) && reasons.size === 0) {
+            this.#ref.delete(selector);
+            this.deleteRule(selector);
+        }
+    }
+}
+const ruleFormater = new CSSStyleSheet();
+const formatCssText = (cssText: string) => {
+    ruleFormater.insertRule(cssText, 0);
+    cssText = ruleFormater.cssRules.item(0)?.cssText ?? "";
+    ruleFormater.deleteRule(0);
+    return cssText;
+};
+
+const styleMap = document.createElement("div").style;
+type CSSProperties = Record<string, string>;
+const formatStyle = (style: CSSProperties) => {
+    styleMap.cssText = "";
+    Object.assign(styleMap, style);
+    return styleMap.cssText;
+};
