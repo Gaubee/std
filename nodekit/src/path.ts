@@ -1,4 +1,5 @@
 import node_path from "node:path";
+import fs from "node:fs";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 /**
@@ -22,12 +23,23 @@ type PathResolver = (...paths: string[]) => string;
  * 创建一个 path.resolve 柯里化函数
  */
 export const createResolver = (cwd: string): PathResolver => {
-    return (...paths: string[]) => {
+    return Object.assign((...paths: string[]) => {
         return normalizeFilePath(node_path.resolve(cwd, ...paths));
-    };
+    }, { dirname: cwd });
 };
 
 /**
  * 等同于 path.resolve(process.cwd(), ...paths)
  */
 export const resolveCwd: PathResolver = createResolver(process.cwd());
+
+/** 寻找一个包文件目录 */
+export const createProjectResolver = (fromPath: string | URL = process.cwd(), projectRootFilename = "package.json") => {
+    let rootDirname = normalizeFilePath(fromPath);
+    while (
+        false === fs.existsSync(node_path.resolve(rootDirname, projectRootFilename))
+    ) {
+        rootDirname = node_path.resolve(rootDirname, "..");
+    }
+    return createResolver(rootDirname);
+};
