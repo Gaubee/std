@@ -35,7 +35,8 @@
     "jsr:@ts-morph/common@0.24": "0.24.0",
     "npm:dax-sh@0.42": "0.42.0",
     "npm:ignore@^6.0.2": "6.0.2",
-    "npm:minimatch@^10.0.1": "10.0.1"
+    "npm:minimatch@^10.0.1": "10.0.1",
+    "npm:react@19": "19.0.0"
   },
   "jsr": {
     "@david/code-block-writer@13.0.3": {
@@ -229,6 +230,9 @@
         "brace-expansion"
       ]
     },
+    "react@19.0.0": {
+      "integrity": "sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ=="
+    },
     "undici-types@5.28.4": {
       "integrity": "sha512-3OeMF5Lyowe8VW0skf5qaIE7Or3yS9LS7fvMUI0gg4YxpIBVg0L8BxCmROw2CcYhSkpR68Epz7CGc8MPj94Uww=="
     },
@@ -253,7 +257,7 @@
           "jsr:@david/dax@0.42",
           "jsr:@std/fmt@^1.0.2",
           "jsr:@std/jsonc@^1.0.1",
-          "jsr:@std/path@1",
+          "jsr:@std/path@^1.0.8",
           "jsr:@std/yaml@^1.0.5"
         ],
         "packageJson": {
@@ -261,6 +265,13 @@
             "npm:dax-sh@0.42",
             "npm:ignore@^6.0.2",
             "npm:minimatch@^10.0.1"
+          ]
+        }
+      },
+      "react": {
+        "packageJson": {
+          "dependencies": [
+            "npm:react@19"
           ]
         }
       }

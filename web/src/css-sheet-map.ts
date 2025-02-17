@@ -1,5 +1,5 @@
 import { arr_remove_first, map_get_or_put } from "@gaubee/util";
-import { adoptedStyleSheets } from "./adopted-style-sheets.mts";
+import { adoptedStyleSheets } from "./adopted-style-sheets.ts";
 
 /**
  * 一个对 CSSStyleSheet 的再包装，使得注入的样式更容易被管理
