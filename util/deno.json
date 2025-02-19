@@ -1,38 +1,32 @@
 {
-    "name": "@gaubee/util",
-    "version": "0.21.1",
-    "exports": {
-        "./abort": "./src/abort.ts",
-        "./bigint": "./src/bigint.ts",
-        "./collections": "./src/collections.ts",
-        "./date": "./src/date.ts",
-        "./decorators-legacy": "./src/decorators-legacy.ts",
-        "./decorators": "./src/decorators.ts",
-        "./disposable": "./src/disposable.ts",
-        "./encoding": "./src/encoding.ts",
-        "./event_target": "./src/event_target.ts",
-        "./func": "./src/func.ts",
-        "./generator": "./src/generator.ts",
-        "./lrc": "./src/lrc.ts",
-        "./map": "./src/map.ts",
-        "./math": "./src/math.ts",
-        "./number": "./src/number.ts",
-        "./object": "./src/object.ts",
-        "./promise": "./src/promise.ts",
-        "./pure_event": "./src/pure_event.ts",
-        "./readable_stream": "./src/readable_stream.ts",
-        "./string": "./src/string.ts",
-        ".": "./src/index.ts"
-    },
-    "publish": {
-        "include": [
-            "LICENSE",
-            "README.md",
-            "src/**/*.ts"
-        ],
-        "exclude": [
-            "src/**/*.bench.ts",
-            "src/**/*.test.ts"
-        ]
-    }
+  "name": "@gaubee/util",
+  "version": "0.22.0",
+  "exports": {
+    "./abort": "./src/abort.ts",
+    "./bigint": "./src/bigint.ts",
+    "./collections": "./src/collections.ts",
+    "./date": "./src/date.ts",
+    "./debounce": "./src/debounce.ts",
+    "./decorators-legacy": "./src/decorators-legacy.ts",
+    "./decorators": "./src/decorators.ts",
+    "./disposable": "./src/disposable.ts",
+    "./encoding": "./src/encoding.ts",
+    "./event_target": "./src/event_target.ts",
+    "./func": "./src/func.ts",
+    "./generator": "./src/generator.ts",
+    "./lrc": "./src/lrc.ts",
+    "./map": "./src/map.ts",
+    "./math": "./src/math.ts",
+    "./number": "./src/number.ts",
+    "./object": "./src/object.ts",
+    "./promise": "./src/promise.ts",
+    "./pure_event": "./src/pure_event.ts",
+    "./readable_stream": "./src/readable_stream.ts",
+    "./string": "./src/string.ts",
+    ".": "./src/index.ts"
+  },
+  "publish": {
+    "include": ["LICENSE", "README.md", "src/**/*.ts"],
+    "exclude": ["src/**/*.bench.ts", "src/**/*.test.ts"]
+  }
 }

@@ -31,18 +31,23 @@ export type Func<This = any, Arguments extends readonly unknown[] = any[], Retur
             this: This,
             ...args: Arguments
         ) => Return;
-type FunReturn<F> = F extends Func ? ReturnType<F> : undefined;
+export namespace Func {
+    export type Return<F> = F extends Func ? ReturnType<F> : never;
+    export type Args<F> = F extends Func ? Parameters<F> : never;
+    export type This<F> = F extends Func<infer T> ? T : never;
+    export type SetReturn<T, R> = Func<This<T>, Args<T>, R>;
+}
 type KeyFun<F extends Func> = Func<ThisParameterType<F>, Parameters<F>>;
 export type FuncRemember<
     F extends Func,
     K extends (KeyFun<F> | void) = void,
 > = F & {
     readonly source: F;
-    readonly key: FunReturn<K> | undefined;
+    readonly key: Func.Return<K> | undefined;
     readonly runned: boolean;
-    readonly returnValue: ReturnType<F> | undefined;
+    readonly returnValue: Func.Return<F> | undefined;
     reset(): void;
-    rerun(...args: Parameters<F>): ReturnType<F>;
+    rerun(...args: Parameters<F>): Func.Return<F>;
 };
 /**
  * 让一个函数的返回结果是缓存的
@@ -54,8 +59,8 @@ export const func_remember = <
     K extends Func<ThisParameterType<F>, Parameters<F>> | void | void,
 >(func: F, key?: K): FuncRemember<F, K> => {
     let result: {
-        key: FunReturn<K>;
-        res: ReturnType<F>;
+        key: Func.Return<K>;
+        res: Func.Return<F>;
     } | undefined;
 
     const once_fn = function (
@@ -91,7 +96,7 @@ export const func_remember = <
         },
         rerun(...args: Parameters<F>) {
             once_fn_mix.reset();
-            return once_fn_mix(...args) as ReturnType<F>;
+            return once_fn_mix(...args) as Func.Return<F>;
         },
     });
     Object.defineProperties(once_fn_mix, {

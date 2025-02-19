@@ -33,6 +33,7 @@
     "jsr:@std/yaml@^1.0.5": "1.0.5",
     "jsr:@ts-morph/bootstrap@0.24": "0.24.0",
     "jsr:@ts-morph/common@0.24": "0.24.0",
+    "npm:@types/node@*": "22.5.4",
     "npm:dax-sh@0.42": "0.42.0",
     "npm:ignore@^6.0.2": "6.0.2",
     "npm:minimatch@^10.0.1": "10.0.1",
@@ -202,6 +203,12 @@
         "which"
       ]
     },
+    "@types/node@22.5.4": {
+      "integrity": "sha512-FDuKUJQm/ju9fT/SeX/6+gBzoPzlVCzfzmGkwKvRHQVxi4BntVbyIwf6a4Xn62mrvndLiml6z/UBXIdEVjQLXg==",
+      "dependencies": [
+        "undici-types@6.19.8"
+      ]
+    },
     "balanced-match@1.0.2": {
       "integrity": "sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw=="
     },
@@ -215,7 +222,7 @@
       "integrity": "sha512-VxTiRJPYJWRw7XIP67w+iFx0DETNaYYYacWBm8c1zibHsliPXgzVAw7NiGTRum2+KIAEA1MBkiP1308NQoIgUA==",
       "dependencies": [
         "@deno/shim-deno",
-        "undici-types"
+        "undici-types@5.28.4"
       ]
     },
     "ignore@6.0.2": {
@@ -236,12 +243,21 @@
     "undici-types@5.28.4": {
       "integrity": "sha512-3OeMF5Lyowe8VW0skf5qaIE7Or3yS9LS7fvMUI0gg4YxpIBVg0L8BxCmROw2CcYhSkpR68Epz7CGc8MPj94Uww=="
     },
+    "undici-types@6.19.8": {
+      "integrity": "sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw=="
+    },
     "which@4.0.0": {
       "integrity": "sha512-GlaYyEb07DPxYCKhKzplCWBJtvxZcZMrL+4UkrTSJHHPyZU4mYYTv3qaOe77H7EODLSSopAUFAc6W8U4yqvscg==",
       "dependencies": [
         "isexe"
       ]
     }
+  },
+  "remote": {
+    "https://deno.land/std@0.167.0/fmt/colors.ts": "03ad95e543d2808bc43c17a3dd29d25b43d0f16287fe562a0be89bf632454a12",
+    "https://deno.land/std@0.167.0/testing/_diff.ts": "a23e7fc2b4d8daa3e158fa06856bedf5334ce2a2831e8bf9e509717f455adb2c",
+    "https://deno.land/std@0.167.0/testing/_format.ts": "cd11136e1797791045e639e9f0f4640d5b4166148796cad37e6ef75f7d7f3832",
+    "https://deno.land/std@0.167.0/testing/asserts.ts": "51353e79437361d4b02d8e32f3fc83b22231bc8f8d4c841d86fd32b0b0afe940"
   },
   "workspace": {
     "members": {

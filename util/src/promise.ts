@@ -1,9 +1,41 @@
 import { event_target_on } from "./event_target.ts";
-import { func_wrap } from "./func.ts";
+import { type Func, func_wrap } from "./func.ts";
 import type { PureEvent } from "./pure_event.ts";
 import type { IterableItem } from "./iterable.ts";
 import { map_get_or_put } from "./map.ts";
 
+export type Timmer = (cb: Func) => Timmer.Clear;
+export namespace Timmer {
+    export type Clear = () => void;
+}
+
+export const timmers = {
+    timeout: (ms: number): Timmer => {
+        return (cb: Func) => {
+            const ti = setTimeout(cb, ms);
+            return () => clearTimeout(ti);
+        };
+    },
+    raf: ((cb: Func) => {
+        const ti = requestAnimationFrame(() => cb());
+        return () => cancelAnimationFrame(ti);
+    }) as Timmer,
+    microtask: ((cb: Func) => {
+        let cancel = false;
+        queueMicrotask(() => {
+            if (cancel) {
+                return;
+            }
+            cb();
+        });
+        return () => {
+            cancel = true;
+        };
+    }) as Timmer,
+    from: (ms: number | Timmer): Timmer => {
+        return typeof ms === "number" ? ms <= 0 ? timmers.microtask : timmers.timeout(ms) : ms;
+    },
+};
 /**
  * setTimeout/clearTimeout 的 promise 版本
  * @example
@@ -20,9 +52,11 @@ import { map_get_or_put } from "./map.ts";
  * const d = delay(1000, { signal: ac.signal }) // with AbortSignal
  * ac.abort('some reason'); // clearTimeout and reject promise
  * ```
+ *
+ * 如果 ms = 0，那么会使用 queueMicrotask 而不是setTimeot，当然cancel仍然是可以工作的
  */
 export const delay = (
-    ms: number,
+    ms: number | Timmer,
     options?: { signal?: AbortSignal | null; disposer?: PureEvent<void> },
 ): delay.Delayer => {
     const signal = options?.signal;
@@ -31,20 +65,17 @@ export const delay = (
     const job = Promise.withResolvers<void>();
     let resolve = job.resolve;
     let reject = job.reject;
-    const ti = setTimeout(() => resolve(), ms);
+    const timmer = timmers.from(ms);
+    const clear = timmer(() => resolve());
     const result = Object.assign(job.promise, {
         cancel(cause?: unknown) {
-            clearTimeout(ti);
-            if (cause == null) {
-                resolve();
-            } else {
-                reject(cause);
-            }
+            clear();
+
+            reject(cause);
         },
     });
     if (signal != null) {
         const off = event_target_on(signal, "abort", () => {
-            console.log("abort~~");
             result.cancel(signal.reason);
         }, { once: true });
         // 不使用 promise.finally ，因为它会创建一个新的 promise
@@ -59,7 +90,7 @@ export const delay = (
     }
     const disposer = options?.disposer;
     if (disposer != null) {
-        disposer.on(result.cancel);
+        disposer.watch(result.cancel);
     }
     return result;
 };
