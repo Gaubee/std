@@ -251,3 +251,15 @@ export const func_catch: FuncCatch = Object.assign(
         wrapError,
     },
 );
+
+export const func_lazy = <T extends Func>(factory: Func.SetReturn<T, T>): T => {
+    let fn: T | undefined;
+    return new Proxy(factory as unknown as T, {
+        apply(_, thisArg, argArray) {
+            if (fn == undefined) {
+                fn = Reflect.apply(factory, thisArg, argArray);
+            }
+            return Reflect.apply(fn!, thisArg, argArray);
+        },
+    });
+};

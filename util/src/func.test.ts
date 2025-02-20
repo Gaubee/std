@@ -1,4 +1,4 @@
-import { func_catch, func_remember } from "./func.ts";
+import { func_catch, func_lazy, func_remember } from "./func.ts";
 import assert from "node:assert";
 
 Deno.test("func_remember", async () => {
@@ -33,4 +33,44 @@ Deno.test("func_catch", async () => {
     assert.deepEqual(fn2(1, "2"), [`sync 1+2`, undefined]);
     assert.deepEqual(await fn3(1, "2"), [undefined, `async 1+2`]);
     assert.deepEqual(await fn4(1, "2"), [`async 1+2`, undefined]);
+});
+
+Deno.test("func_lazy", () => {
+    let factoryCallCount = 0;
+
+    const lazyFn = func_lazy(() => {
+        factoryCallCount++;
+        return (x: number) => x * 2;
+    });
+
+    // Factory should not be called until first use
+    assert.equal(factoryCallCount, 0);
+
+    // First call should create the function
+    assert.equal(lazyFn(5), 10);
+    assert.equal(factoryCallCount, 1);
+
+    // Subsequent calls should reuse the same function
+    assert.equal(lazyFn(7), 14);
+    assert.equal(factoryCallCount, 1);
+});
+
+Deno.test("func_lazy with this context", () => {
+    let factoryCallCount = 0;
+
+    const lazyFn = func_lazy(() => {
+        factoryCallCount++;
+        return function (this: { multiplier: number }, x: number) {
+            return x * this.multiplier;
+        };
+    });
+    const obj = { multiplier: 3, fn: lazyFn };
+
+    // Test with this context
+    assert.equal(obj.fn(5), 15);
+    assert.equal(factoryCallCount, 1);
+
+    // Should reuse the same function
+    assert.equal(obj.fn(7), 21);
+    assert.equal(factoryCallCount, 1);
 });
