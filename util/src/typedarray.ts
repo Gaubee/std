@@ -14,7 +14,7 @@ export const typedarray_contact = <
 >(
     ctor: new (len: number) => T,
     buffers: T[],
-) => {
+): T => {
     const res = new ctor(buffers.reduce((len, u) => len + u.length, 0));
     let pos = 0;
     for (const u of buffers) {

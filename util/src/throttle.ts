@@ -4,7 +4,7 @@ import { type Timmer, timmers } from "./promise.ts";
 export namespace func_throttle {
     export type ThrottledFunction<F extends Func> = Func.SetReturn<F, Promise<Func.Return<F>>> & {
         readonly isPending: boolean;
-        clear(): void;
+        cancel(): void;
         source: F;
         flush(): void;
     };
@@ -14,7 +14,7 @@ export const func_throttle = <T extends Func>(
     fn: T,
     wait: number | Timmer = 0,
     options: { waitPromise?: boolean; before?: boolean } = {},
-) => {
+): func_throttle.ThrottledFunction<T> => {
     const timmer = timmers.from(wait);
     let clear: Timmer.Clear | undefined;
 
