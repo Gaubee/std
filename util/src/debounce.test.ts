@@ -47,7 +47,7 @@ Deno.test("should clear the timer with `cancel` method", async () => {
     const debounced = func_debounce(fn, 100);
 
     debounced();
-    debounced.clear();
+    debounced.cancel();
 
     await delay(200);
 

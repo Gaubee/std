@@ -21,3 +21,4 @@ export * from "./promise.ts";
 export * from "./pure_event.ts";
 export * from "./readable_stream.ts";
 export * from "./string.ts";
+export * from "./throttle.ts";

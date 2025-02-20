@@ -5,7 +5,7 @@ import { type Timmer, timmers } from "./promise.ts";
 export namespace func_debounce {
     export type DebouncedFunction<F extends Func> = Func.SetReturn<F, Promise<Func.Return<F>>> & {
         readonly isPending: boolean;
-        clear(): void;
+        cancel(): void;
         source: F;
         flush(): void;
     };
@@ -64,7 +64,7 @@ export const func_debounce = <T extends Func>(
         get isPending() {
             return clear != null;
         },
-        clear() {
+        cancel() {
             clear?.();
         },
         source: fn,

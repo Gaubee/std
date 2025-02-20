@@ -174,37 +174,80 @@ export const extendsGetter = <T extends object>(
 };
 
 export interface FuncCatch {
-    <E = unknown, F extends Func = Func>(fn: F, errorParser?: (err: unknown) => E): FuncCatchWrapper<E, F>;
+    <E = unknown, F extends Func = Func>(fn: F, errorParser?: (err: unknown) => E): FuncCatch.Wrapper<E, F>;
+    wrapSuccess: <R>(resule: R) => FuncCatch.SuccessReturn<R>;
+    wrapError: <E>(err: E, errorParser?: (err: unknown) => E) => FuncCatch.ErrorReturn<E>;
 }
-export type FuncCatchWrapper<E, F extends Func> =
-    & Func<
-        ThisParameterType<F>,
-        Parameters<F>,
-        FuncCatchReturn<E, ReturnType<F>>
-    >
-    & {
-        catchType<E>(errorParser?: (err: unknown) => E): FuncCatchWrapper<E, F>;
+export namespace FuncCatch {
+    export type Wrapper<E, F extends Func> =
+        & Func<
+            ThisParameterType<F>,
+            Parameters<F>,
+            Return<E, ReturnType<F>>
+        >
+        & {
+            catchType<E>(errorParser?: (err: unknown) => E): Wrapper<E, F>;
+        };
+    export type SuccessReturn<R> = readonly [undefined, R] & {
+        readonly success: true;
+        readonly result: R;
+        readonly error: void;
     };
-export type FuncCatchReturn<E, R> = R extends PromiseLike<infer R> ? PromiseLike<[E, undefined] | [undefined, R]>
-    : [E, undefined] | [undefined, R];
-/** 包裹一个函数，并对其进行错误捕捉并返回 */
-export const func_catch: FuncCatch = <E = unknown, F extends Func = Func>(fn: F, errorParser?: (err: unknown) => E) => {
-    return Object.assign(function (this: ThisParameterType<F>) {
-        try {
-            const res: ReturnType<F> = fn.apply(this, arguments as any);
-            if (isPromiseLike(res)) {
-                return res.then(
-                    (value: unknown) => [undefined, value],
-                    (err: unknown) => [errorParser ? errorParser(err) : err as E, undefined],
-                );
-            }
-            return [undefined, res];
-        } catch (err) {
-            return [errorParser ? errorParser(err) : err as E, undefined];
-        }
-    }, {
-        catchType<E>(errorParser?: (err: unknown) => E) {
-            return func_catch(fn, errorParser);
-        },
-    }) as FuncCatchWrapper<E, F>;
+    export type ErrorReturn<E> = readonly [E, undefined] & {
+        readonly success: false;
+        readonly result: void;
+        readonly error: E;
+    };
+    export type Return<E, R> = [R] extends [never] ? ErrorReturn<E>
+        : R extends PromiseLike<infer T> ? PromiseLike<SuccessReturn<T> | ErrorReturn<E>>
+        : SuccessReturn<R> | ErrorReturn<E>;
+}
+
+const wrapSuccess = <R>(result: R): FuncCatch.SuccessReturn<R> => {
+    return Object.defineProperties(
+        [undefined, result] as const,
+        {
+            success: { value: true, writable: false, enumerable: false, configurable: true },
+            result: { value: result, writable: false, enumerable: false, configurable: true },
+            error: { value: undefined, writable: false, enumerable: false, configurable: true },
+        } as const,
+    ) as FuncCatch.SuccessReturn<R>;
 };
+const wrapError = <E>(err: E, errorParser?: (err: unknown) => E): FuncCatch.ErrorReturn<E> => {
+    const error = errorParser ? errorParser(err) : err as E;
+    return Object.defineProperties(
+        [error, undefined] as const,
+        {
+            success: { value: false, writable: false, enumerable: false, configurable: true },
+            result: { value: undefined, writable: false, enumerable: false, configurable: true },
+            error: { value: error, writable: false, enumerable: false, configurable: true },
+        } as const,
+    ) as FuncCatch.ErrorReturn<E>;
+};
+/** 包裹一个函数，并对其进行错误捕捉并返回 */
+export const func_catch: FuncCatch = Object.assign(
+    <E = unknown, F extends Func = Func>(fn: F, errorParser?: (err: unknown) => E) => {
+        return Object.assign(function (this: ThisParameterType<F>) {
+            try {
+                const res: ReturnType<F> = fn.apply(this, arguments as any);
+                if (isPromiseLike(res)) {
+                    return res.then(
+                        (value: unknown) => wrapSuccess(value),
+                        (err: unknown) => wrapError(err, errorParser),
+                    );
+                }
+                return wrapSuccess(res);
+            } catch (err) {
+                return wrapError(err, errorParser);
+            }
+        }, {
+            catchType<E>(errorParser?: (err: unknown) => E) {
+                return func_catch(fn, errorParser);
+            },
+        });
+    },
+    {
+        wrapSuccess,
+        wrapError,
+    },
+);
