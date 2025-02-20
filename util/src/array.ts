@@ -239,3 +239,8 @@ export const arr_remote_end = <T>(arr: T[], value: T, limit: number): number => 
     }
     return rm_count;
 };
+
+/** 判断一个对象是非空数组 */
+export const arr_is_no_empty = <T>(arr: T): arr is NonNullable<T extends unknown[] ? T : never> => {
+    return Array.isArray(arr) && arr.length > 0;
+};
