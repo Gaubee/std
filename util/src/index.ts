@@ -22,3 +22,4 @@ export * from "./pure_event.ts";
 export * from "./readable_stream.ts";
 export * from "./string.ts";
 export * from "./throttle.ts";
+export * from "./typedarray.ts";

@@ -1,6 +1,6 @@
 {
   "name": "@gaubee/util",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "exports": {
     "./abort": "./src/abort.ts",
     "./bigint": "./src/bigint.ts",
@@ -24,10 +24,18 @@
     "./readable_stream": "./src/readable_stream.ts",
     "./string": "./src/string.ts",
     "./throttle": "./src/throttle.ts",
+    "./typedarray": "./src/typedarray.ts",
     ".": "./src/index.ts"
   },
   "publish": {
-    "include": ["LICENSE", "README.md", "src/**/*.ts"],
-    "exclude": ["src/**/*.bench.ts", "src/**/*.test.ts"]
+    "include": [
+      "LICENSE",
+      "README.md",
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "src/**/*.bench.ts",
+      "src/**/*.test.ts"
+    ]
   }
 }
