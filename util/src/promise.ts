@@ -121,7 +121,7 @@ type PromiseOnceThenRegister<T> = {
 };
 type PromiseOnceThenResolved<T> = { state: "resolved"; value: T };
 type PromiseOnceThenReject<T> = { state: "rejected"; err: unknown };
-const _pot = new WeakMap<PromiseLike<unknown>, PromiseOnceThenState<any>>();
+const _pot = /*@__PURE__*/ new WeakMap<PromiseLike<unknown>, PromiseOnceThenState<any>>();
 
 export type PromiseOnceThenTask<T> = {
     key?: unknown;

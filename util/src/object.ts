@@ -87,6 +87,7 @@ export const obj_omit = <T extends object, KS extends (keyof T)[] = (keyof T)[]>
 };
 
 /**
+ * @__NO_SIDE_EFFECTS__
  * 让一个对象的所有get属性成为惰性求值的属性
  */
 export const obj_lazify = <T extends object>(obj: T, target = obj): T => {

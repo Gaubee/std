@@ -16,7 +16,7 @@ export const binary_to_base64_string = (u8a: Uint8Array): string => {
     }
     return btoa(binaryString);
 };
-const binary_base64_table = Object.freeze(Array.from({ length: 256 }, (_, index) => {
+const binary_base64_table = /*@__PURE__*/ Object.freeze(Array.from({ length: 256 }, (_, index) => {
     return String.fromCharCode(index);
 }));
 
@@ -55,7 +55,7 @@ const binary_hex_table = obj_lazify({
 export const binary_to_utf8_string = (u8a: Uint8Array): string => {
     return d.decode(u8a);
 };
-const d = new TextDecoder();
+const d = /*@__PURE__*/ new TextDecoder();
 /**
  * 将 base64 字符串转成二进制
  */
@@ -101,4 +101,4 @@ const hex_binary_table = obj_lazify({
 export const str_to_utf8_binary = (str: string): Uint8Array => {
     return e.encode(str);
 };
-const e = new TextEncoder();
+const e = /*@__PURE__*/ new TextEncoder();

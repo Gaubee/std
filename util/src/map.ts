@@ -92,4 +92,4 @@ export const map_get_or_put_async = async <T extends CommonMap, K extends GetMap
         lock.resolve();
     }
 };
-const locks_keys = Symbol.for("map_get_or_put_async-locks");
+const locks_keys = /*@__PURE__*/ Symbol.for("map_get_or_put_async-locks");

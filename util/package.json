@@ -6,5 +6,5 @@
         "util",
         "std"
     ],
-    "sideEffect": false
+    "sideEffects": false
 }

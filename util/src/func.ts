@@ -50,6 +50,7 @@ export type FuncRemember<
     rerun(...args: Parameters<F>): Func.Return<F>;
 };
 /**
+ * @__NO_SIDE_EFFECTS__
  * 让一个函数的返回结果是缓存的
  * @param key 自定义缓存key生成器，如果生成的key不一样，那么缓存失效
  * @returns
@@ -109,6 +110,7 @@ export const func_remember = <
 };
 
 /**
+ * @__NO_SIDE_EFFECTS__
  * 包裹一个“目标函数”，将它的执行权交给“包裹函数”。
  * 包裹函数可以在目标函数执行之前或者执行之后做一些工作，比如参数检查，比如返回值修改
  * @param func 目标函数
@@ -160,6 +162,7 @@ export const extendsMethod = <T extends object>(
 };
 
 /**
+ * @__NO_SIDE_EFFECTS__
  * 向某一个对象配置getter属性
  */
 export const extendsGetter = <T extends object>(
@@ -224,7 +227,10 @@ const wrapError = <E>(err: E, errorParser?: (err: unknown) => E): FuncCatch.Erro
         } as const,
     ) as FuncCatch.ErrorReturn<E>;
 };
-/** 包裹一个函数，并对其进行错误捕捉并返回 */
+/**
+ * @__NO_SIDE_EFFECTS__
+ * 包裹一个函数，并对其进行错误捕捉并返回
+ */
 export const func_catch: FuncCatch = Object.assign(
     <E = unknown, F extends Func = Func>(fn: F, errorParser?: (err: unknown) => E) => {
         return Object.assign(function (this: ThisParameterType<F>) {
@@ -252,6 +258,13 @@ export const func_catch: FuncCatch = Object.assign(
     },
 );
 
+/**
+ * @__NO_SIDE_EFFECTS__
+ * 一个能延迟执行的函数包裹
+ * 和 func_remember 不同，`func_lazy(...args)` 等同于 `func_remember()(...args)`
+ * @param factory
+ * @returns
+ */
 export const func_lazy = <T extends Func>(factory: Func.SetReturn<T, T>): T => {
     let fn: T | undefined;
     return new Proxy(factory as unknown as T, {

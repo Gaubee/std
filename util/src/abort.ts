@@ -36,7 +36,7 @@ export const abort_signal_merge = (..._signals: (AbortSignal | undefined | null)
     return aborter.signal;
 };
 
-const signal_promise_cache = new Map<AbortSignal, Promise<never>>();
+const signal_promise_cache = /*@__PURE__*/ new Map<AbortSignal, Promise<never>>();
 export const abort_signal_promisify = (
     input: AbortSignal | /*AbortController*/ { signal: AbortSignal },
 ): Promise<never> => {

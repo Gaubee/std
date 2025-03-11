@@ -1,4 +1,4 @@
-import { arr_remove_first, map_get_or_put } from "@gaubee/util";
+import { arr_remove_first, func_lazy, map_get_or_put } from "@gaubee/util";
 import { adoptedStyleSheets } from "./adopted-style-sheets.ts";
 
 /**
@@ -88,7 +88,7 @@ export class CssSheetMap {
         }
     }
 }
-const ruleFormater = new CSSStyleSheet();
+const ruleFormater = /*@__PURE__*/ new CSSStyleSheet();
 const formatCssText = (cssText: string) => {
     ruleFormater.insertRule(cssText, 0);
     cssText = ruleFormater.cssRules.item(0)?.cssText ?? "";
@@ -96,10 +96,12 @@ const formatCssText = (cssText: string) => {
     return cssText;
 };
 
-const styleMap = document.createElement("div").style;
 type CSSProperties = Record<string, string>;
-const formatStyle = (style: CSSProperties) => {
-    styleMap.cssText = "";
-    Object.assign(styleMap, style);
-    return styleMap.cssText;
-};
+const formatStyle = func_lazy(() => {
+    const styleMap = document.createElement("div").style;
+    return (style: CSSProperties) => {
+        styleMap.cssText = "";
+        Object.assign(styleMap, style);
+        return styleMap.cssText;
+    };
+});
