@@ -31,7 +31,7 @@ export const createResolver = (cwd: string): PathResolver => {
 /**
  * 等同于 path.resolve(process.cwd(), ...paths)
  */
-export const resolveCwd: PathResolver = createResolver(process.cwd());
+export const resolveCwd: PathResolver = /*@__PURE__*/ createResolver(process.cwd());
 
 /** 寻找一个包文件目录 */
 export const createProjectResolver = (fromPath: string | URL = process.cwd(), projectRootFilename = "package.json") => {

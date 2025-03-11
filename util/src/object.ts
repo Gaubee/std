@@ -216,6 +216,7 @@ const _delegate_by = <D extends object, T extends D>(
 };
 
 /**
+ * @__NO_SIDE_EFFECTS__
  * 将b对象的属性附加到a上，不同于 Object.assign 赋值行为，这里是 设置属性描述，因此诸如 getter、setter 会一并过来，因此请注意 b 对象的属性是可以迁移的
  * @param a
  * @param b

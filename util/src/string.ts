@@ -77,7 +77,7 @@ export const str_trim_indent: (str: string) => string = (str: string) => {
 };
 
 /** 对于人类来说是空格的字符 */
-export const str_human_space = new Set([
+export const str_human_space: Set<string> = /*@__PURE__*/ new Set([
     "\u0020",
     "\u00A0",
     "\u1680",
@@ -95,7 +95,13 @@ export const str_human_space = new Set([
 ]);
 
 // 创建一个正则表达式字符串，使用 Set 中的字符
-export const human_space_regex = func_remember(() => {
+export const human_space_regex: func_remember.Return<
+    () => {
+        start: RegExp;
+        end: RegExp;
+        all: RegExp;
+    }
+> = func_remember(() => {
     const pattern = [...str_human_space].map((ch) => ch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
     return {
         start: new RegExp(`^(?:${pattern})+`),

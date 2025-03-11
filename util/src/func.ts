@@ -49,6 +49,12 @@ export type FuncRemember<
     reset(): void;
     rerun(...args: Parameters<F>): Func.Return<F>;
 };
+export namespace func_remember {
+    export type Return<
+        F extends Func,
+        K extends (KeyFun<F> | void) = void,
+    > = FuncRemember<F, K>;
+}
 /**
  * @__NO_SIDE_EFFECTS__
  * 让一个函数的返回结果是缓存的

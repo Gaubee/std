@@ -167,4 +167,4 @@ export const $$: (options: CreateShellOptions) => Shell = (options: CreateShellO
 /**
  * 用于执行终端命令
  */
-export const $: Shell = $$({});
+export const $: Shell = /*@__PURE__*/ $$({});
