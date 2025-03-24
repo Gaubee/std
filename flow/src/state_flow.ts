@@ -1,4 +1,4 @@
-import type { PureEvent, PureEventFun, PureEventListenOptions, PureEventOff } from "@gaubee/util/pure_event";
+import type { PureEvent, PureEventFun, PureEventListenOptions, PureEventOff } from "@gaubee/util";
 import { SharedFlow } from "./shared_flow.ts";
 
 export type StateFlowListenOptions = PureEventListenOptions & {

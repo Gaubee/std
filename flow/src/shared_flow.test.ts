@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { delay } from "@gaubee/util/promise";
+import { delay } from "@gaubee/util";
 import { SharedFlow } from "./shared_flow.ts";
 
 Deno.test("stream", async () => {

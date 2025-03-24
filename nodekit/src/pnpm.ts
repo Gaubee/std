@@ -1,4 +1,4 @@
-import { obj_omit } from "@gaubee/util/object";
+import { obj_omit } from "@gaubee/util";
 import { normalizeFilePath, resolveCwd } from "./path.ts";
 import { $ } from "./shell.ts";
 export interface PnpmPublishOptions {

@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import node_path from "node:path";
 import { build, BuildOptions, emptyDir } from "@deno/dnt";
-import { iter_map_not_null } from "@gaubee/util/collections";
+import { iter_map_not_null } from "@gaubee/util";
 import { globToRegExp, isGlob } from "@std/path";
 import { $ } from "@gaubee/nodekit/shell";
 import { createResolver, normalizeFilePath } from "@gaubee/nodekit/path";
@@ -9,7 +9,7 @@ import { readJson, writeJson, writeYaml } from "@gaubee/nodekit/config_file";
 import { deepMerge } from "@std/collections/deep-merge";
 import type { PackageJsonLoose } from "@gaubee/nodekit/pnpm";
 import type { DenoJson, ImportMap } from "./types.ts";
-import { obj_lazify } from "@gaubee/util/object";
+import { obj_lazify } from "@gaubee/util";
 
 /**
  * 将一个 deno-monorepo 编译成 pnpm monorepo
@@ -26,7 +26,7 @@ export const dntMonorepo = async (
         /** 清空输出文件夹 */
         clean?: boolean;
         /** 构建使用的包管理器 */
-        packageManager?: BuildOptions['packageManager']
+        packageManager?: BuildOptions["packageManager"];
     } = {},
 ): Promise<void> => {
     const rootDir = normalizeFilePath(options.rootDir ?? Deno.cwd());
@@ -125,7 +125,7 @@ export const dntMonorepo = async (
                     return { name: `./${name.slice(0, -3)}`, path: resolveDenoDir("src", name) };
                 }
             }),
-        ];
+        ].sort((a, b) => a.name.localeCompare(b.name));
 
         /// 生成 import_map.json 文件
         const importMapJson = buildImportMap(importMapFromDenoJsonAndPackageJson(denoJson, packageJson));
@@ -167,6 +167,18 @@ export const dntMonorepo = async (
                 await Deno.copyFile(resolveDenoDir(`README.md`), resolveNodeDir(`README.md`)).catch(() =>
                     console.warn("%cno found README.md", "color:yellow")
                 );
+
+                /// 修复dnt的一些问题
+                const dntPolyfillsPaths = [
+                    resolveNodeDir("esm/_dnt.polyfills.d.ts"),
+                    resolveNodeDir("script/_dnt.polyfills.d.ts"),
+                ];
+                for (const dntPolyfillsPath of dntPolyfillsPaths) {
+                    console.log("QAQ fix", dntPolyfillsPath);
+                    if (fs.existsSync(dntPolyfillsPath)) {
+                        fs.writeFileSync(dntPolyfillsPath, "export {};\n" + fs.readFileSync(dntPolyfillsPath));
+                    }
+                }
             },
         });
 
@@ -176,7 +188,7 @@ export const dntMonorepo = async (
             const packageJson = readJson(npm_package_json_path);
             for (const dep in packageJson.dependencies) {
                 if (workspaces.find((w) => w.name === dep) != null) {
-                    packageJson.dependencies[dep] = "workspace:*";
+                    packageJson.dependencies[dep] = "workspace:^*";
                 }
             }
             writeJson(npm_package_json_path, packageJson);

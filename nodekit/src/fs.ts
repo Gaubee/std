@@ -5,8 +5,10 @@ import { Ignore } from "./ignore.ts";
 import { type JsonStringifyOptions, readJson, readYaml, writeJson, type YamlStringifyOptions } from "./config_file.ts";
 import { writeYaml } from "./config_file.ts";
 import type { Buffer } from "node:buffer";
-import { obj_lazify } from "@gaubee/util/object";
+import { obj_lazify } from "@gaubee/util";
 import process from "node:process";
+import matter from "gray-matter";
+import { MarkdownOptions, readMarkdown, writeMarkdown } from "./markdown_file.ts";
 
 export type WalkOptions = {
     ignore?: string | string[] | ((entry: WalkEntry) => boolean);
@@ -110,6 +112,12 @@ export class FileEntry extends Entry {
         if (newContent !== oldContent) {
             this.write(newContent);
         }
+    }
+    readMarkdown(options?: MarkdownOptions) {
+        return readMarkdown(this.path, options);
+    }
+    writeMarkdown(content: string, data?: object, options?: MarkdownOptions) {
+        return writeMarkdown(this.path, content, data, options);
     }
     /** 获取文件后缀，不带 `.` */
     get ext(): string {

@@ -35,7 +35,7 @@ export type PureEventOncePromiseWithResolvers<T> = Promise<T> & {
  *
  * @example
  * ```ts
- * import { PureEvent } from "@gaubee/util/pure_event";
+ * import { PureEvent } from "@gaubee/util";
  * const pevent = new PureEvent<string>();
  *
  * /// basic

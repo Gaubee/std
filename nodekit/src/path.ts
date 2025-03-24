@@ -9,7 +9,7 @@ export const normalizeFilePath = (path: string | URL): string => {
     if (typeof path !== "string") {
         path = path.toString();
     }
-    if (path.startsWith("file:///")) {
+    if (path.startsWith("file://")) {
         path = fileURLToPath(path);
     }
     if (path.includes("\\")) {

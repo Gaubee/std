@@ -1,5 +1,5 @@
-import { PureEvent, PureEventDelegate, type PureEventListenOptions } from "@gaubee/util/pure_event";
-import { type ReadableDefaultStreamWithController, rs_with_controller } from "@gaubee/util/readable_stream";
+import { PureEvent, PureEventDelegate, type PureEventListenOptions } from "@gaubee/util";
+import { type ReadableDefaultStreamWithController, rs_with_controller } from "@gaubee/util";
 
 /**
  * 个极简的事件监听, 支持异步错误捕捉
