@@ -1,7 +1,8 @@
 {
-    "description": "一些常见的pure-js工具函数，适用于任何场景",
+    "description": "一些常见的web-js工具函数",
     "type": "module",
     "keywords": [
+        "web",
         "collections",
         "util",
         "std"

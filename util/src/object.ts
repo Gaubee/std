@@ -222,13 +222,31 @@ const _delegate_by = <D extends object, T extends D>(
  * @param b
  * @returns
  */
-export const obj_assign_props: <A extends object, B extends object>(a: A, b: B) => A & B = <
+export const obj_assign_props: <A extends object, B extends object>(
+    a: A,
+    // Key change: Provide the context of 'A' as the 'this' type for 'b'
+    b: B & ThisType<A>,
+) => A & B = <
     A extends object,
     B extends object,
->(a: A, b: B) => {
+>(a: A, b: B & ThisType<A>) => {
     const b_props = Object.getOwnPropertyDescriptors(b);
     Object.defineProperties(a, b_props);
     return a as A & B;
+};
+
+/**
+ * @__NO_SIDE_EFFECTS__
+ * 类型安全的 obj_assign_props，先传入a，从而获得a的类型，然后b类型就能获得 ThisType<A&B>
+ * @param a
+ * @returns
+ */
+export const obj_assign_safe_props: <A extends object>(a: A) => <B extends object>(b: B & ThisType<A & B>) => A & B = <
+    A extends object,
+>(
+    a: A,
+) => {
+    return <B extends object>(b: B & ThisType<A & B>) => obj_assign_props(a, b);
 };
 
 export type GetPropsOptions = {
@@ -271,3 +289,5 @@ export const obj_props = (<T extends object>(a: T, opts?: GetPropsOptions) => {
         return props;
     }
 }) as ObjectGetProps;
+
+// export const obj_extends

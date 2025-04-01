@@ -1,6 +1,6 @@
 {
   "name": "@gaubee/util",
-  "version": "0.25.3",
+  "version": "0.26.0",
   "exports": {
     "./abort": "./src/abort.ts",
     "./bigint": "./src/bigint.ts",
