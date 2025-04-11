@@ -1,4 +1,4 @@
-import { map_get_or_put } from "@gaubee/util";
+import { map_delete_and_get, map_get_or_put } from "@gaubee/util";
 import { func_remember } from "@gaubee/util";
 
 export const assMapWM = /*@__PURE__*/ new WeakMap<CSSStyleSheet[], Map<string, CSSStyleSheet>>();
@@ -64,7 +64,7 @@ export const createAdoptedStyleSheets = (
     };
     const map_delete = (name: string) => {
         const map = getMap();
-        const oldItem = map.get(name);
+        const oldItem = map_delete_and_get(map, name);
         if (oldItem != null) {
             remove(oldItem);
             return true;
