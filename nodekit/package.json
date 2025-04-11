@@ -1,10 +1,13 @@
 {
-  "description": "一个面向 node 开发者专门打造的工具集，专门解决开发工具脚本时的常见需求，尽可能不重复造轮子。",
-  "sideEffects": false,
-  "dependencies": {
-    "dax-sh": "^0.42.0",
-    "gray-matter": "^4.0.3",
-    "ignore": "^6.0.2",
-    "minimatch": "^10.0.1"
-  }
+    "description": "一个面向 node 开发者专门打造的工具集，专门解决开发工具脚本时的常见需求，尽可能不重复造轮子。",
+    "sideEffects": false,
+    "dependencies": {
+        "dax-sh": "^0.42.0",
+        "gray-matter": "^4.0.3",
+        "ignore": "^6.0.2",
+        "minimatch": "^10.0.1"
+    },
+    "peerDependencies": {
+        "@gaubee/util": "*"
+    }
 }

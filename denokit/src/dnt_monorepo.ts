@@ -186,9 +186,14 @@ export const dntMonorepo = async (
         {
             const npm_package_json_path = resolveNodeDir("package.json");
             const packageJson = readJson(npm_package_json_path);
+            const { peerDependencies = {} } = packageJson;
             for (const dep in packageJson.dependencies) {
                 if (workspaces.find((w) => w.name === dep) != null) {
-                    packageJson.dependencies[dep] = "workspace:^*";
+                    if (peerDependencies[dep]) {
+                        delete packageJson.dependencies[dep];
+                    } else {
+                        packageJson.dependencies[dep] = "workspace:^*";
+                    }
                 }
             }
             writeJson(npm_package_json_path, packageJson);

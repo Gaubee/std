@@ -1,6 +1,13 @@
 {
-  "private": true,
-  "peerDependencies": {
-    "react": ">=18"
-  }
+    "private": true,
+    "sideEffects": "false",
+    "peerDependencies": {
+        "react": ">=18"
+    },
+    "dependencies": {
+        "react": "^19.1.0"
+    },
+    "devDependencies": {
+        "@types/react": "^19.1.0"
+    }
 }
