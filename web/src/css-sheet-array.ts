@@ -51,11 +51,21 @@ export class CssSheetArray {
     get size() {
         return this.#ruleList.length;
     }
+    /**
+     * 插入一条 cssRule(selector + cssText)
+     *
+     * 注意，只能一条。如果有同时多条插入的需求，可以使用 addRules
+     * 通常建议一条条地插入，可以省去解析成一条条 cssRule 的成本
+     *
+     * @param cssText
+     * @param index 如果为空
+     * @returns
+     */
     addRule(cssText: string, index?: number) {
         const css = this.#css;
         const ruleList = this.#ruleList;
         const oldLen = css.cssRules.length;
-        css.insertRule(cssText, index);
+        css.insertRule(cssText, index ?? oldLen === 0 ? 0 : oldLen - 1);
         if (oldLen !== css.cssRules.length) {
             const rule = css.cssRules.item(index ?? oldLen)!;
             if (index == null) {
@@ -69,6 +79,25 @@ export class CssSheetArray {
             return rule;
         }
         return null;
+    }
+    /**
+     * 插入多条
+     * @param cssText
+     * @param index
+     */
+    addRules(cssText: string, index?: number) {
+        ruleParser.replaceSync(cssText);
+        const rules: CSSRule[] = [];
+        for (let i = ruleParser.cssRules.length - 1; i >= 0; i--) {
+            /** 是 push 模式。所以要正着 */
+            rules[rules.length] = this.addRule(ruleParser.cssRules[i].cssText, index)!;
+        }
+
+        return index == null
+            /** 是 push 模式。所以要正着 */
+            ? rules
+            /** 是 insert 模式。所以要倒着 */
+            : rules.reverse();
     }
     removeRule(ruleOrIndex: CSSRule | number) {
         let index: number;
@@ -118,3 +147,4 @@ export class CssSheetArray {
         return false;
     }
 }
+const ruleParser = /*@__PURE__*/ new CSSStyleSheet();
