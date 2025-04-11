@@ -1,7 +1,7 @@
 import { map_delete_and_get, map_get_or_put } from "@gaubee/util";
 import { func_remember } from "@gaubee/util";
 
-export const assMapWM = /*@__PURE__*/ new WeakMap<CSSStyleSheet[], Map<string, CSSStyleSheet>>();
+export const assMapWM = /*@__PURE__*/ new WeakMap<CSSStyleSheet[], Map<unknown, CSSStyleSheet>>();
 
 export type AdoptedStyleSheets = (CSSStyleSheet[]) & {
     // 扩展数组
@@ -10,10 +10,10 @@ export type AdoptedStyleSheets = (CSSStyleSheet[]) & {
     replace: (oldItem: CSSStyleSheet | null | undefined, newItem: CSSStyleSheet) => void;
 
     // 扩展Map-like的操作
-    has: (name: string) => boolean;
-    set: (name: string, item: CSSStyleSheet) => void;
-    delete: (name: string) => void;
-    get: (name: string) => CSSStyleSheet | undefined;
+    has: (key: unknown) => boolean;
+    set: (key: unknown, item: CSSStyleSheet) => void;
+    delete: (key: unknown) => void;
+    get: (key: unknown) => CSSStyleSheet | undefined;
 };
 /**
  * 一个 adoptedStyleSheets 的垫片实现
@@ -53,25 +53,25 @@ export const createAdoptedStyleSheets = (
     };
 
     const getMap = func_remember(() => map_get_or_put(assMapWM, root.adoptedStyleSheets, () => new Map()));
-    const map_has = (name: string) => getMap().has(name);
-    const map_set = (name: string, item: CSSStyleSheet) => {
+    const map_has = (key: unknown) => getMap().has(key);
+    const map_set = (key: unknown, item: CSSStyleSheet) => {
         const map = getMap();
-        const oldItem = map.get(name);
+        const oldItem = map.get(key);
         if (oldItem !== item) {
             replace(oldItem, item);
-            map.set(name, item);
+            map.set(key, item);
         }
     };
-    const map_delete = (name: string) => {
+    const map_delete = (key: unknown) => {
         const map = getMap();
-        const oldItem = map_delete_and_get(map, name);
+        const oldItem = map_delete_and_get(map, key);
         if (oldItem != null) {
             remove(oldItem);
             return true;
         }
         return false;
     };
-    const map_get = (name: string) => getMap().get(name);
+    const map_get = (key: unknown) => getMap().get(key);
     const toggle = (item: CSSStyleSheet, enable?: boolean) => {
         const hasItem = root.adoptedStyleSheets.includes(item);
         if (enable === false) {

@@ -43,6 +43,9 @@ export class CssSheetArray {
     }
 
     #css = new CSSStyleSheet();
+    get unsafeStyleSheet() {
+        return this.#css;
+    }
     /// 一个数组对象，用来提供 CSSRule 的索引
     #ruleList: CSSRule[] = [];
     get size() {
@@ -72,20 +75,21 @@ export class CssSheetArray {
         if (typeof ruleOrIndex === "number") {
             const rule = this.#ruleList[index = ruleOrIndex];
             if (rule == null) {
-                return;
+                return false;
             }
         } else {
             index = this.#ruleList.indexOf(ruleOrIndex);
             if (index === -1) {
-                return;
+                return false;
             }
         }
 
         this.#css.deleteRule(index);
         this.#ruleList.splice(index, 1);
+        return true;
     }
     getRule(index: number) {
-        return this.#ruleList[index];
+        return this.#ruleList.at(index);
     }
     [Symbol.iterator]() {
         return this.#ruleList[Symbol.iterator]();
