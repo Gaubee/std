@@ -1,6 +1,6 @@
 {
     "name": "@gaubee/web",
-    "version": "0.5.1",
+    "version": "0.6.0",
     "exports": {
         ".": "./src/mod.ts"
     },

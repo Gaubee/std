@@ -1,4 +1,4 @@
-import { arr_remove_first, func_lazy, map_get_or_put } from "@gaubee/util";
+import { func_lazy, map_get_or_put } from "@gaubee/util";
 import { type AdoptedStyleSheets, adoptedStyleSheets } from "./adopted-style-sheets.ts";
 
 /**
