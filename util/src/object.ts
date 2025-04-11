@@ -87,9 +87,9 @@ export const obj_omit = <T extends object, KS extends (keyof T)[] = (keyof T)[]>
 };
 
 /**
- * @__NO_SIDE_EFFECTS__
  * 让一个对象的所有get属性成为惰性求值的属性
  */
+/*@__NO_SIDE_EFFECTS__*/
 export const obj_lazify = <T extends object>(obj: T, target = obj): T => {
     for (const [prop, desp] of obj_all_descriptors(obj)) {
         _set_lazify(target, prop, desp);
@@ -216,12 +216,12 @@ const _delegate_by = <D extends object, T extends D>(
 };
 
 /**
- * @__NO_SIDE_EFFECTS__
  * 将b对象的属性附加到a上，不同于 Object.assign 赋值行为，这里是 设置属性描述，因此诸如 getter、setter 会一并过来，因此请注意 b 对象的属性是可以迁移的
  * @param a
  * @param b
  * @returns
  */
+/*@__NO_SIDE_EFFECTS__*/
 export const obj_assign_props: <A extends object, B extends object>(
     a: A,
     // Key change: Provide the context of 'A' as the 'this' type for 'b'
@@ -236,11 +236,11 @@ export const obj_assign_props: <A extends object, B extends object>(
 };
 
 /**
- * @__NO_SIDE_EFFECTS__
  * 类型安全的 obj_assign_props，先传入a，从而获得a的类型，然后b类型就能获得 ThisType<A&B>
  * @param a
  * @returns
  */
+/*@__NO_SIDE_EFFECTS__*/
 export const obj_assign_safe_props: <A extends object>(a: A) => <B extends object>(b: B & ThisType<A & B>) => A & B = <
     A extends object,
 >(

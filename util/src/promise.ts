@@ -3,6 +3,8 @@ import { type Func, func_wrap } from "./func.ts";
 import type { PureEvent } from "./pure_event.ts";
 import type { IterableItem } from "./iterable.ts";
 import { map_get_or_put } from "./map.ts";
+import { isPromiseLike, type PromiseMaybe } from "./promise-helper.ts";
+export * from "./promise-helper.ts";
 
 export type Timmer = (cb: Func) => Timmer.Clear;
 export namespace Timmer {
@@ -109,10 +111,6 @@ export const promise_try = async <R>(fn: () => R): Promise<PromiseSettledResult<
         return { status: "rejected", reason };
     }
 };
-
-export type PromiseMaybe<T> = PromiseLike<T> | T;
-export const isPromiseLike = <T = unknown>(value: unknown): value is PromiseLike<T> =>
-    value !== null && typeof (value as any)?.then === "function";
 
 type PromiseOnceThenState<T> = PromiseOnceThenRegister<T> | PromiseOnceThenResolved<T> | PromiseOnceThenReject<T>;
 type PromiseOnceThenRegister<T> = {

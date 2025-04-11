@@ -3,9 +3,9 @@ import { func_remember } from "@gaubee/util";
 
 export const assMapWM = /*@__PURE__*/ new WeakMap<CSSStyleSheet[], Map<string, CSSStyleSheet>>();
 /**
- * @__NO_SIDE_EFFECTS__
  * 一个 adoptedStyleSheets 的垫片实现
  */
+/*@__NO_SIDE_EFFECTS__*/
 export const createAdoptedStyleSheets = (
     root: { adoptedStyleSheets: CSSStyleSheet[] } = document,
 ): (CSSStyleSheet[]) & {
