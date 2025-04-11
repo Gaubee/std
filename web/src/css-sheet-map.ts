@@ -1,10 +1,25 @@
 import { arr_remove_first, func_lazy, map_get_or_put } from "@gaubee/util";
-import { adoptedStyleSheets } from "./adopted-style-sheets.ts";
+import { type AdoptedStyleSheets, adoptedStyleSheets } from "./adopted-style-sheets.ts";
 
 /**
  * 一个对 CSSStyleSheet 的再包装，使得注入的样式更容易被管理
  */
 export class CssSheetMap {
+    #ass;
+    constructor(ass: AdoptedStyleSheets = adoptedStyleSheets) {
+        this.#ass = ass;
+    }
+    get owner() {
+        return this.#ass;
+    }
+    set owner(ass) {
+        if (ass === this.#ass) {
+            return;
+        }
+        this.#effect(false);
+        this.#ass = ass;
+    }
+
     #css = new CSSStyleSheet();
     #ruleMap = new Map<string, CSSRule>();
     #ruleList: CSSRule[] = [];
@@ -28,15 +43,15 @@ export class CssSheetMap {
         this.#effect();
     }
     #effected = false;
-    #effect() {
-        if (this.#effected) {
-            if (this.#css.cssRules.length === 0) {
-                arr_remove_first(adoptedStyleSheets, this.#css);
+    #effect(toggle = this.#effected) {
+        if (toggle) {
+            if (this.#effected && this.#css.cssRules.length === 0) {
+                this.#ass.remove(this.#css);
                 this.#effected = false;
             }
         } else {
-            if (this.#css.cssRules.length > 0) {
-                adoptedStyleSheets.push(this.#css);
+            if (!this.#effected && this.#css.cssRules.length > 0) {
+                this.#ass.push(this.#css);
                 this.#effected = true;
             }
         }

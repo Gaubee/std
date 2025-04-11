@@ -2,13 +2,8 @@ import { map_get_or_put } from "@gaubee/util";
 import { func_remember } from "@gaubee/util";
 
 export const assMapWM = /*@__PURE__*/ new WeakMap<CSSStyleSheet[], Map<string, CSSStyleSheet>>();
-/**
- * 一个 adoptedStyleSheets 的垫片实现
- */
-/*@__NO_SIDE_EFFECTS__*/
-export const createAdoptedStyleSheets = (
-    root: { adoptedStyleSheets: CSSStyleSheet[] } = document,
-): (CSSStyleSheet[]) & {
+
+export type AdoptedStyleSheets = (CSSStyleSheet[]) & {
     // 扩展数组
     remove: (item: CSSStyleSheet) => void;
     toggle: (item: CSSStyleSheet, enable?: boolean) => void;
@@ -19,7 +14,14 @@ export const createAdoptedStyleSheets = (
     set: (name: string, item: CSSStyleSheet) => void;
     delete: (name: string) => void;
     get: (name: string) => CSSStyleSheet | undefined;
-} => {
+};
+/**
+ * 一个 adoptedStyleSheets 的垫片实现
+ */
+/*@__NO_SIDE_EFFECTS__*/
+export const createAdoptedStyleSheets = (
+    root: { adoptedStyleSheets: CSSStyleSheet[] } = document,
+): AdoptedStyleSheets => {
     let dirty = false;
     const emitChange = () => {
         if (dirty) {
@@ -28,6 +30,7 @@ export const createAdoptedStyleSheets = (
         dirty = true;
         queueMicrotask(() => {
             dirty = false;
+            // deno-lint-ignore no-self-assign
             root.adoptedStyleSheets = root.adoptedStyleSheets;
         });
     };
@@ -128,4 +131,4 @@ export const createAdoptedStyleSheets = (
         },
     }) as any;
 };
-export const adoptedStyleSheets = /*@__PURE__*/ createAdoptedStyleSheets();
+export const adoptedStyleSheets: AdoptedStyleSheets = /*@__PURE__*/ createAdoptedStyleSheets();
