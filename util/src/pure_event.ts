@@ -1,3 +1,4 @@
+import { arr_set_next } from "./array.ts";
 import { iter_map_async_try } from "./collections.ts";
 import type { Func } from "./func.ts";
 import { iter_map_not_null } from "./iterable.ts";
@@ -193,7 +194,7 @@ export class PureEvent<T> {
         const results = await iter_map_async_try(this.events.values(), (cb) => cb.cb(data));
         for (const item of results) {
             if (item.status === "rejected") {
-                errors.push(...item.reason);
+                arr_set_next(errors, item.reason);
             }
         }
         if (errors.length > 0) {
