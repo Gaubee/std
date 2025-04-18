@@ -31,7 +31,7 @@ export class CssSheetArray {
      * CSSStyleSheet 所附加的 AdoptedStyleSheets 目标
      * 设为 null 可以移除附加，使得 CSSStyleSheet 失效
      */
-    get owner() {
+    get owner(): AdoptedStyleSheets | null {
         return this.#ass;
     }
     set owner(ass) {
@@ -43,12 +43,12 @@ export class CssSheetArray {
     }
 
     #css = new CSSStyleSheet();
-    get unsafeStyleSheet() {
+    get unsafeStyleSheet(): CSSStyleSheet {
         return this.#css;
     }
     /// 一个数组对象，用来提供 CSSRule 的索引
     #ruleList: CSSRule[] = [];
-    get size() {
+    get size(): number {
         return this.#ruleList.length;
     }
     /**
@@ -61,11 +61,11 @@ export class CssSheetArray {
      * @param index 如果为空
      * @returns
      */
-    addRule(cssText: string, index?: number) {
+    addRule(cssText: string, index?: number): CSSRule | null {
         const css = this.#css;
         const ruleList = this.#ruleList;
         const oldLen = css.cssRules.length;
-        css.insertRule(cssText, index ?? oldLen === 0 ? 0 : oldLen - 1);
+        css.insertRule(cssText, index ?? oldLen);
         if (oldLen !== css.cssRules.length) {
             const rule = css.cssRules.item(index ?? oldLen)!;
             if (index == null) {
@@ -85,7 +85,7 @@ export class CssSheetArray {
      * @param cssText
      * @param index
      */
-    addRules(cssText: string, index?: number) {
+    addRules(cssText: string, index?: number): CSSRule[] {
         ruleParser.replaceSync(cssText);
         const rules: CSSRule[] = [];
         for (let i = ruleParser.cssRules.length - 1; i >= 0; i--) {
@@ -99,7 +99,7 @@ export class CssSheetArray {
             /** 是 insert 模式。所以要倒着 */
             : rules.reverse();
     }
-    removeRule(ruleOrIndex: CSSRule | number) {
+    removeRule(ruleOrIndex: CSSRule | number): boolean {
         let index: number;
         if (typeof ruleOrIndex === "number") {
             const rule = this.#ruleList[index = ruleOrIndex];
@@ -117,20 +117,23 @@ export class CssSheetArray {
         this.#ruleList.splice(index, 1);
         return true;
     }
-    getRule(index: number) {
+    atRule(index: number): CSSRule | undefined {
         return this.#ruleList.at(index);
     }
-    [Symbol.iterator]() {
+    [Symbol.iterator](): ArrayIterator<CSSRule> {
         return this.#ruleList[Symbol.iterator]();
     }
     #idRuleMap = new Map<unknown, CSSRule>();
-    keys() {
+    keys(): MapIterator<unknown> {
         return this.#idRuleMap.keys();
     }
-    hasRule(key: unknown) {
+    hasRule(key: unknown): boolean {
         return this.#idRuleMap.has(key);
     }
-    setRule(key: unknown, cssText: string, index?: number) {
+    getRule(key: unknown): CSSRule | undefined {
+        return this.#idRuleMap.get(key);
+    }
+    setRule(key: unknown, cssText: string, index?: number): CSSRule | null {
         this.deleteRule(key);
         const rule = this.addRule(cssText, index);
         if (rule) {
@@ -138,7 +141,7 @@ export class CssSheetArray {
         }
         return rule;
     }
-    deleteRule(key: unknown) {
+    deleteRule(key: unknown): boolean {
         const oldRule = this.#idRuleMap.get(key);
         if (oldRule != null) {
             this.removeRule(oldRule);
