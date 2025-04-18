@@ -6,20 +6,20 @@ import { type AdoptedStyleSheets, adoptedStyleSheets } from "./adopted-style-she
 export class CssSheetArray {
     #ass: AdoptedStyleSheets | null;
     #effected = false;
-    #effect(toggle = this.#effected) {
+    #effect(toggle = !this.#effected) {
         const ass = this.#ass;
         if (null == ass) {
             return;
         }
         if (toggle) {
-            if (this.#effected && this.#css.cssRules.length === 0) {
-                ass.remove(this.#css);
-                this.#effected = false;
-            }
-        } else {
-            if (!this.#effected && this.#css.cssRules.length > 0) {
+            if (!this.#effected) {
                 ass.push(this.#css);
                 this.#effected = true;
+            }
+        } else {
+            if (this.#effected) {
+                ass.remove(this.#css);
+                this.#effected = false;
             }
         }
     }
