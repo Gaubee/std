@@ -107,9 +107,9 @@ export const iter_map_reduce = <
  *
  * 支持任何可迭代的对象
  */
-export const iter_map_not_null = <TS extends Iterable<T>, T = IterableItem<TS>, R = unknown>(
+export const iter_map_not_null = <TS extends Iterable<T>, T = IterableItem<TS>, R = T>(
     values: TS,
-    callbackfn: (
+    callbackfn?: (
         value: T,
         index: number,
         values: TS,
@@ -117,14 +117,22 @@ export const iter_map_not_null = <TS extends Iterable<T>, T = IterableItem<TS>, 
 ): Array<NonNullable<R>> => {
     const result: NonNullable<R>[] = [];
     let index = 0;
-    for (const value of values) {
-        const r = callbackfn(
-            value,
-            index++,
-            values,
-        );
-        if (r != null) {
-            result.push(r);
+    if (callbackfn) {
+        for (const value of values) {
+            const r = callbackfn(
+                value,
+                index++,
+                values,
+            );
+            if (r != null) {
+                result.push(r);
+            }
+        }
+    } else {
+        for (const value of values) {
+            if (value != null) {
+                result.push(value as unknown as NonNullable<R>);
+            }
         }
     }
     return result;
@@ -137,21 +145,29 @@ export const iter_map_not_null = <TS extends Iterable<T>, T = IterableItem<TS>, 
  */
 export const iter_first_not_null = <TS extends Iterable<T>, T = IterableItem<TS>, R = unknown>(
     values: TS,
-    callbackfn: (
+    callbackfn?: (
         value: T,
         index: number,
         values: TS,
     ) => R,
-): R | undefined => {
+): NonNullable<R> | undefined => {
     let index = 0;
-    for (const value of values) {
-        const r = callbackfn(
-            value,
-            index++,
-            values,
-        );
-        if (r != null) {
-            return r;
+    if (callbackfn) {
+        for (const value of values) {
+            const r = callbackfn(
+                value,
+                index++,
+                values,
+            );
+            if (r != null) {
+                return r;
+            }
+        }
+    } else {
+        for (const value of values) {
+            if (value != null) {
+                return (value as unknown as NonNullable<R>);
+            }
         }
     }
 };
