@@ -113,10 +113,10 @@ export class FileEntry extends Entry {
             this.write(newContent);
         }
     }
-    readMarkdown(options?: MarkdownOptions) {
+    readMarkdown(options?: MarkdownOptions): matter.GrayMatterFile<string> {
         return readMarkdown(this.path, options);
     }
-    writeMarkdown(content: string, data?: object, options?: MarkdownOptions) {
+    writeMarkdown(content: string, data?: object, options?: MarkdownOptions): void {
         return writeMarkdown(this.path, content, data, options);
     }
     /** 获取文件后缀，不带 `.` */

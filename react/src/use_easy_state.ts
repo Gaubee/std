@@ -10,7 +10,9 @@ export interface UseEasyState {
     <T>(initialState: T | (() => T)): EasyState<T>;
     <T>(initialState?: undefined): EasyState<T | undefined>;
 }
-export const easy_state_proto = obj_assign_safe_props([] as any as ReactState<any>)({
+export const easy_state_proto: ReactState<unknown> & {
+    value: unknown;
+} = obj_assign_safe_props([] as any as ReactState<unknown>)({
     get value() {
         return this[0];
     },

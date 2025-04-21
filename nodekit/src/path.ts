@@ -34,7 +34,10 @@ export const createResolver = (cwd: string): PathResolver => {
 export const resolveCwd: PathResolver = /*@__PURE__*/ createResolver(process.cwd());
 
 /** 寻找一个包文件目录 */
-export const createProjectResolver = (fromPath: string | URL = process.cwd(), projectRootFilename = "package.json") => {
+export const createProjectResolver = (
+    fromPath: string | URL = process.cwd(),
+    projectRootFilename = "package.json",
+): PathResolver => {
     let rootDirname = normalizeFilePath(fromPath);
     while (
         false === fs.existsSync(node_path.resolve(rootDirname, projectRootFilename))

@@ -1,10 +1,10 @@
-import matter, { GrayMatterFile } from "gray-matter";
+import matter, { type GrayMatterFile } from "gray-matter";
 import fs from "node:fs";
 import { normalizeFilePath } from "./path.ts";
 /**
  * read markdown file
  */
-export const readMarkdown = (path: string, options?: MarkdownOptions) => {
+export const readMarkdown = (path: string, options?: MarkdownOptions): GrayMatterFile<string> => {
     return matter(fs.readFileSync(normalizeFilePath(path), options?.encoding)) as GrayMatterFile<string>;
 };
 
@@ -14,7 +14,7 @@ export type MarkdownOptions = Pick<matter.GrayMatterOption<string, any>, "engine
 /**
  * write markdown file
  */
-export const writeMarkdown = (path: string, content: string, data?: object, options?: MarkdownOptions) => {
+export const writeMarkdown = (path: string, content: string, data?: object, options?: MarkdownOptions): void => {
     fs.writeFileSync(
         normalizeFilePath(path),
         data ? matter.stringify(content, data, options) : content,

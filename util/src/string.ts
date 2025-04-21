@@ -1,4 +1,4 @@
-import { func_remember } from "./func.ts";
+import { Func, func_remember } from "./func.ts";
 
 /**
  * 反转字符串
@@ -113,4 +113,26 @@ export const human_space_regex: func_remember.Return<
 export const str_human_trim = (str: string): string => {
     const regex = human_space_regex();
     return str.replace(regex.start, "").replace(regex.end, "");
+};
+
+/**
+ * get code snippet from function body
+ */
+export const stringify_fn_body = (fn: Func, tabSize: number = 2): string => {
+    const fn_str = fn.toString();
+    const body_str = fn_str
+        .slice(fn_str.indexOf("{") + 1, fn_str.lastIndexOf("}"))
+        // remove trailing whitespace
+        .trimEnd()
+        // remove empty lines
+        .replace(/^([\s\t]*$\r?\n)+/gm, "")
+        // use spaces uniformly: current indentStyle is "tab",and tab-width == 2(spaces)
+        .replace(/^\t+/gm, (tabs) => " ".repeat(tabs.length * tabSize));
+    /// remove indent
+    const indent = body_str.match(/\s+/)?.[0];
+    if (!indent) {
+        return body_str.trim();
+    }
+    const indent_reg = new RegExp(`^\\s{${indent.length}}`, "gm");
+    return body_str.replace(indent_reg, "");
 };

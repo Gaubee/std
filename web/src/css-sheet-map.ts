@@ -3,21 +3,23 @@ import { type AdoptedStyleSheets, adoptedStyleSheets } from "./adopted-style-she
 
 /**
  * 一个对 CSSStyleSheet 的再包装，使得注入的样式更容易被管理
+ * @deprecated use CssSheetArray for instance
  */
 export class CssSheetMap {
-    #ass;
+    #ass: AdoptedStyleSheets | null;
     constructor(ass: AdoptedStyleSheets = adoptedStyleSheets) {
         this.#ass = ass;
     }
-    get owner() {
+    get owner(): AdoptedStyleSheets | null {
         return this.#ass;
     }
-    set owner(ass) {
+    set owner(ass: AdoptedStyleSheets | null) {
         if (ass === this.#ass) {
             return;
         }
         this.#effect(false);
         this.#ass = ass;
+        this.#effect(true);
     }
 
     #css = new CSSStyleSheet();
@@ -43,16 +45,21 @@ export class CssSheetMap {
         this.#effect();
     }
     #effected = false;
-    #effect(toggle = this.#effected) {
+
+    #effect(toggle = !this.#effected) {
+        const ass = this.#ass;
+        if (null == ass) {
+            return;
+        }
         if (toggle) {
-            if (this.#effected && this.#css.cssRules.length === 0) {
-                this.#ass.remove(this.#css);
-                this.#effected = false;
+            if (!this.#effected) {
+                ass.push(this.#css);
+                this.#effected = true;
             }
         } else {
-            if (!this.#effected && this.#css.cssRules.length > 0) {
-                this.#ass.push(this.#css);
-                this.#effected = true;
+            if (this.#effected) {
+                ass.remove(this.#css);
+                this.#effected = false;
             }
         }
     }
@@ -68,7 +75,7 @@ export class CssSheetMap {
         this.#effect();
     }
 
-    setRules(rules: Record<string, string | CSSProperties>) {
+    setRules(rules: Record<string, string | CSSProperties>): () => void {
         const selectors = Object.keys(rules);
         for (const selector of selectors) {
             let cssText = rules[selector];
@@ -85,14 +92,14 @@ export class CssSheetMap {
     }
 
     #ref = new Map<string, Set<string | number>>();
-    refRule(rid: string | number, selector: string, cssText: string | (() => string)) {
+    refRule(rid: string | number, selector: string, cssText: string | (() => string)): void {
         const reasons = map_get_or_put(this.#ref, selector, () => {
             this.setRule(selector, typeof cssText === "function" ? cssText() : cssText);
             return new Set();
         });
         reasons.add(rid);
     }
-    unrefRule(rid: string | number, selector: string) {
+    unrefRule(rid: string | number, selector: string): void {
         const reasons = this.#ref.get(selector);
         if (reasons == null) {
             return;

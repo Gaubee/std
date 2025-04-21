@@ -34,12 +34,13 @@ export class CssSheetArray {
     get owner(): AdoptedStyleSheets | null {
         return this.#ass;
     }
-    set owner(ass) {
+    set owner(ass: AdoptedStyleSheets) {
         if (ass === this.#ass) {
             return;
         }
         this.#effect(false);
         this.#ass = ass ?? null;
+        this.#effect(true);
     }
 
     #css = new CSSStyleSheet();

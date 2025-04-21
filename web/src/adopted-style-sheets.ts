@@ -1,7 +1,7 @@
 import { map_delete_and_get, map_get_or_put } from "@gaubee/util";
 import { func_remember } from "@gaubee/util";
 
-export const assMapWM = /*@__PURE__*/ new WeakMap<CSSStyleSheet[], Map<unknown, CSSStyleSheet>>();
+const assMapWM = /*@__PURE__*/ new WeakMap<CSSStyleSheet[], Map<unknown, CSSStyleSheet>>();
 
 export type AdoptedStyleSheets = (CSSStyleSheet[]) & {
     // 扩展数组
