@@ -1,9 +1,14 @@
 import type { Func } from "./func.ts";
 
-export type ClassAccessorDecorator<T, V> = (
+export type ClassAccessorDecorator<
+    T,
+    V,
+    R extends ClassAccessorDecoratorReturn<T, V> = ClassAccessorDecoratorReturn<T, V>,
+> = (
     target: ClassAccessorDecoratorTarget<T, V>,
     context: ClassAccessorDecoratorContext<T, V>,
-) => void | ClassAccessorDecoratorResult<T, V>;
+) => R;
+type ClassAccessorDecoratorReturn<T, V> = void | ClassAccessorDecoratorResult<T, V>;
 /**
  * 用于对 accessor 的修饰
  */
@@ -12,11 +17,23 @@ export const accessor = <T extends object, V>(
 ): ClassAccessorDecorator<T, V> => {
     return builder;
 };
+/**
+ * 用于对 accessor 的修饰，提供强类型安全的返回
+ */
+export const safeAccessor: <T extends object, V>() => <R extends ClassAccessorDecoratorReturn<T, V>>(
+    builder: ClassAccessorDecorator<T, V, R>,
+) => ClassAccessorDecorator<T, V, R> = () => (builder) => builder;
 
-export type ClassGetterDecorator<T extends object, V> = (
+export type ClassGetterDecorator<
+    T extends object,
+    V,
+    R extends ClassGetterDecoratorReturn<T, V> = ClassGetterDecoratorReturn<T, V>,
+> = (
     target: (this: T) => V,
     context: ClassGetterDecoratorContext<T, V>,
-) => void | ((this: T) => V);
+) => R;
+
+export type ClassGetterDecoratorReturn<T extends object, V> = void | ((this: T) => V);
 /**
  * 用于对 getter 的修饰
  */
@@ -25,6 +42,12 @@ export const getter = <T extends object, V>(
 ): ClassGetterDecorator<T, V> => {
     return builder;
 };
+/**
+ * 用于对 getter 的修饰，提供强类型安全的返回
+ */
+export const safeGetter: <T extends object, V>() => <R extends ClassGetterDecoratorReturn<T, V>>(
+    builder: ClassGetterDecorator<T, V, R>,
+) => ClassGetterDecorator<T, V, R> = () => (builder) => builder;
 /**
  * 用于在 getter 之前做一些动作
  */
@@ -61,10 +84,16 @@ export const wrapGetter = <T extends object, V>(
     });
 };
 
-export type ClassSetterDecorator<T, V> = (
+export type ClassSetterDecorator<
+    T,
+    V,
+    R extends ClassSetterDecoratorReturn<T, V> = ClassSetterDecoratorReturn<T, V>,
+> = (
     target: (this: T, value: V) => void,
     context: ClassSetterDecoratorContext<T, V>,
-) => void | ((this: T, value: V) => void);
+) => R;
+
+export type ClassSetterDecoratorReturn<T, V> = void | ((this: T, value: V) => void);
 /**
  * 用于对 setter 的修饰
  */
@@ -73,6 +102,12 @@ export const setter = <T = unknown, V = unknown>(
 ): ClassSetterDecorator<T, V> => {
     return builder;
 };
+/**
+ * 用于对 setter 的修饰，提供强类型安全的返回
+ */
+export const safeSetter: <T extends object, V>() => <R extends ClassSetterDecoratorReturn<T, V>>(
+    builder: ClassSetterDecorator<T, V, R>,
+) => ClassSetterDecorator<T, V, R> = () => (builder) => builder;
 /**
  * 用于在 setter 之前做一些动作
  */
@@ -108,10 +143,16 @@ export const wrapSetter = <T extends object, V>(
     );
 };
 
-export type ClassFieldDecorator<T extends object, V> = (
+export type ClassFieldDecorator<
+    T extends object,
+    V,
+    R extends ClassFieldDecoratorReturn<T, V> = ClassFieldDecoratorReturn<T, V>,
+> = (
     target: undefined,
     context: ClassFieldDecoratorContext<T, V>,
-) => void | ((this: T, value: V) => V);
+) => R;
+
+export type ClassFieldDecoratorReturn<T extends object, V> = void | ((this: T, value: V) => V);
 /**
  * 用于对普通字段做修饰
  * @param builder
@@ -120,11 +161,23 @@ export type ClassFieldDecorator<T extends object, V> = (
 export const field = <T extends object, V>(builder: ClassFieldDecorator<T, V>): ClassFieldDecorator<T, V> => {
     return builder;
 };
+/**
+ * 用于对普通字段做修饰，提供强类型安全的返回
+ */
+export const safeField: <T extends object, V>() => <R extends ClassFieldDecoratorReturn<T, V>>(
+    builder: ClassFieldDecorator<T, V, R>,
+) => ClassFieldDecorator<T, V, R> = () => (builder) => builder;
 type Method<T> = (this: T, ...args: any) => any;
-export type ClassMethodDecorator<T, M extends Method<T>> = (
+export type ClassMethodDecorator<
+    T,
+    M extends Method<T>,
+    R extends ClassMethodDecoratorReturn<T, M> = ClassMethodDecoratorReturn<T, M>,
+> = (
     target: M,
     context: ClassMethodDecoratorContext<T, M>,
-) => void | M;
+) => R;
+
+export type ClassMethodDecoratorReturn<T, M extends Method<T>> = void | M;
 /**
  * 用于对类方法做修饰
  * @param builder
@@ -135,6 +188,12 @@ export const method = <T extends object, M extends Method<T>>(
 ): ClassMethodDecorator<T, M> => {
     return builder;
 };
+/**
+ * 用于对类方法做修饰，提供强类型安全的返回
+ */
+export const safeMethod: <T extends object, M extends Method<T>>() => <R extends ClassMethodDecoratorReturn<T, M>>(
+    builder: ClassMethodDecorator<T, M, R>,
+) => ClassMethodDecorator<T, M, R> = () => (builder) => builder;
 
 export const bindThis = <T extends object, M extends Method<T>>(): ClassMethodDecorator<T, M> =>
     method<T, M>((target, context) => {
