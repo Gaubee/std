@@ -1,5 +1,5 @@
 import { disposable } from "./disposable.ts";
-import { delay, promise_once_then, promise_safe_race } from "./promise.ts";
+import { delay, promise_once_then, promise_safe_race, timmers } from "./promise.ts";
 import assert from "node:assert";
 
 Deno.test("promise_once_then", async () => {
@@ -25,7 +25,7 @@ Deno.test("promise_safe_race 基础功能", async () => {
     const disposer = disposable();
 
     // 测试同步值优先
-    const syncResult = await promise_safe_race([42, delay(10, { disposer }).then(() => 100)]);
+    const syncResult = await promise_safe_race([42, delay(10, { disposer }).then(() => 100, () => 0)]);
     assert.strictEqual(syncResult, 42);
 
     // 测试异步优先
@@ -34,7 +34,7 @@ Deno.test("promise_safe_race 基础功能", async () => {
         delay(5, { disposer }).then(() => "fast"),
     ]);
     assert.strictEqual(asyncResult, "fast");
-    disposer.dispose();
+    await disposer.dispose();
 });
 
 Deno.test("promise_safe_race 拒绝处理", async () => {
@@ -97,9 +97,9 @@ Deno.test("promise_safe_race 混合类型处理", async () => {
     const disposer = disposable();
     // 同步值在中间
     const result1 = await promise_safe_race([
-        delay(10, { disposer }).then(() => "async"),
+        delay(10, { disposer }).then(() => "async", () => 0),
         "sync",
-        delay(5, { disposer }).then(() => 1),
+        delay(5, { disposer }).then(() => 1, () => 0),
     ]);
     assert.strictEqual(result1, "sync");
 
@@ -118,7 +118,7 @@ Deno.test("promise_safe_race 迭代器只遍历一次", async () => {
     const iterable = {
         *[Symbol.iterator]() {
             callCount++;
-            yield delay(10, { disposer }).then(() => 1);
+            yield delay(10, { disposer }).then(() => 1, () => 0);
             yield 42;
         },
     };
@@ -127,4 +127,15 @@ Deno.test("promise_safe_race 迭代器只遍历一次", async () => {
     assert.strictEqual(result, 42);
     assert.strictEqual(callCount, 1);
     disposer.dispose();
+});
+
+Deno.test("delay return", async () => {
+    const target = new EventTarget();
+    const message = new Event("message");
+    delay(1).then(() => {
+        target.dispatchEvent(message);
+    });
+    // target.addEventListener("abort")
+    const res = await delay(timmers.eventTarget(target, "message"));
+    assert.strictEqual(res, message);
 });

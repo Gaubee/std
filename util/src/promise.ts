@@ -6,22 +6,28 @@ import { map_get_or_put } from "./map.ts";
 import { isPromiseLike, type PromiseMaybe } from "./promise-helper.ts";
 export * from "./promise-helper.ts";
 
-export type Timmer = (cb: Func) => Timmer.Clear;
+export type Timmer<T = unknown> = (cb: Func<unknown, [T]>) => Timmer.Clear;
 export namespace Timmer {
     export type Clear = () => void;
+
+    export type From<T extends number | Timmer<any>> = T extends number ? Timmer<void> : T;
+    export type Type<T> = T extends Timmer<infer R> ? Timmer<R> : never;
+    export type FromType<T extends number | Timmer<any>> = T extends number ? void
+        : T extends Timmer<infer R> ? R
+        : never;
 }
 
 export const timmers = {
-    timeout: (ms: number): Timmer => {
+    timeout: (ms: number): Timmer<void> => {
         return ((cb: Func) => {
             const ti = setTimeout(cb, ms);
             return () => clearTimeout(ti);
-        }) satisfies Timmer;
+        });
     },
     raf: ((cb: Func) => {
         const ti = requestAnimationFrame(cb);
         return () => cancelAnimationFrame(ti);
-    }) satisfies Timmer,
+    }) as Timmer<number>,
     microtask: ((cb: Func) => {
         let cancel = false;
         queueMicrotask(() => {
@@ -33,15 +39,18 @@ export const timmers = {
         return () => {
             cancel = true;
         };
-    }) satisfies Timmer,
-    eventTarget: (target: EventTarget, eventType: string) => {
+    }) as Timmer<void>,
+    eventTarget: <T extends Event>(
+        target: Pick<EventTarget, "addEventListener" | "removeEventListener">,
+        eventType: string,
+    ) => {
         return ((cb) => {
-            target.addEventListener(eventType, cb);
-            return () => target.removeEventListener(eventType, cb);
-        }) satisfies Timmer;
+            target.addEventListener(eventType, cb as any);
+            return () => target.removeEventListener(eventType, cb as any);
+        }) satisfies Timmer<T>;
     },
-    from: (ms: number | Timmer): Timmer => {
-        return typeof ms === "number" ? ms <= 0 ? timmers.microtask : timmers.timeout(ms) : ms;
+    from: <T extends number | Timmer<any>>(ms: T): Timmer.From<T> => {
+        return (typeof ms === "number" ? (ms <= 0 ? timmers.microtask : timmers.timeout(ms)) : ms) as Timmer.From<T>;
     },
 };
 /**
@@ -63,18 +72,18 @@ export const timmers = {
  *
  * 如果 ms = 0，那么会使用 queueMicrotask 而不是setTimeot，当然cancel仍然是可以工作的
  */
-export const delay = (
-    ms: number | Timmer,
+export const delay = <T extends number | Timmer<any>>(
+    ms: T,
     options?: { signal?: AbortSignal | null; disposer?: PureEvent<void> },
-): delay.Delayer => {
+): delay.Delayer<Timmer.FromType<T>> => {
     const signal = options?.signal;
     signal?.throwIfAborted();
 
-    const job = Promise.withResolvers<void>();
+    const job = Promise.withResolvers<Timmer.FromType<T>>();
     let resolve = job.resolve;
     let reject = job.reject;
     const timmer = timmers.from(ms);
-    const clear = timmer(() => resolve());
+    const clear = timmer(resolve);
     const result = Object.assign(job.promise, {
         cancel(cause?: unknown) {
             clear();
@@ -104,7 +113,7 @@ export const delay = (
 };
 
 export namespace delay {
-    export type Delayer = Promise<void> & {
+    export type Delayer<T = void> = Promise<T> & {
         cancel(cause?: unknown): void;
     };
 }
