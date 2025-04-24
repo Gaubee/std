@@ -13,15 +13,15 @@ export namespace Timmer {
 
 export const timmers = {
     timeout: (ms: number): Timmer => {
-        return (cb: Func) => {
+        return ((cb: Func) => {
             const ti = setTimeout(cb, ms);
             return () => clearTimeout(ti);
-        };
+        }) satisfies Timmer;
     },
     raf: ((cb: Func) => {
-        const ti = requestAnimationFrame(() => cb());
+        const ti = requestAnimationFrame(cb);
         return () => cancelAnimationFrame(ti);
-    }) as Timmer,
+    }) satisfies Timmer,
     microtask: ((cb: Func) => {
         let cancel = false;
         queueMicrotask(() => {
@@ -33,7 +33,13 @@ export const timmers = {
         return () => {
             cancel = true;
         };
-    }) as Timmer,
+    }) satisfies Timmer,
+    eventTarget: (target: EventTarget, eventType: string) => {
+        return ((cb) => {
+            target.addEventListener(eventType, cb);
+            return () => target.removeEventListener(eventType, cb);
+        }) satisfies Timmer;
+    },
     from: (ms: number | Timmer): Timmer => {
         return typeof ms === "number" ? ms <= 0 ? timmers.microtask : timmers.timeout(ms) : ms;
     },
