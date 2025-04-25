@@ -1,9 +1,9 @@
 import { event_target_on } from "./event_target.ts";
 import { type Func, func_wrap } from "./func.ts";
-import type { PureEvent } from "./pure_event.ts";
 import type { IterableItem } from "./iterable.ts";
 import { map_get_or_put } from "./map.ts";
 import { isPromiseLike, type PromiseMaybe } from "./promise-helper.ts";
+import type { PureEvent } from "./pure_event.ts";
 export * from "./promise-helper.ts";
 
 export type Timmer<T = unknown> = (cb: Func<unknown, [T]>) => Timmer.Clear;
@@ -15,6 +15,27 @@ export namespace Timmer {
     export type FromType<T extends number | Timmer<any>> = T extends number ? void
         : T extends Timmer<infer R> ? R
         : never;
+
+    export interface EventEmiter {
+        <EE extends import("node:events").EventEmitter, N extends Timmer.EventEmiter.GetEventName<EE>>(
+            emitter: EE,
+            name: N,
+            filter?: (...args: Timmer.EventEmiter.GetEventType<EE, N>) => boolean | void,
+        ): Timmer<Timmer.EventEmiter.GetEventType<EE, N>>;
+        <Args extends unknown[]>(
+            emitter: import("node:events").EventEmitter,
+            name: string,
+            filter?: (...args: Args) => boolean | void,
+        ): Timmer<Args>;
+    }
+    export namespace EventEmiter {
+        export type GetEventMap<EE> = EE extends
+            import("node:events").EventEmitter<infer E extends Record<keyof E, any[]>> ? E : Record<string, any[]>;
+        export type GetEventName<EE> = keyof GetEventMap<EE>;
+        export type GetEventType<EE, N> = N extends keyof GetEventMap<EE>
+            ? GetEventMap<EE>[N] extends unknown[] ? GetEventMap<EE>[N] : unknown[]
+            : unknown[];
+    }
 }
 
 export const timmers = {
@@ -43,12 +64,46 @@ export const timmers = {
     eventTarget: <T extends Event>(
         target: Pick<EventTarget, "addEventListener" | "removeEventListener">,
         eventType: string,
-    ) => {
-        return ((cb) => {
-            target.addEventListener(eventType, cb as any);
-            return () => target.removeEventListener(eventType, cb as any);
-        }) satisfies Timmer<T>;
+        filter?: (event: T) => boolean | void,
+    ): Timmer<T> => {
+        return ((resolve) => {
+            let cb: (evt: T) => void;
+            if (typeof filter === "function") {
+                cb = (event) => {
+                    if (filter(event)) {
+                        resolve(event);
+                        target.removeEventListener(eventType, cb as EventListener);
+                    }
+                };
+                target.addEventListener(eventType, cb as EventListener);
+            } else {
+                cb = resolve;
+                target.addEventListener(eventType, cb as EventListener, { once: true });
+            }
+            return () => target.removeEventListener(eventType, cb as EventListener);
+        });
     },
+    eventEmitter: ((
+        emitter: import("node:events").EventEmitter,
+        name: string,
+        filter?: (...args: unknown[]) => boolean | void,
+    ) => {
+        return ((resolve) => {
+            let cb: (args: unknown[]) => void;
+            if (typeof filter === "function") {
+                cb = (...args) => {
+                    if (filter(...args)) {
+                        resolve(args);
+                        emitter.off(name, cb);
+                    }
+                };
+                emitter.on(name, cb);
+            } else {
+                emitter.once(name as string, cb = (...args) => resolve(args));
+            }
+            return () => emitter.off(name, cb);
+        }) as Timmer<unknown[]>;
+    }) as Timmer.EventEmiter,
     from: <T extends number | Timmer<any>>(ms: T): Timmer.From<T> => {
         return (typeof ms === "number" ? (ms <= 0 ? timmers.microtask : timmers.timeout(ms)) : ms) as Timmer.From<T>;
     },

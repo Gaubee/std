@@ -2,3 +2,5 @@
 .pnpm
 .import_map.*
 docs
+node_modules
+

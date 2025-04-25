@@ -1,6 +1,8 @@
 import { disposable } from "./disposable.ts";
-import { delay, promise_once_then, promise_safe_race, timmers } from "./promise.ts";
+import { delay, promise_once_then, promise_safe_race, Timmer, timmers } from "./promise.ts";
 import assert from "node:assert";
+import { EventEmitter } from "node:events";
+import { expectTypeOf } from "expect-type";
 
 Deno.test("promise_once_then", async () => {
     const p = delay(100).then(() => 123);
@@ -30,8 +32,8 @@ Deno.test("promise_safe_race 基础功能", async () => {
 
     // 测试异步优先
     const asyncResult = await promise_safe_race([
-        delay(20, { disposer }).then(() => "slow"),
-        delay(5, { disposer }).then(() => "fast"),
+        delay(20, { disposer }).then(() => "slow", () => ""),
+        delay(5, { disposer }).then(() => "fast", () => ""),
     ]);
     assert.strictEqual(asyncResult, "fast");
     await disposer.dispose();
@@ -44,7 +46,7 @@ Deno.test("promise_safe_race 拒绝处理", async () => {
             delay(10, { disposer }).then(() => {
                 throw new Error("boom");
             }),
-            delay(20, { disposer }),
+            delay(20, { disposer }).catch(() => ""),
         ]);
     }, { name: "Error", message: "boom" });
     disposer.dispose();
@@ -138,4 +140,13 @@ Deno.test("delay return", async () => {
     // target.addEventListener("abort")
     const res = await delay(timmers.eventTarget(target, "message"));
     assert.strictEqual(res, message);
+});
+
+Deno.test("delay return type", async (t) => {
+    (async () => {
+        expectTypeOf(await delay(timmers.eventEmitter(new EventEmitter<{ a: [1, 2] }>(), "a"), {}))
+            .toEqualTypeOf<[1, 2]>();
+        expectTypeOf(await delay(timmers.eventEmitter<[3, 4]>(new EventEmitter<{ a: [1, 2] }>(), "a"), {}))
+            .toEqualTypeOf<[3, 4]>();
+    });
 });
