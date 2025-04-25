@@ -49,6 +49,11 @@ export const func_throttle = <T extends Func>(
                     }
                     jobs = [];
                 },
+                (reason) => {
+                    for (const job of jobs) {
+                        job.reject(reason);
+                    }
+                },
             );
             if (options.before) {
                 (async () => {

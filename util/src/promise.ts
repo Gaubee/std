@@ -3,10 +3,10 @@ import { type Func, func_wrap } from "./func.ts";
 import type { IterableItem } from "./iterable.ts";
 import { map_get_or_put } from "./map.ts";
 import { isPromiseLike, type PromiseMaybe } from "./promise-helper.ts";
-import { type PureEvent, pureEvent } from "./pure_event.ts";
+import type { PureEvent } from "./pure_event.ts";
 export * from "./promise-helper.ts";
 
-export type Timmer<T = unknown> = (cb: Func<unknown, [T]>) => Timmer.Clear;
+export type Timmer<T = unknown> = (resolve: (result: T) => void, reject: (reason?: unknown) => void) => Timmer.Clear;
 export namespace Timmer {
     export type Clear = () => void;
 
@@ -138,7 +138,7 @@ export const delay = <T extends number | Timmer<any>>(
     let resolve = job.resolve;
     let reject = job.reject;
     const timmer = timmers.from(ms);
-    const clear = timmer(resolve);
+    const clear = timmer(resolve, reject);
     const result = Object.assign(job.promise, {
         cancel(cause?: unknown) {
             clear();

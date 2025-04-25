@@ -57,6 +57,11 @@ export const func_debounce = <T extends Func>(
 
                 jobList = [];
             },
+            (reason) => {
+                for (const job of jobList) {
+                    job.reject(reason);
+                }
+            },
         );
 
         return job.promise;
