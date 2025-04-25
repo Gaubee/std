@@ -80,6 +80,14 @@ export type PureEventOncePromiseWithResolvers<T> = Promise<T> & {
  * ```
  */
 export class PureEvent<T> {
+    constructor() {
+        this.watch = this.watch.bind(this);
+        this.on = this.on.bind(this);
+        this.once = this.once.bind(this);
+        this.off = this.off.bind(this);
+        this.unwatch = this.unwatch.bind(this);
+        this.emit = this.emit.bind(this);
+    }
     //#region 核心
     /** 监听表 */
     readonly events: Map<
@@ -258,7 +266,7 @@ export class PureEvent<T> {
         }
 
         /// promise mode
-        const off = this.on(async (data) => {
+        const off = this.watch(async (data) => {
             if (filter(data)) {
                 const disposeReturn = off();
                 if (disposeReturn !== false) {
@@ -280,9 +288,10 @@ export type PureEventWithApply<T> = PureEvent<T> & PureEvent<T>["watch"];
 
 export const pureEvent = <T>(): PureEventWithApply<T> => {
     const pe = new PureEvent<T>();
-    const on = pe.on.bind(pe);
-    Object.setPrototypeOf(on, Object.getPrototypeOf(pe));
-    return obj_assign_props(on, pe);
+    const watch = pe.watch;
+    // 将 PureEvent 绑定到原型链上
+    Object.setPrototypeOf(watch, pe);
+    return watch as PureEventWithApply<T>;
 };
 
 /**
