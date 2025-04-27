@@ -3,20 +3,22 @@
 name: Publish
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write # The OIDC ID token is used for authentication with JSR.
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Deno
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
-      - run: deno task pub
+    publish:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write # The OIDC ID token is used for authentication with JSR.
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup Deno
+              uses: denoland/setup-deno@v2
+              with:
+                  deno-version: v2.x
+            - run: |
+                  deno install 
+                  deno task pub
