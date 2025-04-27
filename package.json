@@ -1,6 +1,6 @@
 {
-	"devDependencies": {
+    "devDependencies": {
         "@types/node": "^22.15.1",
-		"expect-type": "^1.2.1"
+        "expect-type": "^1.2.1"
     }
 }
