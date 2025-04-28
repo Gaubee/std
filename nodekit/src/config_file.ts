@@ -1,7 +1,7 @@
 import * as JSONC from "@std/jsonc";
 import * as YAML from "@std/yaml";
 import fs from "node:fs";
-import { normalizeFilePath } from "./path.ts";
+import { normalizeFilePath } from "@gaubee/node";
 
 export const writeText = (path: string, content: string): void => {
     path = normalizeFilePath(path);

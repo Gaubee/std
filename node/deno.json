@@ -1,7 +1,9 @@
 {
-    "name": "@gaubee/web",
-    "version": "0.8.0",
+    "name": "@gaubee/node",
+    "version": "0.1.1",
     "exports": {
+        "./path": "./src/path.ts",
+        "./promise": "./src/promise.ts",
         ".": "./src/mod.ts"
     },
     "publish": {

@@ -6,7 +6,7 @@ import { walkAny, type WalkEntry } from "./fs.ts";
 import child_process from "node:child_process";
 import process from "node:process";
 import { obj_omit } from "@gaubee/util";
-import { normalizeFilePath } from "./path.ts";
+import { normalizeFilePath } from "@gaubee/node";
 import { type $Type, build$ as buildSh } from "dax-sh";
 
 export interface CreateShellOptions {

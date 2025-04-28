@@ -7,18 +7,22 @@ import { fileURLToPath } from "node:url";
  */
 export const normalizeFilePath = (path: string | URL): string => {
     if (typeof path !== "string") {
-        path = path.toString();
+        path = String(path);
     }
     if (path.startsWith("file://")) {
         path = fileURLToPath(path);
     }
     if (path.includes("\\")) {
-        path = path.split(node_path.sep).join(node_path.posix.sep);
+        path = path.replaceAll(node_path.sep, node_path.posix.sep);
     }
     return path;
 };
 
-type PathResolver = (...paths: string[]) => string;
+/**
+ * path.resolve 的柯里化函数
+ */
+export type PathResolver = ((...paths: string[]) => string) & { dirname: string };
+
 /**
  * 创建一个 path.resolve 柯里化函数
  */
@@ -31,16 +35,18 @@ export const createResolver = (cwd: string): PathResolver => {
 /**
  * 等同于 path.resolve(process.cwd(), ...paths)
  */
-export const resolveCwd: PathResolver = /*@__PURE__*/ createResolver(process.cwd());
+export const cwdResolver: PathResolver = /*@__PURE__*/ createResolver(process.cwd());
 
-/** 寻找一个包文件目录 */
-export const createProjectResolver = (
+/**
+ * 向上寻找某一个文件名，以它所在的目录创建 resolver
+ */
+export const createResolverByRootFile = (
     fromPath: string | URL = process.cwd(),
-    projectRootFilename = "package.json",
+    rootFilename = "package.json",
 ): PathResolver => {
     let rootDirname = normalizeFilePath(fromPath);
     while (
-        false === fs.existsSync(node_path.resolve(rootDirname, projectRootFilename))
+        false === fs.existsSync(node_path.resolve(rootDirname, rootFilename))
     ) {
         rootDirname = node_path.resolve(rootDirname, "..");
     }

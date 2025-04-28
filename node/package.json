@@ -1,0 +1,14 @@
+{
+    "description": "一些常见的nodejs-js工具函数",
+    "type": "module",
+    "keywords": [
+        "nodejs",
+        "collections",
+        "util",
+        "std"
+    ],
+    "sideEffects": false,
+    "peerDependencies": {
+        "@gaubee/util": "*"
+    }
+}

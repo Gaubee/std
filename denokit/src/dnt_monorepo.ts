@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import node_path from "node:path";
-import { build, BuildOptions, emptyDir } from "@deno/dnt";
+import { build, type BuildOptions, emptyDir } from "@deno/dnt";
 import { iter_map_not_null } from "@gaubee/util";
 import { globToRegExp, isGlob } from "@std/path";
 import { $ } from "@gaubee/nodekit/shell";
-import { createResolver, normalizeFilePath } from "@gaubee/nodekit/path";
+import { createResolver, normalizeFilePath } from "@gaubee/node";
 import { readJson, writeJson, writeYaml } from "@gaubee/nodekit/config_file";
 import { deepMerge } from "@std/collections/deep-merge";
 import type { PackageJsonLoose } from "@gaubee/nodekit/pnpm";

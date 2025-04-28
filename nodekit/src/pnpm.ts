@@ -1,5 +1,5 @@
 import { obj_omit } from "@gaubee/util";
-import { normalizeFilePath, resolveCwd } from "./path.ts";
+import { normalizeFilePath, cwdResolver } from "@gaubee/node";
 import { $ } from "./shell.ts";
 export interface PnpmPublishOptions {
     cwd?: string;
@@ -121,7 +121,7 @@ export const pnpm_publish = async (options: PnpmPublishOptions): Promise<void> =
 
     const job = Promise.withResolvers<void>();
     try {
-        const cwd = options.cwd ? resolveCwd(normalizeFilePath(options.cwd)) : undefined;
+        const cwd = options.cwd ? cwdResolver(normalizeFilePath(options.cwd)) : undefined;
         await $.spawn("pnpm", args, {
             shell: true,
             cwd: cwd,

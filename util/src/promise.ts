@@ -15,27 +15,6 @@ export namespace Timmer {
     export type FromType<T extends number | Timmer<any>> = T extends number ? void
         : T extends Timmer<infer R> ? R
         : never;
-
-    export interface EventEmiter {
-        <EE extends import("node:events").EventEmitter, N extends Timmer.EventEmiter.GetEventName<EE>>(
-            emitter: EE,
-            name: N,
-            filter?: (...args: Timmer.EventEmiter.GetEventType<EE, N>) => boolean | void,
-        ): Timmer<Timmer.EventEmiter.GetEventType<EE, N>>;
-        <Args extends unknown[]>(
-            emitter: import("node:events").EventEmitter,
-            name: string,
-            filter?: (...args: Args) => boolean | void,
-        ): Timmer<Args>;
-    }
-    export namespace EventEmiter {
-        export type GetEventMap<EE> = EE extends
-            import("node:events").EventEmitter<infer E extends Record<keyof E, any[]>> ? E : Record<string, any[]>;
-        export type GetEventName<EE> = keyof GetEventMap<EE>;
-        export type GetEventType<EE, N> = N extends keyof GetEventMap<EE>
-            ? GetEventMap<EE>[N] extends unknown[] ? GetEventMap<EE>[N] : unknown[]
-            : unknown[];
-    }
 }
 
 export const timmers = {
@@ -83,27 +62,6 @@ export const timmers = {
             return () => target.removeEventListener(eventType, cb as EventListener);
         });
     },
-    eventEmitter: ((
-        emitter: import("node:events").EventEmitter,
-        name: string,
-        filter?: (...args: unknown[]) => boolean | void,
-    ) => {
-        return ((resolve) => {
-            let cb: (args: unknown[]) => void;
-            if (typeof filter === "function") {
-                cb = (...args) => {
-                    if (filter(...args)) {
-                        resolve(args);
-                        emitter.off(name, cb);
-                    }
-                };
-                emitter.on(name, cb);
-            } else {
-                emitter.once(name as string, cb = (...args) => resolve(args));
-            }
-            return () => emitter.off(name, cb);
-        }) as Timmer<unknown[]>;
-    }) as Timmer.EventEmiter,
     from: <T extends number | Timmer<any>>(ms: T): Timmer.From<T> => {
         return (typeof ms === "number" ? (ms <= 0 ? timmers.microtask : timmers.timeout(ms)) : ms) as Timmer.From<T>;
     },

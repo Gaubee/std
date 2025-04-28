@@ -1,6 +1,6 @@
 import matter from "gray-matter";
 import fs from "node:fs";
-import { normalizeFilePath } from "./path.ts";
+import { normalizeFilePath } from "@gaubee/node";
 export { matter };
 /**
  * read markdown file

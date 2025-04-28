@@ -1,6 +1,6 @@
 # @gaubee/web
 
-该项目搜罗了一些与 DOM-API 相关的封装
+该项目在 @gaubee/util 的基础上，提供了与 Web-API 相关的进一步补充。
 
 ## API
 
