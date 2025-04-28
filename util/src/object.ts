@@ -100,7 +100,7 @@ export const obj_lazify = <T extends object>(obj: T, target = obj): T => {
 /**
  * 传入一个稀疏的对象，在get的过程中，构建出属性
  */
-export const obj_build_lazify = <T extends object>(
+export const obj_lazy_builder = <T extends object>(
     obj: Partial<T>,
     get: <K extends keyof T>(target: Partial<T>, prop: K) => T[K],
     target = obj,
