@@ -50,3 +50,5 @@ export class StateFlow<T> extends SharedFlow<T> {
         return Promise.resolve();
     }
 }
+
+export const stateFlow = <T>(initialValue: T, by?: PureEvent<T>): StateFlow<T> => new StateFlow(initialValue, by);

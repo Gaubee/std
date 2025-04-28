@@ -9,6 +9,6 @@
         "evt"
     ],
     "peerDependencies": {
-        "@gaubee/util": "*"
+        "@gaubee/util": "^*"
     }
 }

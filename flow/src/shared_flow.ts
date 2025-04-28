@@ -87,3 +87,5 @@ export class SharedFlow<T> extends PureEventDelegate<T> implements AsyncIterable
         return this.stream();
     }
 }
+
+export const sharedFlow = <T>(by?: PureEvent<T>): SharedFlow<T> => new SharedFlow(by);
