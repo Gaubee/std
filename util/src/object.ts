@@ -98,6 +98,24 @@ export const obj_lazify = <T extends object>(obj: T, target = obj): T => {
 };
 
 /**
+ * 传入一个稀疏的对象，在get的过程中，构建出属性
+ */
+export const obj_build_lazify = <T extends object>(
+    obj: Partial<T>,
+    get: <K extends keyof T>(target: Partial<T>, prop: K) => T[K],
+    target = obj,
+): T => {
+    return new Proxy(target, {
+        get(target, prop) {
+            if (prop in target) {
+                return target[prop as keyof T];
+            }
+            return target[prop as keyof T] = get(target, prop as keyof T);
+        },
+    }) as T;
+};
+
+/**
  * 让一个对象的指定get属性成为惰性求值的属性
  */
 export const obj_prop_lazify = <T extends object>(obj: T, prop: keyof T, target = obj): T => {
