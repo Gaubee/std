@@ -9,6 +9,10 @@ export const uncurryThisFn = <T, ARGS extends readonly unknown[], R>(
     // deno-lint-ignore no-explicit-any
     return func.call.bind(func as any) as any;
 };
+export type UncurryThisFn<T> = T extends Func ? ReturnType<
+        typeof uncurryThisFn<Func.This<T>, Func.Args<T>, Func.Return<T>>
+    >
+    : never;
 /**
  * 函数转化，一个新函数，它的this 是原函数的第一个参数
  */
@@ -19,6 +23,10 @@ export const curryThisFn = <T, ARGS extends readonly unknown[], R>(
         return func(this, ...args);
     };
 };
+export type CurryThisFn<T> = T extends Func ? ReturnType<
+        typeof curryThisFn<Func.This<T>, Func.Args<T>, Func.Return<T>>
+    >
+    : never;
 
 /**
  * 类型安全的函数定义
