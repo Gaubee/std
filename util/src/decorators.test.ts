@@ -1,4 +1,4 @@
-import { accessor, Class, field, getter, method, setter } from "./decorators.ts";
+import { accessor, afterGetter, afterSetter, beforeGetter, beforeSetter, Class, field, getter, method, setter } from "./decorators.ts";
 import { curryThisFn, func_remember, uncurryThisFn } from "./func.ts";
 @Class((A, c) => {
     c.metadata;
@@ -39,13 +39,13 @@ class A {
     get zzz() {
         return crypto.randomUUID();
     }
-    @getter.before<A, number>(console.log.bind(console, "getter.before"))
-    @getter.after(console.log.bind(console, "getter.after"))
+    @beforeGetter<A, number>(console.log.bind(console, "getter.before"))
+    @afterGetter(console.log.bind(console, "getter.after"))
     get uuu() {
         return 1;
     }
-    @setter.before(console.log.bind(console, "setter.before"))
-    @setter.after(console.log.bind(console, "setter.after"))
+    @beforeSetter(console.log.bind(console, "setter.before"))
+    @afterSetter(console.log.bind(console, "setter.after"))
     @setter(function (_z, _c) {})
     set uuu(v) {}
 

@@ -1,16 +1,16 @@
 import { isPromiseLike } from "./promise-helper.ts";
 
 /**
- * 函数转化，实现将 this 可以作为第一个参数来传参
+ * 函数转化，一个新函数：它的第一个参数 将作为 原函数的 this
  */
 export const uncurryThisFn = <T, ARGS extends readonly unknown[], R>(
     func: (this: T, ...args: ARGS) => R,
 ): (self: T, ...restArgs: ARGS) => R => {
     // deno-lint-ignore no-explicit-any
-    return Function.prototype.call.bind(func) as any;
+    return func.call.bind(func as any) as any;
 };
 /**
- * 函数转化，实现将第一个参数作为 this 来传参
+ * 函数转化，一个新函数，它的this 是原函数的第一个参数
  */
 export const curryThisFn = <T, ARGS extends readonly unknown[], R>(
     func: (self: T, ...args: ARGS) => R,
