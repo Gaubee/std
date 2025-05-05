@@ -194,7 +194,7 @@ export const decimal = (n: DecimalAble) => {
 
 const decimal_copy__ = (v: DecimalRaw) => ({ ...v });
 
-const HALF = decimal("0.5");
+const HALF = /*@__PURE__*/ decimal("0.5");
 
 /**
  * Round Big x to a maximum of sd significant digits using rounding mode rm.
@@ -999,3 +999,33 @@ declare global {
         valueOf(): string;
     }
 }
+
+// export const buildDecimal = <Base extends {}>(base:Base) => {
+//     const DECIMAL_BASE = {
+//         [Symbol.toStringTag]: "Decimal",
+//         ...base
+//     } ;
+//     const decimal = (n: DecimalAble) => {
+//         let x: DecimalRaw;
+//         if (isDecimalRaw(n)) {
+//             x = {
+//                 s: +n.s,
+//                 e: +n.e,
+//                 c: Array.isArray(n.c) ? arr_slice.call(n.c) : [],
+//                 ...DECIMAL_BASE,
+//             };
+//         } else {
+//             const tn = typeof n;
+//             if (tn !== "string") {
+//                 if (tn !== "bigint" && enableStrictMode) {
+//                     throw TypeError(INVALID + "value");
+//                 }
+//                 // Minus zero?
+//                 n = n === 0 && 1 / n < 0 ? "-0" : String(n);
+//             }
+//             parse(x = {} as DecimalRaw, n as string);
+//             Object.assign(x, DECIMAL_BASE);
+//         }
+//         return x;
+//     };
+// };
