@@ -1,4 +1,4 @@
-import { map_delete_and_get, map_get_or_put } from "@gaubee/util";
+import { type Func, map_delete_and_get, map_get_or_put } from "@gaubee/util";
 import { func_remember } from "@gaubee/util";
 
 const assMapWM = /*@__PURE__*/ new WeakMap<CSSStyleSheet[], Map<unknown, CSSStyleSheet>>();
@@ -106,7 +106,7 @@ export const createAdoptedStyleSheets = (
         }
     };
 
-    const methods = new Map<string | symbol, Function>(
+    const methods = new Map<string | symbol, Func>(
         [
             ["push", push],
             ["pop", pop],

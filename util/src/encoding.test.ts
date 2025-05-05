@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import { curryThisFn } from "@gaubee/util";
 import { str_to_base64_binary, str_to_hex_binary, str_to_utf8_binary } from "./encoding.ts";
 import { Buffer } from "node:buffer";
 const base64_str = "68656c6c6f20776f726c64";

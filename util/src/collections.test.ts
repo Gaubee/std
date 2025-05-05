@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import { curryThisFn } from "@gaubee/util";
 import { iter_first_not_null } from "./collections.ts";
 
 Deno.test("iter_first_not_null", () => {

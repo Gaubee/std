@@ -1,5 +1,5 @@
 import { func_debounce } from "./debounce.ts";
-import assert from "node:assert";
+import { curryThisFn } from "@gaubee/util";
 import { delay } from "./promise.ts";
 
 Deno.test("should debounce function calls", async () => {

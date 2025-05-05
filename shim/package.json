@@ -1,0 +1,15 @@
+{
+    "description": "一些常见的 shim 需求",
+    "type": "module",
+    "keywords": [
+        "shim",
+        "polyfill",
+        "ponyfill",
+        "util",
+        "std"
+    ],
+    "sideEffects": false,
+    "peerDependencies": {
+        "@gaubee/util": "*"
+    }
+}

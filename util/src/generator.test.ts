@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import { curryThisFn } from "@gaubee/util";
 import { AGF, GF } from "./generator.ts";
 
 Deno.test("GF & AGF", () => {

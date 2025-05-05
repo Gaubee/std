@@ -1,5 +1,5 @@
 import { func_throttle } from "./throttle.ts";
-import assert from "node:assert";
+import { curryThisFn } from "@gaubee/util";
 import { delay } from "./promise.ts";
 
 Deno.test("should throttle function calls", async () => {

@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import { curryThisFn } from "@gaubee/util";
 import { abort_signal_race } from "./abort.ts";
 
 Deno.test("abort_signal_race resolve", async () => {

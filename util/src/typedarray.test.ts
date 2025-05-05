@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import { curryThisFn } from "@gaubee/util";
 import {
     typedarray_contact,
     u8a_contact,

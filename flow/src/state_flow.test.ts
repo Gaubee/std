@@ -1,5 +1,5 @@
 import { StateFlow } from "./state_flow.ts";
-import assert from "node:assert";
+import { curryThisFn } from "@gaubee/util";
 
 // 测试构造函数初始值设置
 Deno.test("StateFlow - should initialize with correct value", () => {

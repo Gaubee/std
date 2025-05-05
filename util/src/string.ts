@@ -1,4 +1,4 @@
-import { Func, func_remember } from "./func.ts";
+import { type Func, func_remember } from "./func.ts";
 
 /**
  * 反转字符串

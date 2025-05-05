@@ -1,5 +1,5 @@
 import { map_get_or_put } from "./map.ts";
-import { promise_once_then, promise_safe_race, PromiseMaybe } from "./promise.ts";
+import { promise_safe_race, type PromiseMaybe } from "./promise.ts";
 
 /**
  * 将 N 个 AbortSignal 合并成 0/1 个

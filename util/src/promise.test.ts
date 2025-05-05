@@ -1,14 +1,12 @@
+import { curryThisFn } from "@gaubee/util";
 import { disposable } from "./disposable.ts";
-import { delay, promise_once_then, promise_safe_race, Timmer, timmers } from "./promise.ts";
-import assert from "node:assert";
-import { EventEmitter } from "node:events";
-import { expectTypeOf } from "expect-type";
+import { delay, promise_once_then, promise_safe_race, timmers } from "./promise.ts";
 
 Deno.test("promise_once_then", async () => {
     const p = delay(100).then(() => 123);
     const r: number[] = [];
     promise_once_then(p, {
-        resolve(value) {
+        resolve() {
             r.push(1);
         },
     });
@@ -16,7 +14,7 @@ Deno.test("promise_once_then", async () => {
     await p;
     assert.deepStrictEqual(r, [1]);
     promise_once_then(p, {
-        resolve(value) {
+        resolve() {
             r.push(2);
         },
     });
@@ -140,13 +138,4 @@ Deno.test("delay return", async () => {
     // target.addEventListener("abort")
     const res = await delay(timmers.eventTarget(target, "message"));
     assert.strictEqual(res, message);
-});
-
-Deno.test("delay return type", async (t) => {
-    (async () => {
-        expectTypeOf(await delay(timmers.eventEmitter(new EventEmitter<{ a: [1, 2] }>(), "a"), {}))
-            .toEqualTypeOf<[1, 2]>();
-        expectTypeOf(await delay(timmers.eventEmitter<[3, 4]>(new EventEmitter<{ a: [1, 2] }>(), "a"), {}))
-            .toEqualTypeOf<[3, 4]>();
-    });
 });

@@ -1,8 +1,8 @@
 import { func_catch, func_lazy, func_remember } from "./func.ts";
-import assert from "node:assert";
+import { curryThisFn } from "@gaubee/util";
 
 Deno.test("func_remember", async () => {
-    const fn = func_remember(async () => crypto.randomUUID());
+    const fn = func_remember(async () => await crypto.randomUUID());
     const a = fn();
     assert.ok(fn.runned);
     const b = fn();
@@ -23,10 +23,10 @@ Deno.test("func_catch", async () => {
     }).catchType<string>();
 
     const fn3 = func_catch(async (a: number, b: string) => {
-        return `async ${a}+${b}`;
+        return await `async ${a}+${b}`;
     }).catchType<string>();
     const fn4 = func_catch(async (a: number, b: string) => {
-        throw `async ${a}+${b}`;
+        throw await `async ${a}+${b}`;
     }).catchType<string>();
 
     assert.deepEqual(fn1(1, "2"), [undefined, `sync 1+2`]);

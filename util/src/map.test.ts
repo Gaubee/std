@@ -1,6 +1,6 @@
 import { map_get_or_put_async } from "./map.ts";
 import { delay } from "./promise.ts";
-import assert from "node:assert";
+import { curryThisFn } from "@gaubee/util";
 
 Deno.test("map_get_or_put_async", async () => {
     const map = new Map<string, number>();

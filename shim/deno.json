@@ -1,0 +1,22 @@
+{
+    "name": "@gaubee/shim",
+    "version": "0.1.0",
+    "exports": {
+        "./decimal": "./src/decimal/decimal.ts",
+        ".": "./src/index.ts"
+    },
+    "publish": {
+        "include": [
+            "LICENSE",
+            "README.md",
+            "src/**/*.ts"
+        ],
+        "exclude": [
+            "src/**/*.bench.ts",
+            "src/**/*.test.ts"
+        ]
+    },
+    "imports": {
+        "@std/fmt": "jsr:@std/fmt@^1.0.2"
+    }
+}

@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import { curryThisFn } from "@gaubee/util";
 import { pureEvent } from "./pure_event.ts";
 
 Deno.test("pure_event", async () => {

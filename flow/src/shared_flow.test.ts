@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import { curryThisFn } from "@gaubee/util";
 import { delay } from "@gaubee/util";
 import { SharedFlow } from "./shared_flow.ts";
 
