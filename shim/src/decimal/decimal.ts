@@ -55,7 +55,7 @@ export const setDefaultPositiveExponent = (pe: number) => {
  *  2  To nearest neighbour. If equidistant, to even.   (ROUND_HALF_EVEN)
  *  3  Away from zero.                                  (ROUND_UP)
  */
-export const enum DecimalRoundingMode {
+export enum DecimalRoundingMode {
     ROUND_DOWN = 0,
     ROUND_HALF_UP = 1,
     ROUND_HALF_EVEN = 2,
