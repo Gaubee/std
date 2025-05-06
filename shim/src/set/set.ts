@@ -1,0 +1,10 @@
+export * from "./set.types.ts";
+export const caniuseSetMethod = "intersection" in Set.prototype;
+const nativeOrShim = caniuseSetMethod ? await import("./set.native.ts") : await import("./set.shim.ts");
+export const set_union = nativeOrShim.set_union;
+export const set_intersection = nativeOrShim.set_intersection;
+export const set_difference = nativeOrShim.set_difference;
+export const set_symmetric_difference = nativeOrShim.set_symmetric_difference;
+export const set_is_subset_of = nativeOrShim.set_is_subset_of;
+export const set_is_superset_of = nativeOrShim.set_is_superset_of;
+export const set_is_disjoint_from = nativeOrShim.set_is_disjoint_from;

@@ -3,6 +3,8 @@
     "version": "0.2.1",
     "exports": {
         "./decimal": "./src/decimal/decimal.ts",
+        "./pipeline": "./src/pipeline/pipeline.ts",
+        "./set": "./src/set/set.ts",
         ".": "./src/index.ts"
     },
     "publish": {
