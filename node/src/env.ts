@@ -1,12 +1,12 @@
 import { func_remember, obj_assign_props, obj_props } from "@gaubee/util";
 
-type CustomEnvConfig<T = unknown> = {
-    default: T;
-    stringify: (v: T) => string;
-    parse: (v: string) => T;
+type CustomEnvConfig<T = unknown, Env = unknown> = {
+    default: (env: Env) => T;
+    stringify: (v: T, env: Env) => string;
+    parse: (v: string, env: Env) => T;
 };
 type CustomEnvGetter<Env> = (env: Env) => string;
-type EnvConfig<Env = unknown> = string | number | boolean | CustomEnvConfig<unknown> | CustomEnvGetter<Env>;
+type EnvConfig<Env = unknown> = string | number | boolean | CustomEnvConfig<unknown, Env> | CustomEnvGetter<Env>;
 export type DefineEnv<P extends string, KV extends Record<string, EnvConfig<any>>> = {
     [K in keyof KV as `${Uppercase<P>}_${Uppercase<K & string>}`]: KV[K] extends CustomEnvConfig<infer V> ? V
         : KV[K] extends CustomEnvGetter<any> ? string
@@ -80,7 +80,7 @@ export const defineEnv = <P extends string, KV extends Record<string, EnvConfig>
     prefix: P,
     kv: KV,
     source = autoEnvSource(),
-    ext: {} = {},
+    ext: object = {},
 ): DefineEnvChain<P, DefineEnv<P, KV>> => {
     const prefix_up = prefix.toUpperCase();
     const res = obj_assign_props(ext, {
@@ -101,14 +101,14 @@ export const defineEnv = <P extends string, KV extends Record<string, EnvConfig>
         switch (typeof env_value) {
             case "string":
                 envConfig = {
-                    default: env_value,
+                    default: () => env_value,
                     stringify: (v) => v,
                     parse: (v) => v,
                 } satisfies CustomEnvConfig<string>;
                 break;
             case "number":
                 envConfig = {
-                    default: env_value,
+                    default: () => env_value,
                     stringify: (v) => `${v}`,
                     parse: (v) => +v,
                 } satisfies CustomEnvConfig<number>;
@@ -122,7 +122,7 @@ export const defineEnv = <P extends string, KV extends Record<string, EnvConfig>
                 break;
             case "boolean":
                 envConfig = {
-                    default: env_value,
+                    default: () => env_value,
                     stringify: (v) => `${v}`,
                     parse: (v) => !(v === "false" || v === ""),
                 } satisfies CustomEnvConfig<boolean>;
@@ -132,9 +132,7 @@ export const defineEnv = <P extends string, KV extends Record<string, EnvConfig>
                 break;
             case "function":
                 envConfig = {
-                    get default() {
-                        return env_value(res);
-                    },
+                    default: env_value,
                     stringify: (v) => v,
                     parse: (v) => v,
                 } satisfies CustomEnvConfig<string>;
@@ -145,13 +143,13 @@ export const defineEnv = <P extends string, KV extends Record<string, EnvConfig>
 
         const getter = func_remember(
             (v) => {
-                return envConfig.parse(v);
+                return envConfig.parse(v, res);
             },
             (v) => v,
         );
         const setter = func_remember(
             (v) => {
-                source[ENV_KEY] = envConfig.stringify(v);
+                source[ENV_KEY] = envConfig.stringify(v, res);
             },
             (v) => v,
         );
@@ -162,7 +160,7 @@ export const defineEnv = <P extends string, KV extends Record<string, EnvConfig>
                 if (typeof val === "string") {
                     return getter(val);
                 }
-                return envConfig.default;
+                return envConfig.default(res);
             },
             set [ENV_KEY](v: string) {
                 setter(v);
