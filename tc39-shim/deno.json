@@ -1,11 +1,14 @@
 {
-    "name": "@gaubee/shim",
-    "version": "0.2.1",
+    "name": "@gaubee/tc39-shim",
+    "version": "0.3.0",
     "exports": {
         "./decimal": "./src/decimal/decimal.ts",
         "./pipeline": "./src/pipeline/pipeline.ts",
         "./set": "./src/set/set.ts",
         ".": "./src/index.ts"
+    },
+    "dnt": {
+        "scriptModule": false
     },
     "publish": {
         "include": [

@@ -21,6 +21,7 @@ export interface DenoJson extends ImportMap {
             | "ESNext";
         [key: string]: unknown; // 其他 TypeScript 编译器选项
     };
+    dnt?: object;
     importMap?: string;
     tasks?: Record<string, string>; // 自定义任务
     lint?: {

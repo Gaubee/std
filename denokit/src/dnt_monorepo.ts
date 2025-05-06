@@ -180,6 +180,7 @@ export const dntMonorepo = async (
                     }
                 }
             },
+            ...denoJson.dnt,
         });
 
         /// 最后需要对 packageJson 做一些依赖修复工作，修复成 pnpm-workspace 标准

@@ -15,7 +15,7 @@
     },
     "workspace": [
         "flow",
-        "shim",
+        "tc39-shim",
         "util",
         "web",
         "node",

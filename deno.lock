@@ -355,7 +355,7 @@
           ]
         }
       },
-      "shim": {
+      "tc39-shim": {
         "dependencies": [
           "jsr:@std/fmt@^1.0.2"
         ]
