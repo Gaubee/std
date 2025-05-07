@@ -7,4 +7,4 @@ export const promise_with_resolvers = (function withResolvers<T>(this: PromiseCo
         reject = rej;
     });
     return { promise, resolve, reject };
-}).bind(Promise);
+}).bind(Promise) as <T>() => PromiseWithResolvers<T>;
