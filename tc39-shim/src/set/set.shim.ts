@@ -4,9 +4,8 @@
 
 import type { AnySet, NativeFn } from "./set.types.ts";
 
-const safeSetFn = <P extends keyof AnySet>(
-    fn: NativeFn<P>,
-) => fn;
+/*@__NO_SIDE_EFFECTS__*/
+const safeSetFn = <P extends keyof AnySet>(fn: NativeFn<P>) => fn;
 
 const iterator_iterable = <T>(items: Iterator<T> | Iterable<T>): Iterable<T> => {
     if (Symbol.iterator in items) {
@@ -156,12 +155,3 @@ function isObject(value: unknown) {
     const t = typeof value;
     return t === "object" || t === "function";
 }
-
-// export const set_union = uncurryThisFn(_union);
-// export const set_intersection = uncurryThisFn(_intersection);
-// export const set_difference = uncurryThisFn(_difference);
-// export const set_symmetric_difference = uncurryThisFn(_symmetricDifference);
-
-// export const set_is_subset_of = uncurryThisFn(_isSubsetOf);
-// export const set_is_superset_of = uncurryThisFn(_isSupersetOf);
-// export const set_is_disjoint_from = uncurryThisFn(_isDisjointFrom);
