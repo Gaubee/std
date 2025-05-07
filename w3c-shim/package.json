@@ -1,0 +1,16 @@
+{
+    "description": "一些常见的 [w3c](https://github.com/w3c) 组织的 shim，统一的函数式编程风格，良好的 Tree-Shaking 支持，默认零成本",
+    "type": "module",
+    "keywords": [
+        "w3c",
+        "shim",
+        "polyfill",
+        "ponyfill",
+        "util",
+        "std"
+    ],
+    "sideEffects": false,
+    "peerDependencies": {
+        "@gaubee/util": "*"
+    }
+}

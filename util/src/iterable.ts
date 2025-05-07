@@ -171,3 +171,29 @@ export const iter_first_not_null = <TS extends Iterable<T>, T = IterableItem<TS>
         }
     }
 };
+
+export const iter_iterable = <T>(
+    items: Iterator<T> | Iterable<T> | { length: number; [index: number]: T },
+): Iterable<T> => {
+    if (Symbol.iterator in items) {
+        return items as Iterable<T>;
+    }
+    if ("length" in items) {
+        return {
+            [Symbol.iterator]: () => {
+                let index = 0;
+                return {
+                    next: () => {
+                        const done = index < items.length;
+                        return done ? { done, value: void 0 } : { done, value: items[index++] };
+                    },
+                };
+            },
+        };
+    }
+    return {
+        [Symbol.iterator]() {
+            return items;
+        },
+    };
+};

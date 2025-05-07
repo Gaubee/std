@@ -17,6 +17,7 @@
         "flow",
         "tc39-shim",
         "util",
+        "w3c-shim",
         "web",
         "node",
         "denokit",
