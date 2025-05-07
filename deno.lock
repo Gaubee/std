@@ -359,6 +359,11 @@
         "dependencies": [
           "jsr:@std/fmt@^1.0.2"
         ]
+      },
+      "w3c-shim": {
+        "dependencies": [
+          "jsr:@std/fmt@^1.0.2"
+        ]
       }
     }
   }
