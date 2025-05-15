@@ -149,8 +149,9 @@ export const dntMonorepo = async (
                 license: "MIT",
                 repository: {
                     type: "git",
-                    url: `https://github.com/gaubee/std/tree/main/${packageName}`,
+                    url: `https://github.com/gaubee/std`,
                 },
+                homepage: `https://github.com/gaubee/std/tree/main/${packageName}`,
                 bugs: {
                     url: `https://github.com/gaubee/std/issues?q=label%3A${packageName}`,
                 },
