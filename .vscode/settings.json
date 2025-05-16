@@ -2,7 +2,7 @@
   "deno.enable": true,
   "editor.defaultFormatter": "denoland.vscode-deno",
   "[typescript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   // 针对 *.test.ts 文件使用 VS Code 内置的 TypeScript 格式化工具
   "[*.test.ts]": {

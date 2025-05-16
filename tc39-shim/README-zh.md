@@ -18,3 +18,22 @@
 4. **set** - Set 的扩展函数
    - 提供集合运算相关的方法：union（并集）、intersection（交集）、difference（差集）等
    - 参考 https://github.com/tc39/proposal-set-methods
+
+## 关于副作用
+
+默认情况下，该项目不会对原生对象进行任何修改。如果你需要应用到全局（polyfill），那么请使用 applyEffect 来进行安装。比如：
+
+```ts
+import {
+  applyEffect,
+  promise_with_resolvers,
+  set_union,
+  set_intersection,
+  set_difference,
+  set_symmetric_difference,
+  set_is_subset_of,
+  set_is_superset_of,
+  set_is_disjoint_from,
+} from "@gaubee/tc39-shim";
+applyEffect(promise_with_resolvers, set_union, set_intersection, set_difference, set_symmetric_difference, set_is_subset_of, set_is_superset_of, set_is_disjoint_from);
+```

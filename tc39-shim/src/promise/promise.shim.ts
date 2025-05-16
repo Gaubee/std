@@ -1,4 +1,5 @@
-export const promise_with_resolvers = function withResolvers<T>(this: PromiseConstructor) {
+import {withEffect} from "@gaubee/util";
+function withResolvers<T>(this: PromiseConstructor) {
   // type PromiseWithResolvers = ReturnType< PromiseConstructor['withResolvers']<T> >
   let resolve!: PromiseWithResolvers<T>["resolve"];
   let reject!: PromiseWithResolvers<T>["reject"];
@@ -7,4 +8,12 @@ export const promise_with_resolvers = function withResolvers<T>(this: PromiseCon
     reject = rej;
   });
   return {promise, resolve, reject};
-}.bind(Promise) as <T>() => PromiseWithResolvers<T>;
+}
+export const promise_with_resolvers = withEffect(withResolvers.bind(Promise) as <T>() => PromiseWithResolvers<T>, () => {
+  Object.defineProperty(Promise, "withResolvers", {
+    value: withResolvers,
+    writable: true,
+    enumerable: false,
+    configurable: true,
+  });
+});

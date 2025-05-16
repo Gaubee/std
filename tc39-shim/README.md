@@ -18,3 +18,22 @@ It supports on-demand imports, and for runtimes with native support, there is mi
 4. **set** - Set extension functions
    - Provides set operation methods: union, intersection, difference, etc.
    - Reference: https://github.com/tc39/proposal-set-methods
+
+## About Side Effects
+
+By default, this project does not modify any native objects. If you need to apply it globally (polyfill), please use `applyEffect` for installation. For example:
+
+```ts
+import {
+  applyEffect,
+  promise_with_resolvers,
+  set_union,
+  set_intersection,
+  set_difference,
+  set_symmetric_difference,
+  set_is_subset_of,
+  set_is_superset_of,
+  set_is_disjoint_from,
+} from "@gaubee/tc39-shim";
+applyEffect(promise_with_resolvers, set_union, set_intersection, set_difference, set_symmetric_difference, set_is_subset_of, set_is_superset_of, set_is_disjoint_from);
+```

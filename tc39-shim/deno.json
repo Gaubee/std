@@ -1,6 +1,6 @@
 {
   "name": "@gaubee/tc39-shim",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "exports": {
     "./decimal": "./src/decimal/decimal.ts",
     "./pipeline": "./src/pipeline/pipeline.ts",

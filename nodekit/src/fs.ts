@@ -157,7 +157,7 @@ export function* walkAny(rootpath: string, options: WalkOptions = {}): Generator
           const ignore = new Ignore(typeof options.ignore === "string" ? [options.ignore] : options.ignore, workspace);
           return (entry: Entry) => ignore.isMatch(entry.path);
         })()
-    : undefined;
+    : void 0;
 
   const match = options.match
     ? typeof options.match === "function"
@@ -166,7 +166,7 @@ export function* walkAny(rootpath: string, options: WalkOptions = {}): Generator
           const match = new Ignore(typeof options.match === "string" ? [options.match] : options.match, workspace);
           return (entry: Entry) => match.isMatch(entry.path);
         })()
-    : undefined;
+    : void 0;
 
   if (log) {
     console.log("start", rootpath);

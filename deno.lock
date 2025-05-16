@@ -327,7 +327,9 @@
     "packageJson": {
       "dependencies": [
         "npm:@types/node@^22.15.1",
-        "npm:expect-type@^1.2.1"
+        "npm:expect-type@^1.2.1",
+        "npm:prettier-plugin-organize-imports@^4.1.0",
+        "npm:prettier@^3.5.3"
       ]
     },
     "members": {

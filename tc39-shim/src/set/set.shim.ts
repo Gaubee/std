@@ -2,32 +2,30 @@
  * 参考 https://github.com/rauschma/set-methods-polyfill
  */
 
+import {iter_iterable, withEffect} from "@gaubee/util";
 import type {AnySet, NativeFn} from "./set.types.ts";
 
 /*@__NO_SIDE_EFFECTS__*/
-const safeSetFn = <P extends keyof AnySet>(fn: NativeFn<P>) => fn;
+const safeSetFn = <P extends keyof AnySet>(prop: P, fn: NativeFn<P>) =>
+  withEffect(fn, () =>
+    Object.defineProperty(Set.prototype, prop, {
+      value: fn,
+      writable: true,
+      enumerable: false,
+      configurable: true,
+    }),
+  );
 
-const iterator_iterable = <T>(items: Iterator<T> | Iterable<T>): Iterable<T> => {
-  if (Symbol.iterator in items) {
-    return items as Iterable<T>;
-  }
-  return {
-    [Symbol.iterator]() {
-      return items;
-    },
-  };
-};
-
-export const set_union = safeSetFn<"union">(<T, U>(self: Set<T>, other: ReadonlySetLike<U>): Set<T | U> => {
+export const set_union = safeSetFn("union", <T, U>(self: Set<T>, other: ReadonlySetLike<U>): Set<T | U> => {
   CheckSetRecord(other);
   const result = new Set<T | U>(self);
-  for (const elem of iterator_iterable(other.keys())) {
+  for (const elem of iter_iterable(other.keys())) {
     result.add(elem);
   }
   return result;
 });
 
-export const set_intersection = safeSetFn<"intersection">(<T, U>(self: Set<T>, other: ReadonlySetLike<U>): Set<T & U> => {
+export const set_intersection = safeSetFn("intersection", <T, U>(self: Set<T>, other: ReadonlySetLike<U>): Set<T & U> => {
   CheckSetRecord(other);
   let smallerElems: Iterator<T | U> | Iterable<T | U>;
   let largerHas: ReadonlySetLike<T | U>;
@@ -40,7 +38,7 @@ export const set_intersection = safeSetFn<"intersection">(<T, U>(self: Set<T>, o
   }
   const result = new Set<T & U>();
 
-  for (const elem of iterator_iterable(smallerElems)) {
+  for (const elem of iter_iterable(smallerElems)) {
     if (largerHas.has(elem)) {
       result.add(elem as T & U);
     }
@@ -48,7 +46,7 @@ export const set_intersection = safeSetFn<"intersection">(<T, U>(self: Set<T>, o
   return result;
 });
 
-export const set_difference = safeSetFn<"difference">(<T, U>(self: Set<T>, other: ReadonlySetLike<U>): Set<T> => {
+export const set_difference = safeSetFn("difference", <T, U>(self: Set<T>, other: ReadonlySetLike<U>): Set<T> => {
   CheckSetRecord(other);
   const result = new Set<T>(self);
   if (self.size <= other.size) {
@@ -58,7 +56,7 @@ export const set_difference = safeSetFn<"difference">(<T, U>(self: Set<T>, other
       }
     }
   } else {
-    for (const elem of iterator_iterable(other.keys() as Iterator<T & U>)) {
+    for (const elem of iter_iterable(other.keys() as Iterator<T & U>)) {
       if (result.has(elem)) {
         result.delete(elem);
       }
@@ -73,10 +71,10 @@ export const set_difference = safeSetFn<"difference">(<T, U>(self: Set<T>, other
  * - the union minus the intersection
  * - all elements that don’t exist in both Sets
  */
-export const set_symmetric_difference = safeSetFn<"symmetricDifference">(<T, U>(self: Set<T>, other: ReadonlySetLike<U>): Set<T | U> => {
+export const set_symmetric_difference = safeSetFn("symmetricDifference", <T, U>(self: Set<T>, other: ReadonlySetLike<U>): Set<T | U> => {
   CheckSetRecord(other);
   const result = new Set<T | U>(self);
-  for (const elem of iterator_iterable(other.keys())) {
+  for (const elem of iter_iterable(other.keys())) {
     if (self.has(elem as any)) {
       // Delete elements of `this` that also exist in `other`
       result.delete(elem);
@@ -88,7 +86,7 @@ export const set_symmetric_difference = safeSetFn<"symmetricDifference">(<T, U>(
   return result;
 });
 
-export const set_is_subset_of = safeSetFn<"isSubsetOf">(<T>(self: Set<T>, other: ReadonlySetLike<unknown>): boolean => {
+export const set_is_subset_of = safeSetFn("isSubsetOf", <T>(self: Set<T>, other: ReadonlySetLike<unknown>): boolean => {
   CheckSetRecord(other);
   for (const elem of self) {
     if (!other.has(elem)) return false;
@@ -96,22 +94,22 @@ export const set_is_subset_of = safeSetFn<"isSubsetOf">(<T>(self: Set<T>, other:
   return true;
 });
 
-export const set_is_superset_of = safeSetFn<"isSupersetOf">(<T>(self: Set<T>, other: ReadonlySetLike<unknown>): boolean => {
+export const set_is_superset_of = safeSetFn("isSupersetOf", <T>(self: Set<T>, other: ReadonlySetLike<unknown>): boolean => {
   CheckSetRecord(other);
-  for (const elem of iterator_iterable(other.keys())) {
+  for (const elem of iter_iterable(other.keys())) {
     if (!self.has(elem as any)) return false;
   }
   return true;
 });
 
-export const set_is_disjoint_from = safeSetFn<"isDisjointFrom">(<T>(self: Set<T>, other: ReadonlySetLike<T>): boolean => {
+export const set_is_disjoint_from = safeSetFn("isDisjointFrom", <T>(self: Set<T>, other: ReadonlySetLike<T>): boolean => {
   CheckSetRecord(other);
   if (self.size <= other.size) {
     for (const elem of self) {
       if (other.has(elem)) return false;
     }
   } else {
-    for (const elem of iterator_iterable(other.keys())) {
+    for (const elem of iter_iterable(other.keys())) {
       if (self.has(elem)) return false;
     }
   }

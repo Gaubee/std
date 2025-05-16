@@ -121,7 +121,7 @@ export const pnpm_publish = async (options: PnpmPublishOptions): Promise<void> =
 
   const job = Promise.withResolvers<void>();
   try {
-    const cwd = options.cwd ? cwdResolver(normalizeFilePath(options.cwd)) : undefined;
+    const cwd = options.cwd ? cwdResolver(normalizeFilePath(options.cwd)) : void 0;
     await $.spawn("pnpm", args, {
       shell: true,
       cwd: cwd,
