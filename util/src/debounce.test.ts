@@ -1,102 +1,101 @@
-import { func_debounce } from "./debounce.ts";
-import { curryThisFn } from "@gaubee/util";
-import { delay } from "./promise.ts";
+import {func_debounce} from "./debounce.ts";
+import {delay} from "./promise.ts";
 
 Deno.test("should debounce function calls", async () => {
-    let callCount = 0;
-    const fn = () => {
-        callCount++;
-    };
+  let callCount = 0;
+  const fn = () => {
+    callCount++;
+  };
 
-    const debounced = func_debounce(fn, 100);
+  const debounced = func_debounce(fn, 100);
 
-    debounced();
-    debounced();
-    debounced();
+  debounced();
+  debounced();
+  debounced();
 
-    assert.equal(callCount, 0);
+  assert.equal(callCount, 0);
 
-    await delay(200);
+  await delay(200);
 
-    assert.equal(callCount, 1);
+  assert.equal(callCount, 1);
 });
 
 Deno.test("should call the function immediately if `before` option is true", async () => {
-    let callCount = 0;
-    const fn = () => {
-        callCount++;
-    };
+  let callCount = 0;
+  const fn = () => {
+    callCount++;
+  };
 
-    const debounced = func_debounce(fn, 100, { before: true });
+  const debounced = func_debounce(fn, 100, {before: true});
 
-    debounced();
+  debounced();
 
-    assert.equal(callCount, 1);
+  assert.equal(callCount, 1);
 
-    await delay(200);
+  await delay(200);
 
-    assert.equal(callCount, 1);
+  assert.equal(callCount, 1);
 });
 
 Deno.test("should clear the timer with `cancel` method", async () => {
-    let callCount = 0;
-    const fn = () => {
-        callCount++;
-    };
+  let callCount = 0;
+  const fn = () => {
+    callCount++;
+  };
 
-    const debounced = func_debounce(fn, 100);
+  const debounced = func_debounce(fn, 100);
 
-    debounced();
-    debounced.cancel();
+  debounced();
+  debounced.cancel();
 
-    await delay(200);
+  await delay(200);
 
-    assert.equal(callCount, 0);
+  assert.equal(callCount, 0);
 });
 
 Deno.test("should flush the timer with `flush` method", async () => {
-    let callCount = 0;
-    const fn = () => {
-        callCount++;
-    };
+  let callCount = 0;
+  const fn = () => {
+    callCount++;
+  };
 
-    const debounced = func_debounce(fn, 100);
+  const debounced = func_debounce(fn, 100);
 
-    debounced();
-    debounced.flush();
+  debounced();
+  debounced.flush();
 
-    assert.equal(callCount, 1);
+  assert.equal(callCount, 1);
 
-    await delay(200);
+  await delay(200);
 
-    assert.equal(callCount, 1);
+  assert.equal(callCount, 1);
 });
 
 Deno.test("should return a promise that resolves with the function result", async () => {
-    const fn = () => "result";
+  const fn = () => "result";
 
-    const debounced = func_debounce(fn, 100);
+  const debounced = func_debounce(fn, 100);
 
-    const result = await debounced();
+  const result = await debounced();
 
-    assert.equal(result, "result");
+  assert.equal(result, "result");
 });
 
 Deno.test("should have `isPending` property", async () => {
-    let callCount = 0;
-    const fn = () => {
-        callCount++;
-    };
+  let callCount = 0;
+  const fn = () => {
+    callCount++;
+  };
 
-    const debounced = func_debounce(fn, 100);
+  const debounced = func_debounce(fn, 100);
 
-    assert(!debounced.isPending);
+  assert(!debounced.isPending);
 
-    debounced();
+  debounced();
 
-    assert(debounced.isPending);
+  assert(debounced.isPending);
 
-    await delay(200);
+  await delay(200);
 
-    assert(!debounced.isPending);
+  assert(!debounced.isPending);
 });

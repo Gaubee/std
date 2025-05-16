@@ -1,28 +1,21 @@
 {
-    "name": "@gaubee/tc39-shim",
-    "version": "0.4.2",
-    "exports": {
-        "./decimal": "./src/decimal/decimal.ts",
-        "./pipeline": "./src/pipeline/pipeline.ts",
-        "./promise": "./src/promise/promise.ts",
-        "./set": "./src/set/set.ts",
-        ".": "./src/index.ts"
-    },
-    "dnt": {
-        "scriptModule": false
-    },
-    "publish": {
-        "include": [
-            "LICENSE",
-            "README.md",
-            "src/**/*.ts"
-        ],
-        "exclude": [
-            "src/**/*.bench.ts",
-            "src/**/*.test.ts"
-        ]
-    },
-    "imports": {
-        "@std/fmt": "jsr:@std/fmt@^1.0.2"
-    }
+  "name": "@gaubee/tc39-shim",
+  "version": "0.4.2",
+  "exports": {
+    "./decimal": "./src/decimal/decimal.ts",
+    "./pipeline": "./src/pipeline/pipeline.ts",
+    "./promise": "./src/promise/promise.ts",
+    "./set": "./src/set/set.ts",
+    ".": "./src/index.ts"
+  },
+  "dnt": {
+    "scriptModule": false
+  },
+  "publish": {
+    "include": ["LICENSE", "README.md", "src/**/*.ts"],
+    "exclude": ["src/**/*.bench.ts", "src/**/*.test.ts"]
+  },
+  "imports": {
+    "@std/fmt": "jsr:@std/fmt@^1.0.2"
+  }
 }

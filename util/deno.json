@@ -28,14 +28,7 @@
     ".": "./src/index.ts"
   },
   "publish": {
-    "include": [
-      "LICENSE",
-      "README.md",
-      "src/**/*.ts"
-    ],
-    "exclude": [
-      "src/**/*.bench.ts",
-      "src/**/*.test.ts"
-    ]
+    "include": ["LICENSE", "README.md", "src/**/*.ts"],
+    "exclude": ["src/**/*.bench.ts", "src/**/*.test.ts"]
   }
 }

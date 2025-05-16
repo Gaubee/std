@@ -1,20 +1,14 @@
 {
-    "name": "@gaubee/flow",
-    "version": "0.3.10",
-    "exports": {
-        "./state_flow": "./src/state_flow.ts",
-        "./shared_flow": "./src/shared_flow.ts",
-        ".": "./src/index.ts"
-    },
-    "license": "MIT",
-    "publish": {
-        "include": [
-            "README.md",
-            "src/**/*.ts"
-        ],
-        "exclude": [
-            "src/**/*.bench.ts",
-            "src/**/*.test.ts"
-        ]
-    }
+  "name": "@gaubee/flow",
+  "version": "0.3.10",
+  "exports": {
+    "./state_flow": "./src/state_flow.ts",
+    "./shared_flow": "./src/shared_flow.ts",
+    ".": "./src/index.ts"
+  },
+  "license": "MIT",
+  "publish": {
+    "include": ["README.md", "src/**/*.ts"],
+    "exclude": ["src/**/*.bench.ts", "src/**/*.test.ts"]
+  }
 }

@@ -6,9 +6,7 @@
  */
 export const caniusePromiseWithResolvers = "withResolvers" in Promise;
 
-import { promise_with_resolvers as native_promise_with_resolvers } from "./promise.native.ts";
-import { promise_with_resolvers as shim_promise_with_resolvers } from "./promise.shim.ts";
+import {promise_with_resolvers as native_promise_with_resolvers} from "./promise.native.ts";
+import {promise_with_resolvers as shim_promise_with_resolvers} from "./promise.shim.ts";
 
-export const promise_with_resolvers = caniusePromiseWithResolvers
-    ? native_promise_with_resolvers
-    : shim_promise_with_resolvers;
+export const promise_with_resolvers = caniusePromiseWithResolvers ? native_promise_with_resolvers : shim_promise_with_resolvers;

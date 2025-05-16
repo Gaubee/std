@@ -1,7 +1,7 @@
-import { $ } from "./shell.ts";
+import {$} from "./shell.ts";
 
 if (import.meta.main) {
-    $.ls(import.meta.resolve("../"));
-    await $.spawn("npm", "info @gaubee/util");
-    await $`npm info @gaubee/util`;
+  $.ls(import.meta.resolve("../"));
+  await $.spawn("npm", "info @gaubee/util");
+  await $`npm info @gaubee/util`;
 }

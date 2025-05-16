@@ -1,14 +1,14 @@
 {
-    "description": "一些常见的web-js工具函数",
-    "type": "module",
-    "keywords": [
-        "web",
-        "collections",
-        "util",
-        "std"
-    ],
-    "sideEffects": false,
-    "peerDependencies": {
-        "@gaubee/util": "*"
-    }
+  "description": "一些常见的web-js工具函数",
+  "type": "module",
+  "keywords": [
+    "web",
+    "collections",
+    "util",
+    "std"
+  ],
+  "sideEffects": false,
+  "peerDependencies": {
+    "@gaubee/util": "*"
+  }
 }

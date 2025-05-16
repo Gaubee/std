@@ -5,7 +5,7 @@
 ```ts
 /**
  * Checks if the `scrollend` event is supported.
- * @see 
+ * @see
  * - Chrome: 114+
  * - Safari: Not Support
  */

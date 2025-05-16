@@ -1,25 +1,18 @@
 {
-    "name": "@gaubee/w3c-shim",
-    "version": "0.1.1",
-    "exports": {
-        "./scrollend": "./src/scrollend/scrollend.ts",
-        ".": "./src/index.ts"
-    },
-    "dnt": {
-        "scriptModule": false
-    },
-    "publish": {
-        "include": [
-            "LICENSE",
-            "README.md",
-            "src/**/*.ts"
-        ],
-        "exclude": [
-            "src/**/*.bench.ts",
-            "src/**/*.test.ts"
-        ]
-    },
-    "imports": {
-        "@std/fmt": "jsr:@std/fmt@^1.0.2"
-    }
+  "name": "@gaubee/w3c-shim",
+  "version": "0.1.1",
+  "exports": {
+    "./scrollend": "./src/scrollend/scrollend.ts",
+    ".": "./src/index.ts"
+  },
+  "dnt": {
+    "scriptModule": false
+  },
+  "publish": {
+    "include": ["LICENSE", "README.md", "src/**/*.ts"],
+    "exclude": ["src/**/*.bench.ts", "src/**/*.test.ts"]
+  },
+  "imports": {
+    "@std/fmt": "jsr:@std/fmt@^1.0.2"
+  }
 }

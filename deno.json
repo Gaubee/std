@@ -1,44 +1,24 @@
 {
-    "tasks": {
-        "build": "deno run -A ./dnt.ts",
-        "npm": "deno task build && deno task pub-npm",
-        "pub-npm": "cd .npm && pnpm -r publish --access public --no-git-checks",
-        "pub": "deno publish --allow-slow-types"
-    },
-    "compilerOptions": {
-        "lib": [
-            "deno.window",
-            "dom",
-            "ESNext"
-        ],
-        "noImplicitOverride": true
-    },
-    "workspace": [
-        "flow",
-        "tc39-shim",
-        "util",
-        "w3c-shim",
-        "web",
-        "node",
-        "denokit",
-        "nodekit"
-    ],
-    "exclude": [
-        ".npm",
-        "docs"
-    ],
-    "fmt": {
-        "lineWidth": 120,
-        "useTabs": false,
-        "indentWidth": 4
-    },
-    "lint": {
-        "rules": {
-            "exclude": [
-                "no-explicit-any",
-                "ban-ts-comment",
-                "no-namespace"
-            ]
-        }
+  "tasks": {
+    "build": "deno run -A ./dnt.ts",
+    "npm": "deno task build && deno task pub-npm",
+    "pub-npm": "cd .npm && pnpm -r publish --access public --no-git-checks",
+    "pub": "deno publish --allow-slow-types"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window", "dom", "ESNext"],
+    "noImplicitOverride": true
+  },
+  "workspace": ["flow", "tc39-shim", "util", "w3c-shim", "web", "node", "denokit", "nodekit"],
+  "exclude": [".npm", "docs"],
+  "fmt": {
+    "lineWidth": 120,
+    "useTabs": false,
+    "indentWidth": 4
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-explicit-any", "ban-ts-comment", "no-namespace"]
     }
+  }
 }

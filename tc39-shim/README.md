@@ -6,15 +6,15 @@ This project maintains the same style as @gaubee/util (providing functional prog
 It supports on-demand imports, and for runtimes with native support, there is minimal additional overhead.
 
 1. **decimal** - Decimal arithmetic for precise numerical calculations
-    - Based on migration from big.js, serving as a drop-in replacement with pure functions and minimal side effects (stringify:toString/valueOf/toJSON)
-    - Reference: https://github.com/tc39/proposal-decimal
+   - Based on migration from big.js, serving as a drop-in replacement with pure functions and minimal side effects (stringify:toString/valueOf/toJSON)
+   - Reference: https://github.com/tc39/proposal-decimal
 2. **pipeline** - Functional pipeline operations
-    - Simulates the `|>` operator capability through array arrangement
-    - Reference: https://github.com/tc39/proposal-pipeline-operator
-    - > Note: Currently implements basic pipeline operations only. Additional features like parameter position transformation will be improved in future updates
+   - Simulates the `|>` operator capability through array arrangement
+   - Reference: https://github.com/tc39/proposal-pipeline-operator
+   - > Note: Currently implements basic pipeline operations only. Additional features like parameter position transformation will be improved in future updates
 3. **promise** - Promise extension functions
-    - Provides Promise.withResolvers method to obtain Promise's resolve and reject functions
-    - Reference: https://github.com/tc39/proposal-promise-with-resolvers
+   - Provides Promise.withResolvers method to obtain Promise's resolve and reject functions
+   - Reference: https://github.com/tc39/proposal-promise-with-resolvers
 4. **set** - Set extension functions
-    - Provides set operation methods: union, intersection, difference, etc.
-    - Reference: https://github.com/tc39/proposal-set-methods
+   - Provides set operation methods: union, intersection, difference, etc.
+   - Reference: https://github.com/tc39/proposal-set-methods

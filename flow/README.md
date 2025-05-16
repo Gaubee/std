@@ -25,7 +25,7 @@ bunx jsr add @gaubee/flow
 - Basic Usage: `SharedFlow extends PureEventDelegate`
 
 ```ts
-import { SharedFlow } from "@gaubee/flow";
+import {SharedFlow} from "@gaubee/flow";
 const shared_flow = new SharedFlow<string>();
 /// basic
 // add listen
@@ -36,7 +36,7 @@ shared_flow.emit("hi");
 off();
 
 // add listen with custom key
-shared_flow.on((data) => console.log("on", data), { key: "key1" });
+shared_flow.on((data) => console.log("on", data), {key: "key1"});
 // remove listen with custom key
 shared_flow.off("key1");
 
@@ -68,7 +68,7 @@ shared_flow
 - `SharedFlow.stream`
 
 ```ts
-import { SharedFlow } from "@gaubee/flow";
+import {SharedFlow} from "@gaubee/flow";
 const shared_flow = new SharedFlow<string>();
 
 // add listen and got stream
@@ -86,7 +86,7 @@ for await (const data of stream) {
 - `StateFlow extends SharedFlow` & `StateFlow.value`
 
 ```ts
-import { StateFlow } from "@gaubee/flow";
+import {StateFlow} from "@gaubee/flow";
 
 const state_flow = new StateFlow<string>("v1");
 state_flow.emit("v2");

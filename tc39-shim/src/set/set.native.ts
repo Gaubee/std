@@ -1,9 +1,9 @@
-import { type Func, uncurryThisFn } from "@gaubee/util";
-import type { AnySet, NativeFn } from "./set.types.ts";
+import {type Func, uncurryThisFn} from "@gaubee/util";
+import type {AnySet, NativeFn} from "./set.types.ts";
 
 /*@__NO_SIDE_EFFECTS__*/
 const currySetFn = <P extends keyof AnySet>(prop: P): NativeFn<P> => {
-    return uncurryThisFn(Set.prototype[prop] as Func);
+  return uncurryThisFn(Set.prototype[prop] as Func);
 };
 
 export const set_union = currySetFn("union");

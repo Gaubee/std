@@ -1,21 +1,14 @@
 {
-    "name": "@gaubee/node",
-    "version": "0.2.0",
-    "exports": {
-        "./env": "./src/env.ts",
-        "./path": "./src/path.ts",
-        "./promise": "./src/promise.ts",
-        ".": "./src/mod.ts"
-    },
-    "publish": {
-        "include": [
-            "LICENSE",
-            "README.md",
-            "src/**/*.ts"
-        ],
-        "exclude": [
-            "src/**/*.bench.ts",
-            "src/**/*.test.ts"
-        ]
-    }
+  "name": "@gaubee/node",
+  "version": "0.2.0",
+  "exports": {
+    "./env": "./src/env.ts",
+    "./path": "./src/path.ts",
+    "./promise": "./src/promise.ts",
+    ".": "./src/mod.ts"
+  },
+  "publish": {
+    "include": ["LICENSE", "README.md", "src/**/*.ts"],
+    "exclude": ["src/**/*.bench.ts", "src/**/*.test.ts"]
+  }
 }

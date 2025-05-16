@@ -1,13 +1,6 @@
-import {
-    arr_get_first,
-    arr_get_first_or_null,
-    arr_get_last,
-    arr_get_last_or_null,
-    iter_first_not_null,
-    iter_map_not_null,
-} from "./collections.ts";
-import { curryThisFn, extendsMethod } from "./func.ts";
-import { GF } from "./generator.ts";
+import {arr_get_first, arr_get_first_or_null, arr_get_last, arr_get_last_or_null, iter_first_not_null, iter_map_not_null} from "./collections.ts";
+import {curryThisFn, extendsMethod} from "./func.ts";
+import {GF} from "./generator.ts";
 
 extendsMethod(Array.prototype, "first", curryThisFn(arr_get_first));
 extendsMethod(Array.prototype, "firstOrNull", curryThisFn(arr_get_first_or_null));
@@ -25,25 +18,25 @@ extendsMethod(Set.prototype, "firstNotNull", firstNotNull);
 extendsMethod(GF.prototype, "firstNotNull", firstNotNull);
 
 declare global {
-    interface Array<T> {
-        readonly first: T;
-        readonly firstOrNull: T | undefined;
-        readonly last: T;
-        readonly lastOrNull: T | undefined;
-        mapNotNull: typeof mapNotNull;
-        firstNotNull: typeof firstNotNull;
-    }
+  interface Array<T> {
+    readonly first: T;
+    readonly firstOrNull: T | undefined;
+    readonly last: T;
+    readonly lastOrNull: T | undefined;
+    mapNotNull: typeof mapNotNull;
+    firstNotNull: typeof firstNotNull;
+  }
 
-    interface Map<K, V> {
-        mapNotNull: typeof mapNotNull;
-        firstNotNull: typeof firstNotNull;
-    }
-    interface Set<T> {
-        mapNotNull: typeof mapNotNull;
-        firstNotNull: typeof firstNotNull;
-    }
-    interface Generator<T = unknown, TReturn = any, TNext = unknown> extends Iterator<T, TReturn, TNext> {
-        mapNotNull: typeof mapNotNull;
-        firstNotNull: typeof firstNotNull;
-    }
+  interface Map<K, V> {
+    mapNotNull: typeof mapNotNull;
+    firstNotNull: typeof firstNotNull;
+  }
+  interface Set<T> {
+    mapNotNull: typeof mapNotNull;
+    firstNotNull: typeof firstNotNull;
+  }
+  interface Generator<T = unknown, TReturn = any, TNext = unknown> extends Iterator<T, TReturn, TNext> {
+    mapNotNull: typeof mapNotNull;
+    firstNotNull: typeof firstNotNull;
+  }
 }

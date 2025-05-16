@@ -1,18 +1,11 @@
 {
-    "name": "@gaubee/react",
-    "version": "0.1.0",
-    "exports": {
-        ".": "./src/mod.ts"
-    },
-    "publish": {
-        "include": [
-            "LICENSE",
-            "README.md",
-            "src/**/*.ts"
-        ],
-        "exclude": [
-            "src/**/*.bench.ts",
-            "src/**/*.test.ts"
-        ]
-    }
+  "name": "@gaubee/react",
+  "version": "0.1.0",
+  "exports": {
+    ".": "./src/mod.ts"
+  },
+  "publish": {
+    "include": ["LICENSE", "README.md", "src/**/*.ts"],
+    "exclude": ["src/**/*.bench.ts", "src/**/*.test.ts"]
+  }
 }

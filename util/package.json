@@ -1,10 +1,10 @@
 {
-    "description": "一些常见的pure-js工具函数，适用于任何场景",
-    "type": "module",
-    "keywords": [
-        "collections",
-        "util",
-        "std"
-    ],
-    "sideEffects": false
+  "description": "一些常见的pure-js工具函数，适用于任何场景",
+  "type": "module",
+  "keywords": [
+    "collections",
+    "util",
+    "std"
+  ],
+  "sideEffects": false
 }

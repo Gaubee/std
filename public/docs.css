@@ -5,7 +5,7 @@
 body {
   margin: 0;
   color: #333;
-  font-family: 'Open Sans', arial, sans-serif;
+  font-family: "Open Sans", arial, sans-serif;
   min-width: min-content;
   min-height: 100vh;
   font-size: 18px;
@@ -53,7 +53,7 @@ body > header {
   overflow: hidden;
 }
 .bg-ani::before {
-  content: ' ';
+  content: " ";
   display: block;
   position: absolute;
   z-index: -1;
@@ -63,7 +63,7 @@ body > header {
   background-color: rgb(0 0 0 / 0.6);
 }
 .bg-ani::after {
-  content: ' ';
+  content: " ";
   display: block;
   position: absolute;
   z-index: -2;
@@ -142,7 +142,7 @@ header h2 {
 }
 
 @property --underline-width {
-  syntax: '<percentage>';
+  syntax: "<percentage>";
   inherits: false;
   initial-value: 0%;
 }
@@ -182,7 +182,7 @@ a.target {
   --underline-width: 100%;
 }
 
-section pre[class*='language-'] {
+section pre[class*="language-"] {
   font-size: 0.8rem;
 }
 main {

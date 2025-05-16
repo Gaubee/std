@@ -1,17 +1,13 @@
-import { abort_signal_merge } from "@gaubee/util";
-import { useEffect, useState } from "react";
+import {abort_signal_merge} from "@gaubee/util";
+import {useEffect, useState} from "react";
 
-type Opts = { signal?: AbortSignal };
+type Opts = {signal?: AbortSignal};
 type PageLoadMode = "first" | "next";
-type PageError = { page: number; error: unknown };
+type PageError = {page: number; error: unknown};
 export const usePageQueryState = <T extends unknown>(
   initContent: T,
   startPage: number,
-  queryPage: (
-    previousContent: T,
-    currentPage: number,
-    opts: { signal: AbortSignal }
-  ) => Promise<{ nextPage: number; content: T; end: boolean }>
+  queryPage: (previousContent: T, currentPage: number, opts: {signal: AbortSignal}) => Promise<{nextPage: number; content: T; end: boolean}>,
 ) => {
   const [error, setError] = useState<null | PageError>(null);
   const [content, setContent] = useState(initContent);
@@ -53,7 +49,7 @@ export const usePageQueryState = <T extends unknown>(
           console.log("loading success");
         } catch (error) {
           loadTask.job.reject(error);
-          setError({ page, error });
+          setError({page, error});
           console.log("loading error");
         } finally {
           setLoadTask(null);
@@ -66,7 +62,7 @@ export const usePageQueryState = <T extends unknown>(
   const loadPage = (mode: PageLoadMode, opts?: Opts) => {
     if (loadTask == null) {
       const job = Promise.withResolvers<void>();
-      setLoadTask({ ...opts, mode, job });
+      setLoadTask({...opts, mode, job});
       return job.promise;
     }
     return loadTask.job.promise;

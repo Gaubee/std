@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import {useLayoutEffect, useRef} from "react";
 
 type Destructor = ReturnType<React.EffectCallback>;
 type UseDomEffect<T extends HTMLElement> = (el: T) => Destructor;
@@ -22,16 +22,10 @@ export const useDomRef: UseDomRef = <T extends HTMLElement>(hook: UseDomEffect<T
 type UseCustomEffect<T extends unknown> = (value: NonNullable<T>) => Destructor;
 
 export interface UseCustomRef {
-  <T extends unknown>(
-    hook: UseCustomEffect<T>,
-    initialValue?: T | null,
-  ): React.RefObject<T | null> | React.MutableRefObject<T>;
+  <T extends unknown>(hook: UseCustomEffect<T>, initialValue?: T | null): React.RefObject<T | null> | React.MutableRefObject<T>;
   <T extends unknown>(hook: UseCustomEffect<T>, initialValue: T): React.RefObject<T>;
 }
-export const useCustomRef: UseCustomRef = <T extends unknown>(
-  hook: UseCustomEffect<T>,
-  initialValue: T | null = null,
-) => {
+export const useCustomRef: UseCustomRef = <T extends unknown>(hook: UseCustomEffect<T>, initialValue: T | null = null) => {
   const ref = useRef(initialValue);
   useLayoutEffect(() => {
     if (ref.current == null) {
