@@ -11,7 +11,11 @@ import {type MarkdownOptions, readMarkdown, writeMarkdown} from "./markdown_file
 
 export type WalkOptions = {
   ignore?: string | string[] | ((entry: WalkEntry) => boolean);
+  ignoreFile?: string | string[] | ((entry: FileEntry) => boolean);
+  ignoreDir?: string | string[] | ((entry: DirectoryEntry) => boolean);
   match?: string | string[] | ((entry: WalkEntry) => boolean);
+  matchFile?: string | string[] | ((entry: FileEntry) => boolean);
+  matchDir?: string | string[] | ((entry: DirectoryEntry) => boolean);
   workspace?: string;
   deepth?: number;
   self?: boolean;
@@ -115,7 +119,7 @@ export class DirectoryEntry extends Entry {
   readonly isFile = false as const;
   readonly isDirectory = true as const;
 }
-const genEntry = (path: string, cwd: string, ignore?: (entry: WalkEntry) => boolean, match?: (entry: WalkEntry) => boolean) => {
+const genEntry = (path: string, cwd: string, ignore?: (entry: WalkEntry) => boolean | undefined, match?: (entry: WalkEntry) => boolean | undefined) => {
   let stats: node_fs.Stats;
   try {
     stats = node_fs.statSync(path);
@@ -136,37 +140,65 @@ const genEntry = (path: string, cwd: string, ignore?: (entry: WalkEntry) => bool
   if (!entry) {
     return;
   }
-  if (ignore && ignore(entry)) {
+  if (ignore?.(entry)) {
     return;
   }
   if (match) {
-    if (match(entry)) {
-      return entry;
-    }
-    return;
+    return match(entry) ? entry : void 0;
   }
   return entry;
 };
+const genIsMatch = <T extends Entry>(workspace: string, matcher?: string | string[] | ((entry: T) => boolean)) => {
+  if (!matcher) {
+    return;
+  }
+  switch (typeof matcher) {
+    case "function":
+      return matcher;
+    // deno-lint-ignore no-fallthrough
+    case "string":
+      matcher = [matcher];
+    default: {
+      const ig = new Ignore(typeof matcher === "string" ? [matcher] : matcher, workspace);
+      return (entry: Entry) => ig.isMatch(entry.path);
+    }
+  }
+};
+
 export function* walkAny(rootpath: string, options: WalkOptions = {}): Generator<WalkEntry, void, void> {
   rootpath = normalizeFilePath(rootpath);
   const {workspace = rootpath, deepth = Infinity, self = false, log = false} = options;
-  const ignore = options.ignore
-    ? typeof options.ignore === "function"
-      ? options.ignore
-      : (() => {
-          const ignore = new Ignore(typeof options.ignore === "string" ? [options.ignore] : options.ignore, workspace);
-          return (entry: Entry) => ignore.isMatch(entry.path);
-        })()
-    : void 0;
-
-  const match = options.match
-    ? typeof options.match === "function"
-      ? options.match
-      : (() => {
-          const match = new Ignore(typeof options.match === "string" ? [options.match] : options.match, workspace);
-          return (entry: Entry) => match.isMatch(entry.path);
-        })()
-    : void 0;
+  const ignoreAny = genIsMatch(workspace, options.ignore);
+  const ignoreFile = genIsMatch(workspace, options.ignoreFile);
+  const ignoreDir = genIsMatch(workspace, options.ignoreDir);
+  const ignore = (entry: WalkEntry) => {
+    if (ignoreAny?.(entry)) {
+      return true;
+    }
+    if (entry.isFile) {
+      return ignoreFile?.(entry);
+    } else {
+      return ignoreDir?.(entry);
+    }
+  };
+  const matchAny = genIsMatch(workspace, options.match);
+  const matchFile = genIsMatch(workspace, options.matchFile);
+  const matchDir = genIsMatch(workspace, options.matchDir);
+  const match = (entry: WalkEntry) => {
+    if (entry.isFile) {
+      if (matchFile) {
+        return matchFile(entry);
+      }
+    } else {
+      if (matchDir) {
+        return matchDir(entry);
+      }
+    }
+    if (matchAny) {
+      return matchAny(entry);
+    }
+    return true;
+  };
 
   if (log) {
     console.log("start", rootpath);
