@@ -33,7 +33,7 @@ type BasePath = Array<string | symbol | typeof Reflect.apply | typeof Reflect.co
 export const async_proxyer = <T>(
   ready: PromiseLike<T>,
   proxyConfig: {
-    type?: "object" | "class" | "function" | "arrow-function";
+    type?: "object" | "class" | "function" | "arrow-function" | object | Func | (new (...args: any[]) => any);
     basePath?: BasePath;
     has?: (prop: string | symbol, basePath: BasePath) => boolean;
     getOwnPropertyDescriptor?: (prop: string | symbol, basePath: BasePath) => PropertyDescriptor | undefined;
@@ -51,7 +51,7 @@ export const async_proxyer = <T>(
     return ready.then((r) => fn(r, ...args));
   };
   const basePath = proxyConfig.basePath ?? [];
-  let source: any = function () {};
+  let source: any;
   switch (proxyConfig.type) {
     case "class":
       source = class {};
@@ -64,6 +64,9 @@ export const async_proxyer = <T>(
       break;
     case "object":
       source = {};
+      break;
+    default:
+      source = proxyConfig.type ?? function () {};
   }
   return new Proxy(source, {
     get(_, prop) {
@@ -110,20 +113,16 @@ export const async_proxyer = <T>(
     getPrototypeOf() {
       return proxyConfig.getPrototypeOf?.(basePath) ?? null;
     },
-    isExtensible(target) {
-      const isExtensible = proxyConfig.isExtensible?.(basePath) ?? true;
-      if (isExtensible === false) {
-        Object.preventExtensions(target);
-      }
-      return isExtensible;
+    isExtensible() {
+      return proxyConfig.isExtensible?.(basePath) ?? Object.isExtensible(source);
     },
-    ownKeys(target) {
-      const keys = proxyConfig.ownKeys?.(basePath) ?? Reflect.ownKeys(target);
+    ownKeys() {
+      const keys = proxyConfig.ownKeys?.(basePath) ?? Reflect.ownKeys(source);
       return keys;
     },
-    preventExtensions(target) {
+    preventExtensions() {
       void async_call(Reflect.preventExtensions, []);
-      Object.preventExtensions(target);
+      Object.preventExtensions(source);
       return true;
     },
     setPrototypeOf(_, proto) {
