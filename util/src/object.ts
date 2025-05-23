@@ -279,5 +279,3 @@ export const obj_props = (<T extends object>(a: T, opts?: GetPropsOptions) => {
     return props;
   }
 }) as ObjectGetProps;
-
-// export const obj_extends

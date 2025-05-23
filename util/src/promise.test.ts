@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import {disposable} from "./disposable.ts";
 import {delay, promise_once_then, promise_safe_race, timmers} from "./promise.ts";
 

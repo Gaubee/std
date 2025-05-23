@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "@types/node": "^22.15.1",
+    "@types/node": "^22.15.21",
     "expect-type": "^1.2.1",
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0"
