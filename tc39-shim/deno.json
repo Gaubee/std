@@ -1,10 +1,11 @@
 {
   "name": "@gaubee/tc39-shim",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "exports": {
     "./decimal": "./src/decimal/decimal.ts",
     "./pipeline": "./src/pipeline/pipeline.ts",
     "./promise": "./src/promise/promise.ts",
+    "./regexp": "./src/regexp/regexp.ts",
     "./set": "./src/set/set.ts",
     ".": "./src/index.ts"
   },
@@ -16,6 +17,7 @@
     "exclude": ["src/**/*.bench.ts", "src/**/*.test.ts"]
   },
   "imports": {
+    "@std/assert": "jsr:@std/assert@^1.0.13",
     "@std/fmt": "jsr:@std/fmt@^1.0.2"
   }
 }
