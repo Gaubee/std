@@ -61,6 +61,12 @@ import { someFunction } from "@gaubee/nodekit"; // or specific module like "@gau
 - `writeYaml`:
   - `<T>(path: string, data: T, options?: YamlStringifyOptions, beforeWrite?: (yamlContent: string) => string) => void`
   - Writes data to a file in YAML format.
+- `readToml`:
+  - `<T = any>(path: string, defaultValue?: () => T) => T`
+  - Reads TOML file content.
+- `writeToml`:
+  - `<T extends Record<PropertyKey, never>>(path: string, data: T, beforeWrite?: (tomlContent: string) => string) => void`
+  - Writes data to a file in TOML format.
 
 ### markdown_file
 
@@ -79,7 +85,7 @@ import { someFunction } from "@gaubee/nodekit"; // or specific module like "@gau
 - `FileEntry`:
   - `class FileEntry extends Entry`
   - Represents a file entry in the file system, providing methods for file operations like reading and writing.
-  - Key methods: `readText()`, `readJson()`, `readYaml()`, `write()`, `writeJson()`, `writeYaml()`, `updateText()`, `readMarkdown()`, `writeMarkdown()`.
+  - Key methods: `readText()`, `readJson()`, `readYaml()`, `write()`, `writeJson()`, `writeYaml()`, `updateText()`, `readMarkdown()`, `writeMarkdown()`, `readToml()`, `writeToml()`.
 - `DirectoryEntry`:
   - `class DirectoryEntry extends Entry`
   - Represents a directory entry in the file system.

@@ -61,6 +61,12 @@ import { someFunction } from "@gaubee/nodekit"; // 或者具体模块如 "@gaube
 - `writeYaml`:
   - `<T>(path: string, data: T, options?: YamlStringifyOptions, beforeWrite?: (yamlContent: string) => string) => void`
   - 将数据以 YAML 格式写入文件。
+- `readToml`:
+  - `<T = any>(path: string, defaultValue?: () => T) => T`
+  - 读取 TOML 文件内容。
+- `writeToml`:
+  - `<T extends Record<PropertyKey, never>>(path: string, data: T, beforeWrite?: (tomlContent: string) => string) => void`
+  - 将数据以 TOML 格式写入文件。
 
 ### markdown_file
 

@@ -9,7 +9,7 @@ import type {Buffer} from "node:buffer";
 import node_fs from "node:fs";
 import node_path from "node:path";
 import process from "node:process";
-import {type JsonStringifyOptions, readJson, readYaml, writeJson, writeYaml, type YamlStringifyOptions} from "./config_file.ts";
+import {type JsonStringifyOptions, readJson, readToml, readYaml, writeJson, writeToml, writeYaml, type YamlStringifyOptions} from "./config_file.ts";
 import {Ignore} from "./ignore.ts";
 import {type MarkdownOptions, readMarkdown, writeMarkdown} from "./markdown_file.ts";
 
@@ -113,6 +113,12 @@ export class FileEntry extends Entry {
   }
   writeMarkdown(content: string, data?: object, options?: MarkdownOptions): void {
     return writeMarkdown(this.path, content, data, options);
+  }
+  readToml<T>(defaultValue?: () => T): T {
+    return readToml<T>(this.path, defaultValue);
+  }
+  writeToml<T extends Record<PropertyKey, never>>(data: T, beforeWrite?: (tomlContent: string) => string): void {
+    return writeToml<T>(this.path, data, beforeWrite);
   }
   /** 获取文件后缀，不带 `.` */
   get ext(): string {
