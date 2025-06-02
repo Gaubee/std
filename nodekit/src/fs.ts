@@ -1,3 +1,7 @@
+/**
+ * @module
+ * 这是一个为文件遍历提供的工具，内置了 ignore/match 配置
+ */
 import {normalizeFilePath} from "@gaubee/node";
 import {obj_lazify} from "@gaubee/util";
 import type matter from "gray-matter";

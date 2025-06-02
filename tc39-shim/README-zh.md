@@ -1,6 +1,6 @@
 # @gaubee/tc39-shim
 
-> [中文](./README-zh.md) [English](./README.md)
+> [中文](./README-zh.md) / [English](./README.md)
 
 该项目与 @gaubee/util 保持了一致的风格（尽可能提供函数式风格，从而避免副作用），提供了常见的垫片。
 它按需引入，对于具有原生支持的 runtime，基本不会有额外的开销。

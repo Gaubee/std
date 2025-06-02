@@ -1,24 +1,77 @@
+> [中文](./README-zh.md) / [English](./README.md)
+
 # @gaubee/node
 
-该项目在 @gaubee/util 的基础上，提供了与 NodeJs-API 相关的进一步补充。
+This project provides further supplements related to Node.js APIs based on @gaubee/util.
+
+## How to use
+
+### Install
+
+```bash
+# pnpm
+pnpm add @gaubee/node
+# npm
+npm install @gaubee/node
+# yarn
+yarn add @gaubee/node
+# jsr
+deno add @gaubee/node
+```
+
+### Usage
+
+```typescript
+import { cwdResolver } from "@gaubee/node/path";
+
+console.log(cwdResolver("file.txt"));
+```
 
 ## API
 
-### @gaubee/node/path
+### env
 
-- **`normalizeFilePath`** 将路径格式化为标准 POSIX 格式
-  - 支持处理 URL 格式路径
-  - 自动转换 Windows 路径分隔符
-- **`createResolver`** 创建路径解析器
-  - 柯里化函数，绑定特定工作目录
-  - 返回带有 `dirname`属性的函数
-- **`cwdResolver`** 基于当前工作目录的路径解析器
-  - 等同于 `path.resolve(process.cwd(), ...paths)`
-- **`createResolverByRootFile`** 根据根文件创建路径解析器
-  - 向上查找指定文件(默认 package.json)
-  - 返回基于该文件所在目录的解析器
+-   `viteEnvSource`:
+    -   `(): Record<string, string>`
+    -   Gets the Vite environment variable source.
+-   `nodeEnvSource`:
+    -   `(): Record<string, string>`
+    -   Gets the Node.js environment variable source (process.env).
+-   `denoEnvSource`:
+    -   `(): Record<string, string>`
+    -   Gets the Deno environment variable source.
+-   `bunEnvSource`:
+    -   `(): Record<string, string>`
+    -   Gets the Bun environment variable source.
+-   `storageEnvSource`:
+    -   `(storage?: Storage): Record<string, string>`
+    -   Gets an environment variable source based on the Storage API (e.g., sessionStorage).
+-   `autoEnvSource`:
+    -   `(fallback?: () => Record<string, string>): Record<string, string | undefined>`
+    -   Automatically detects and returns the environment variable source for the current environment (Deno > Bun > Vite > Node.js > sessionStorage).
+-   `defineEnv`:
+    -   `<P extends string, KV extends Record<string, EnvConfig>>(prefix: P, kv: KV, source?: Record<string, string | undefined>, ext?: object): DefineEnvChain<P, DefineEnv<P, KV>>`
+    -   Defines a set of environment variables, supporting type conversion, default values, and chained definitions.
 
-### @gaubee/node/promise
+### path
 
-- **`nodeTimmers`** 对 `@gaubee/util` timmers 的扩展补充
-  - `nodeTimmers.eventEmitter` 为 delay 函数提供 `node:event/EventEmitter` timmer 工厂函数.
+-   `normalizeFilePath`:
+    -   `(path: string | URL): string`
+    -   Formats the path to standard POSIX format, supporting URL and Windows paths.
+-   `createResolver`:
+    -   `(cwd: string): PathResolver`
+    -   Creates a path resolver that resolves paths relative to the specified `cwd` (current working directory).
+    -   The returned function has a `dirname` property with the value of the passed `cwd`.
+-   `cwdResolver`:
+    -   `PathResolver` (i.e., `((...paths: string[]) => string) & {dirname: string}`)
+    -   A path resolver based on the current Node.js process's working directory (`process.cwd()`).
+-   `createResolverByRootFile`:
+    -   `(fromPath?: string | URL, rootFilename?: string): PathResolver`
+    -   Creates a path resolver by looking up the specified root filename (defaults to `package.json`) upwards. The resolver will resolve paths based on the directory containing that root file.
+
+### promise
+
+-   `nodeTimmers`:
+    -   `{ eventEmitter: NodeTimmer.EventEmiter }`
+    -   An extension to `timmers` in `@gaubee/util`, providing Timmer related to Node.js events.
+    -   `nodeTimmers.eventEmitter`: A Timmer factory function for creating Timers based on `node:events/EventEmitter` for the `delay` function. It can listen for specified events and resolve the Promise when the event is triggered, with optional support for event argument filters.
