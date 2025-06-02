@@ -31,18 +31,20 @@ yarn dlx jsr add @gaubee/nodekit
 ### Usage
 
 ```typescript
-import { someFunction } from "@gaubee/nodekit"; // or specific module like "@gaubee/nodekit/fs"
+import {someFunction} from "@gaubee/nodekit"; // or specific module like "@gaubee/nodekit/fs"
 // Your code here
 ```
 
 ## API
 
-*   [@gaubee/nodekit/config_file](#config_file)
-*   [@gaubee/nodekit/markdown_file](#markdown_file)
-*   [@gaubee/nodekit/fs](#fs)
-*   [@gaubee/nodekit/ignore](#ignore)
-*   [@gaubee/nodekit/pnpm](#pnpm)
-*   [@gaubee/nodekit/shell](#shell)
+- [@gaubee/nodekit/colors](#colors)
+- [@gaubee/nodekit/config_file](#config_file)
+- [@gaubee/nodekit/markdown_file](#markdown_file)
+- [@gaubee/nodekit/fs](#fs)
+- [@gaubee/nodekit/ignore](#ignore)
+- [@gaubee/nodekit/pnpm](#pnpm)
+- [@gaubee/nodekit/shell](#shell)
+- [@gaubee/nodekit/tui](#tui)
 
 ### config_file
 
@@ -85,7 +87,7 @@ import { someFunction } from "@gaubee/nodekit"; // or specific module like "@gau
 - `FileEntry`:
   - `class FileEntry extends Entry`
   - Represents a file entry in the file system, providing methods for file operations like reading and writing.
-  - Key methods: `readText()`, `readJson()`, `readYaml()`, `write()`, `writeJson()`, `writeYaml()`, `updateText()`, `readMarkdown()`, `writeMarkdown()`, `readToml()`, `writeToml()`.
+  - Key methods: `read()`, `readText()`, `readJson()`, `readYaml()`, `readToml()`, `write()`, `writeJson()`, `writeYaml()`, `writeToml()`, `updateText()`, `readMarkdown()`, `writeMarkdown()`.
 - `DirectoryEntry`:
   - `class DirectoryEntry extends Entry`
   - Represents a directory entry in the file system.
@@ -121,3 +123,17 @@ import { someFunction } from "@gaubee/nodekit"; // or specific module like "@gau
   - `Shell` (pre-configured instance)
   - A pre-configured shell executor instance for running terminal commands.
   - Key capabilities: `$.spawn()`, `$.cwd`, `$.env`, `$.ls()`, `$.colors`.
+
+### tui
+
+- `prompts`:
+  - (Re-export of `@inquirer/prompts`)
+  - Re-export of the `@inquirer/prompts` library for creating interactive command-line prompts.
+- `spinner`:
+  - (Re-export of `ora`)
+  - Re-export of the `ora` library for displaying terminal spinners.
+
+### colors
+
+- (Re-export of `@std/fmt/colors`)
+  - This module re-exports all functionalities from the `@std/fmt/colors` library, providing a comprehensive set of tools for colorizing terminal output.

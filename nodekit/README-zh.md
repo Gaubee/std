@@ -31,18 +31,20 @@ yarn dlx jsr add @gaubee/nodekit
 ### Usage
 
 ```typescript
-import { someFunction } from "@gaubee/nodekit"; // 或者具体模块如 "@gaubee/nodekit/fs"
+import {someFunction} from "@gaubee/nodekit"; // 或者具体模块如 "@gaubee/nodekit/fs"
 // Your code here
 ```
 
 ## API
 
-*   [@gaubee/nodekit/config_file](#config_file)
-*   [@gaubee/nodekit/markdown_file](#markdown_file)
-*   [@gaubee/nodekit/fs](#fs)
-*   [@gaubee/nodekit/ignore](#ignore)
-*   [@gaubee/nodekit/pnpm](#pnpm)
-*   [@gaubee/nodekit/shell](#shell)
+- [@gaubee/nodekit/colors](#colors)
+- [@gaubee/nodekit/config_file](#config_file)
+- [@gaubee/nodekit/markdown_file](#markdown_file)
+- [@gaubee/nodekit/fs](#fs)
+- [@gaubee/nodekit/ignore](#ignore)
+- [@gaubee/nodekit/pnpm](#pnpm)
+- [@gaubee/nodekit/shell](#shell)
+- [@gaubee/nodekit/tui](#tui)
 
 ### config_file
 
@@ -85,7 +87,7 @@ import { someFunction } from "@gaubee/nodekit"; // 或者具体模块如 "@gaube
 - `FileEntry`:
   - `class FileEntry extends Entry`
   - 表示文件系统中的一个文件条目，提供文件读取、写入等操作方法。
-  - 主要方法: `readText()`, `readJson()`, `readYaml()`, `write()`, `writeJson()`, `writeYaml()`, `updateText()`, `readMarkdown()`, `writeMarkdown()`。
+  - 主要方法: `read()`, `readText()`, `readJson()`, `readYaml()`, `readToml()`, `write()`, `writeJson()`, `writeYaml()`, `writeToml()`, `updateText()`, `readMarkdown()`, `writeMarkdown()`。
 - `DirectoryEntry`:
   - `class DirectoryEntry extends Entry`
   - 表示文件系统中的一个目录条目。
@@ -121,3 +123,17 @@ import { someFunction } from "@gaubee/nodekit"; // 或者具体模块如 "@gaube
   - `Shell` (预配置实例)
   - 一个预配置的 shell 执行器实例，用于执行终端命令。
   - 主要能力: `$.spawn()`, `$.cwd`, `$.env`, `$.ls()`, `$.colors`。
+
+### tui
+
+- `prompts`:
+  - (重新导出 `@inquirer/prompts`)
+  - 重新导出 `@inquirer/prompts` 库，用于创建交互式命令行提示。
+- `spinner`:
+  - (重新导出 `ora`)
+  - 重新导出 `ora` 库，用于显示终端加载动画。
+
+### colors
+
+- (重新导出 `@std/fmt/colors`)
+  - 此模块重新导出 `@std/fmt/colors` 库的所有功能，提供了一整套用于终端输出着色的工具。
