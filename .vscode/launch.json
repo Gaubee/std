@@ -11,8 +11,12 @@
       "program": "${file}",
       "cwd": "${workspaceFolder}",
       "env": {},
-      "runtimeExecutable": "deno",
-      "runtimeArgs": ["test", "--unstable", "--inspect-wait", "--allow-all"],
+      "runtimeExecutable": "/Users/kzf/.deno/bin/deno",
+      "runtimeArgs": [
+        "test",
+        "--inspect-wait",
+        "--allow-all"
+      ],
       "attachSimplePort": 9229
     }
   ]

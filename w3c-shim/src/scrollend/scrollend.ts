@@ -2,7 +2,7 @@
  * Checks if the `scrollend` event is supported.
  * @see https://caniuse.com/mdn-api_element_scrollend_event
  * - Chrome: 114+
- * - Safari: Not Support
+ * - Safari: Not Supported
  */
 export const caniuseScrollEnd = "onscrollend" in globalThis;
 import {addScrollendEventListener as native_addScrollendEventListener, removeScrollendEventListener as native_removeScrollendEventListener} from "./scrollend.native.ts";

@@ -1,7 +1,8 @@
 {
   "name": "@gaubee/w3c-shim",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "exports": {
+    "./inert": "./src/inert/inert.ts",
     "./scrollend": "./src/scrollend/scrollend.ts",
     ".": "./src/index.ts"
   },
