@@ -1,6 +1,6 @@
 {
   "name": "@gaubee/nodekit",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "exports": {
     "./colors": "./src/colors.ts",
     "./config_file": "./src/config_file.ts",
