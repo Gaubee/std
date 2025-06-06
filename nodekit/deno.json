@@ -1,11 +1,12 @@
 {
   "name": "@gaubee/nodekit",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "exports": {
     "./colors": "./src/colors.ts",
     "./config_file": "./src/config_file.ts",
     "./markdown_file": "./src/markdown_file.ts",
     "./fs": "./src/fs.ts",
+    "./git": "./src/git/index.ts",
     "./ignore": "./src/ignore.ts",
     "./pnpm": "./src/pnpm.ts",
     "./shell": "./src/shell.ts",
