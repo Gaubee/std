@@ -7,6 +7,7 @@ import * as JSONC from "@std/jsonc";
 import * as TOML from "@std/toml";
 import * as YAML from "@std/yaml";
 import fs from "node:fs";
+export {JSONC, TOML, YAML};
 
 export const writeText = (path: string, content: string): void => {
   path = normalizeFilePath(path);
