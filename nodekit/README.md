@@ -41,6 +41,7 @@ import {someFunction} from "@gaubee/nodekit"; // or specific module like "@gaube
 - [@gaubee/nodekit/config_file](#config_file)
 - [@gaubee/nodekit/markdown_file](#markdown_file)
 - [@gaubee/nodekit/fs](#fs)
+- [@gaubee/nodekit/git](#git)
 - [@gaubee/nodekit/ignore](#ignore)
 - [@gaubee/nodekit/pnpm](#pnpm)
 - [@gaubee/nodekit/shell](#shell)
@@ -94,6 +95,15 @@ import {someFunction} from "@gaubee/nodekit"; // or specific module like "@gaube
 - `walkAny`:
   - `(rootpath: string, options?: WalkOptions) => Generator<WalkEntry, void, void>`
   - Walks through files and directories under a given path (including subdirectories), returning a generator. Can be filtered using options.
+
+### git
+
+- `findChangesByMessage`:
+  - `(options: FindChangesByMessageOptions) => Promise<CommitChange[]>`
+  - Finds changes by commit message pattern.
+- `findChangesByTime`:
+  - `(options: FindChangesByTimeOptions) => Promise<CommitChange[]>`
+  - Finds changes within a specified time range.
 
 ### ignore
 

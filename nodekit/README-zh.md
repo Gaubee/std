@@ -41,6 +41,7 @@ import {someFunction} from "@gaubee/nodekit"; // 或者具体模块如 "@gaubee/
 - [@gaubee/nodekit/config_file](#config_file)
 - [@gaubee/nodekit/markdown_file](#markdown_file)
 - [@gaubee/nodekit/fs](#fs)
+- [@gaubee/nodekit/git](#git)
 - [@gaubee/nodekit/ignore](#ignore)
 - [@gaubee/nodekit/pnpm](#pnpm)
 - [@gaubee/nodekit/shell](#shell)
@@ -94,6 +95,15 @@ import {someFunction} from "@gaubee/nodekit"; // 或者具体模块如 "@gaubee/
 - `walkAny`:
   - `(rootpath: string, options?: WalkOptions) => Generator<WalkEntry, void, void>`
   - 遍历指定路径下的文件和目录（包括子目录），返回一个生成器，可根据选项进行过滤。
+
+### git
+
+- `findChangesByMessage`:
+  - `(options: FindChangesByMessageOptions) => Promise<CommitChange[]>`
+  - 通过提交信息模式查找变更。
+- `findChangesByTime`:
+  - `(options: FindChangesByTimeOptions) => Promise<CommitChange[]>`
+  - 在指定时间范围内查找变更。
 
 ### ignore
 
