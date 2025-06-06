@@ -1,8 +1,10 @@
+.jixo.env
+memory.json
+*.memory.json
 .npm
 .pnpm
 .import_map.*
 docs
 node_modules
-
 .DS_Store
 .aider*

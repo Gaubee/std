@@ -9,12 +9,25 @@
     "lib": ["deno.window", "dom", "ESNext"],
     "noImplicitOverride": true
   },
-  "workspace": ["flow", "tc39-shim", "util", "w3c-shim", "web", "node", "denokit", "nodekit"],
+  "workspace": [
+    "flow",
+    "tc39-shim",
+    "util",
+    "w3c-shim",
+    "web",
+    "node",
+    "denokit",
+    "nodekit"
+  ],
   "exclude": [".npm", "docs"],
   "fmt": {
-    "lineWidth": 120,
+    "trailingComma": "all",
+    "lineWidth": 180,
     "useTabs": false,
-    "indentWidth": 4
+    "indentWidth": 2,
+    "singleQuote": false,
+    "bracketSpacing": false,
+    "arrowParens": "always"
   },
   "lint": {
     "rules": {
