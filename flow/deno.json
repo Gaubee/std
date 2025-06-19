@@ -1,6 +1,6 @@
 {
   "name": "@gaubee/flow",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "exports": {
     "./state_flow": "./src/state_flow.ts",
     "./shared_flow": "./src/shared_flow.ts",

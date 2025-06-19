@@ -1,6 +1,6 @@
 {
   "name": "@gaubee/util",
-  "version": "0.32.1",
+  "version": "0.33.0",
   "exports": {
     "./abort": "./src/abort.ts",
     "./bigint": "./src/bigint.ts",
@@ -14,6 +14,8 @@
     "./event_target": "./src/event_target.ts",
     "./func": "./src/func.ts",
     "./generator": "./src/generator.ts",
+    "./json": "./src/json.ts",
+    "./locks": "./src/locks.ts",
     "./lrc": "./src/lrc.ts",
     "./map": "./src/map.ts",
     "./math": "./src/math.ts",

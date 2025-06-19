@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import {delay} from "./promise.ts";
 import {func_throttle} from "./throttle.ts";
 

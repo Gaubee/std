@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import {StateFlow} from "./state_flow.ts";
 
 // 测试构造函数初始值设置

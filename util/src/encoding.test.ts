@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import {Buffer} from "node:buffer";
 import {str_to_base64_binary, str_to_hex_binary, str_to_utf8_binary} from "./encoding.ts";
 const base64_str = "68656c6c6f20776f726c64";

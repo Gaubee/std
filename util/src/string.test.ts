@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import {str_human_space, str_human_trim, str_trim_indent} from "./string.ts";
 
 Deno.test("str_trim_indent", () => {

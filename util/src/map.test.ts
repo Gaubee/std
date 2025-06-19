@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import {map_get_or_put_async} from "./map.ts";
 import {delay} from "./promise.ts";
 

@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import {AGF, GF} from "./generator.ts";
 
 Deno.test("GF & AGF", () => {

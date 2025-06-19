@@ -1,6 +1,6 @@
 import {pnpm_publish} from "./pnpm.ts";
 
-if (import.meta.main) {
+Deno.test("pnpm", async () => {
   const result = await pnpm_publish({
     cwd: import.meta.resolve("../../.npm"),
     noGitChecks: true,
@@ -8,4 +8,4 @@ if (import.meta.main) {
     // otp:"713846"
   });
   console.log(result);
-}
+});

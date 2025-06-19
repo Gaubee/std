@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import {f32a_contact, f64a_contact, i16a_contact, i32a_contact, i8a_contact, typedarray_contact, u16a_contact, u32a_contact, u8a_contact} from "./typedarray.ts";
 
 Deno.test("typedarray_contact - Uint8Array", () => {

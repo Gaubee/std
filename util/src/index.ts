@@ -11,6 +11,7 @@ export * from "./event_target.ts";
 export * from "./func.ts";
 export * from "./generator.ts";
 export * from "./json.ts";
+export * from "./locks.ts";
 export * from "./lrc.ts";
 export * from "./map.ts";
 export * from "./math.ts";

@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import {iter_first_not_null} from "./collections.ts";
 
 Deno.test("iter_first_not_null", () => {

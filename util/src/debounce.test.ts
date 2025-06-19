@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import {func_debounce} from "./debounce.ts";
 import {delay} from "./promise.ts";
 
