@@ -13,7 +13,7 @@ export const normalizeFilePath = (path: string | URL): string => {
     path = fileURLToPath(path);
   }
   if (path.includes("\\")) {
-    path = path.replaceAll(node_path.sep, node_path.posix.sep);
+    path = path.replaceAll("\\", "/");
   }
   return path;
 };
