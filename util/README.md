@@ -44,18 +44,6 @@ import {delay} from "@gaubee/util";
    > 例如 Promise.withResolvers
    >
 
-### 关于 @gaubee/util/global
-
-> 如果你的项目是 application 级别，不会被其它项目所依赖，那么我建议导入 global 系列，它能大幅度提升你的 js 开发体验。
-> 虽然大家都说“不要污染原型链”，但是辩证看待，我建议你在合适的时候，“应该充分利用原型链”。
-> 在原型链上扩展函数，通过链式调用，可以达到很多符合直觉的开发体验。
->
-> 并且，随着 [shadowrealm 提案](https://github.com/tc39/proposal-shadowrealm)
-> 的演进，未来污染原型链在复杂项目里头就将不再是问题。
-
-由于 jsr 上不允许上传污染全局的模块，所以如果需要，请使用 [npm 版本](https://www.npmjs.com/package/@gaubee/util)。 **npm
-版本还包含了 commonjs 的直接支持**。
-
 ## API
 
 - 参考链接：[jsr-docs 文档](https://jsr.io/@gaubee/util/doc)
