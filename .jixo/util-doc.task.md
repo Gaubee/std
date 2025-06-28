@@ -4,6 +4,7 @@ agents:
 dir: util
 model: deepseek-reasoner
 ---
+
 > 基于 `@gaubee/util/src` 目录下各模块的导出，补充 `@gaubee/util/README.md` 和 `@gaubee/util/README-zh.md` 文档内容。
 > 目标是确保 README 文件准确、清晰地反映库所提供的工具函数，并遵循 `@gaubee/util` 现有的 README 风格和结构。
 
@@ -35,10 +36,12 @@ model: deepseek-reasoner
 
    - 必须使用一级 Markdown 标题。
    - 格式: `# @gaubee/util`
+
 2. **徽章 (Badges):**
 
    - (如果 AI 可以获取或被提供，则包含，否则提示开发者手动添加/保留此部分)
    - 例如：`[![JSR @gaubee](https://jsr.io/badges/@gaubee)](https://jsr.io/@gaubee)`
+
 3. **引言段落 (简介):**
 
    - 紧跟主标题（或徽章）下方。
@@ -57,16 +60,16 @@ model: deepseek-reasoner
      2.  这个库通常不会包含垫片相关的，只要在 esnext 范畴内我都会使用，所以请自行处理垫片相关的问题
          > 例如 Promise.withResolvers
      ```
+
    - `README.md` (English equivalent)
+
 4. **使用 (How to use):**
 
    - 包含 `install` 和 `usage` 小节。
    - `install` 部分列出多种包管理器的安装命令，参考现有 `README.md`。
    - `usage` 部分提供一个简单的导入示例，参考现有 `README.md`。
-5. **特定说明章节 (例如 "关于 @gaubee/util/global"):**
 
-   - 如果存在这类特殊章节，AI 应被指示保留这些章节的现有内容，或根据提供的特定指令进行更新。通常这类内容可能需要手动维护。
-6. **API 文档部分:**
+5. **API 文档部分:**
 
    - 此部分是 AI 生成的核心内容，标题为 `## API`。
    - API 文档按 `MODULE_GROUP_NAME` 组织，每个模块组使用三级 Markdown 标题。
@@ -85,6 +88,7 @@ model: deepseek-reasoner
          // {{FUNCTION_EXAMPLE}}
          ```
      ````
+
    - **格式化示例 (参照 `@gaubee/util/README-zh.md` 的风格):**
 
      ````markdown

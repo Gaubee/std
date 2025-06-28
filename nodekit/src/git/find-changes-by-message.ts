@@ -1,7 +1,7 @@
 import {type ExecException, execSync, type StdioOptions} from "node:child_process";
 import path from "node:path";
 import {gray, red} from "../colors.ts";
-import {FileEntry} from "../fs.ts";
+import {FileEntry} from "../fs_entry.ts";
 
 interface GitError extends ExecException {
   status?: number | null;

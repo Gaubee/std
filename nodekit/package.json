@@ -1,13 +1,17 @@
 {
+  "name": "@gaubee/nodekit",
   "description": "一个面向 node 开发者专门打造的工具集，专门解决开发工具脚本时的常见需求，尽可能不重复造轮子。",
   "sideEffects": false,
   "dependencies": {
     "@inquirer/prompts": "^7.5.3",
-    "dax-sh": "^0.42.0",
+    "dax-sh": "^0.43.2",
     "gray-matter": "^4.0.3",
-    "ignore": "^6.0.2",
-    "minimatch": "^10.0.1",
+    "ignore": "^7.0.5",
+    "minimatch": "^10.0.3",
     "ora": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22"
   },
   "peerDependencies": {
     "@gaubee/util": "*",

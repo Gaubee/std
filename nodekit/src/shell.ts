@@ -3,11 +3,11 @@ import {obj_omit} from "@gaubee/util";
 import * as colors from "@std/fmt/colors";
 import {type $Type, build$ as buildSh} from "dax-sh";
 import child_process from "node:child_process";
-import node_fs from "node:fs";
 import os from "node:os";
 import node_path from "node:path";
 import process from "node:process";
-import {walkAny, type WalkEntry} from "./fs.ts";
+import type {AnyEntry} from "./fs_entry.ts";
+import {walkAny} from "./walk.ts";
 
 export interface CreateShellOptions {
   cwd?: string;
@@ -31,13 +31,17 @@ export interface Shell extends $Type {
    */
   cwd: string;
   /**
+   * 切换工作目录
+   */
+  cd: (path: string) => void;
+  /**
    * 环境变量
    */
   env: Record<string, string>;
   /**
    * 遍历文件和文件夹
    */
-  ls: (glob?: string) => WalkEntry[];
+  ls: (subpath?: string, options?: {ignore?: string; match?: string; silence?: boolean}) => AnyEntry[];
   /**
    * 终端颜色
    * {@link https://jsr.io/@std/fmt/doc/colors}
@@ -81,7 +85,7 @@ export const $$: (options: CreateShellOptions) => Shell = (options: CreateShellO
       }
       const stdio: child_process.StdioOptions = ["inherit", "inherit", "inherit"];
       if (options?.stdin) stdio[0] = "pipe";
-      if (options?.stdout) stdio[1] = node_fs.openSync("qaq.stdout", "w"); //"pipe";
+      if (options?.stdout) stdio[1] = "pipe";
       if (options?.stderr) stdio[2] = "pipe";
       const cp = child_process.spawn(safe_cmd, safe_args, {
         stdio: stdio,
@@ -104,7 +108,7 @@ export const $$: (options: CreateShellOptions) => Shell = (options: CreateShellO
     env: env,
     set cwd(v) {
       cwd = normalizeFilePath(node_path.resolve(cwd, v));
-      sh.cd(cwd);
+      process.chdir(cwd);
     },
     get cwd() {
       return cwd;
@@ -143,7 +147,7 @@ export const $$: (options: CreateShellOptions) => Shell = (options: CreateShellO
       }
       return Reflect.get(t, p, r);
     },
-  }) as Shell;
+  }) as Shell & typeof ext;
   $.cd(cwd);
   return $;
 };

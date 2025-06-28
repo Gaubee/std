@@ -32,13 +32,15 @@ export class Ignore {
     const style = option?.style ?? "git";
 
     if (style === "git") {
-      const gitignore = ignore.default().add(rules);
+      const gitignore = ignore().add(rules);
       this.#isMatch = (relativepath: string) => {
-        return gitignore.ignores(relativepath);
+        // The `ignore` library requires forward slashes
+        const posixPath = relativepath.replace(/\\/g, "/");
+        return gitignore.ignores(posixPath);
       };
     } else if (style === "npm") {
       this.#isMatch = (relativepath: string) => {
-        return rules.some((rule) => minimatch(relativepath, rule));
+        return rules.some((rule) => minimatch(relativepath, rule, {dot: true, matchBase: true}));
       };
     } else if (style === "search") {
       this.#isMatch = (relativepath: string) => {
@@ -70,6 +72,11 @@ export class Ignore {
     filepath = normalizeFilePath(filepath);
 
     const relativepath = node_path.isAbsolute(filepath) ? node_path.relative(this.cwd, filepath) : filepath;
+
+    // a path outside of cwd should not be ignored
+    if (relativepath.startsWith("..")) {
+      return false;
+    }
     return this.#isMatch(relativepath);
   }
 }
