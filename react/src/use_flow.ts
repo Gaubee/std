@@ -1,7 +1,7 @@
 import {type SetStateAction, useInsertionEffect, useState} from "react";
 
 import {type SharedFlow, StateFlow} from "@gaubee/flow";
-import {type EasyState, type ReactState, easy_state_proto} from "./use_easy_state.ts";
+import {easy_state_proto, type EasyState, type ReactState} from "./use_easy_state.ts";
 interface UseFlow {
   <T>(flow: StateFlow<T>, state?: ReactState<T>): EasyState<T>;
   <T>(flow: SharedFlow<T>, state: ReactState<T>): EasyState<T>;

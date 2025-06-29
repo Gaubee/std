@@ -20,5 +20,5 @@ jobs:
         with:
           deno-version: v2.x
       - run: |
-          deno install 
+          deno install
           deno task pub

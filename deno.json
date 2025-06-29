@@ -1,5 +1,6 @@
 {
   "tasks": {
+    "fmt": "prettier --write \"**/*.{ts,json}\"",
     "build": "deno run -A ./dnt.ts",
     "npm": "deno task build && deno task pub-npm",
     "pub-npm": "cd .npm && pnpm -r publish --access public --no-git-checks",
@@ -11,25 +12,14 @@
     "types": ["node"],
     "noImplicitOverride": true
   },
-  "workspace": [
-    "flow",
-    "tc39-shim",
-    "util",
-    "w3c-shim",
-    "web",
-    "node",
-    "denokit",
-    "nodekit"
-  ],
+  "workspace": ["flow", "tc39-shim", "util", "w3c-shim", "web", "node", "denokit", "nodekit"],
   "exclude": [".npm", "docs"],
   "fmt": {
-    "trailingComma": "all",
+    "trailingCommas": "onlyMultiLine",
     "lineWidth": 180,
     "useTabs": false,
     "indentWidth": 2,
-    "singleQuote": false,
-    "bracketSpacing": false,
-    "arrowParens": "always"
+    "singleQuote": false
   },
   "lint": {
     "rules": {

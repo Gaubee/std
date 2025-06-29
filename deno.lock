@@ -53,6 +53,7 @@
     "npm:minimatch@^10.0.3": "10.0.3",
     "npm:ora@^8.2.0": "8.2.0",
     "npm:prettier-plugin-organize-imports@^4.1.0": "4.1.0_prettier@3.6.2_typescript@5.8.3",
+    "npm:prettier@3.6.2": "3.6.2",
     "npm:prettier@^3.6.2": "3.6.2"
   },
   "jsr": {

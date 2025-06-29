@@ -6,9 +6,10 @@
 
 ## Introduction
 
-This project builds upon @gaubee/util and @gaubee/node, providing further enhancements related to the Node.js toolchain, such as pnpm operations, dnt build assistance, configuration file reading/writing, and more.
-Note: This project is positioned as an auxiliary tool library and is generally not recommended for use in online products.
-Because this project has not conducted a complete source code review and deduplication of the included third-party libraries, its security cannot be guaranteed, and this project will not pursue lightweight volume.
+This project builds upon @gaubee/util and @gaubee/node, providing further enhancements related to the Node.js toolchain, such as pnpm operations, dnt build assistance,
+configuration file reading/writing, and more. Note: This project is positioned as an auxiliary tool library and is generally not recommended for use in online products. Because
+this project has not conducted a complete source code review and deduplication of the included third-party libraries, its security cannot be guaranteed, and this project will not
+pursue lightweight volume.
 
 ## How to use
 
@@ -31,7 +32,7 @@ yarn dlx jsr add @gaubee/nodekit
 ### Usage
 
 ```typescript
-import {someFunction} from "@gaubee/nodekit"; // or specific module like "@gaubee/nodekit/fs"
+import { someFunction } from "@gaubee/nodekit"; // or specific module like "@gaubee/nodekit/fs"
 // Your code here
 ```
 
@@ -88,7 +89,8 @@ import {someFunction} from "@gaubee/nodekit"; // or specific module like "@gaube
 - `FileEntry`:
   - `class FileEntry extends Entry`
   - Represents a file entry in the file system, providing methods for file operations like reading and writing.
-  - Key methods: `read()`, `readText()`, `readJson()`, `readYaml()`, `readToml()`, `write()`, `writeJson()`, `writeYaml()`, `writeToml()`, `updateText()`, `readMarkdown()`, `writeMarkdown()`.
+  - Key methods: `read()`, `readText()`, `readJson()`, `readYaml()`, `readToml()`, `write()`, `writeJson()`, `writeYaml()`, `writeToml()`, `updateText()`, `readMarkdown()`,
+    `writeMarkdown()`.
 - `DirectoryEntry`:
   - `class DirectoryEntry extends Entry`
   - Represents a directory entry in the file system.

@@ -7,8 +7,7 @@
 ## 简介
 
 该项目在 @gaubee/util 和 @gaubee/node 的基础上，提供了与 Node.js 工具链相关的进一步补充，例如 pnpm 操作、dnt 构建辅助、配置文件读写等功能。
-注意，该项目的定位是辅助类工具类，因此通常不建议在线上产品中使用该项目。
-因为该项目并没有对包含的第三方库做完整的源码检查和去重，无法确保它的安全性，本项目也不会追求体积轻量。
+注意，该项目的定位是辅助类工具类，因此通常不建议在线上产品中使用该项目。 因为该项目并没有对包含的第三方库做完整的源码检查和去重，无法确保它的安全性，本项目也不会追求体积轻量。
 
 ## 使用 (How to use)
 
@@ -31,7 +30,7 @@ yarn dlx jsr add @gaubee/nodekit
 ### Usage
 
 ```typescript
-import {someFunction} from "@gaubee/nodekit"; // 或者具体模块如 "@gaubee/nodekit/fs"
+import { someFunction } from "@gaubee/nodekit"; // 或者具体模块如 "@gaubee/nodekit/fs"
 // Your code here
 ```
 
@@ -88,7 +87,8 @@ import {someFunction} from "@gaubee/nodekit"; // 或者具体模块如 "@gaubee/
 - `FileEntry`:
   - `class FileEntry extends Entry`
   - 表示文件系统中的一个文件条目，提供文件读取、写入等操作方法。
-  - 主要方法: `read()`, `readText()`, `readJson()`, `readYaml()`, `readToml()`, `write()`, `writeJson()`, `writeYaml()`, `writeToml()`, `updateText()`, `readMarkdown()`, `writeMarkdown()`。
+  - 主要方法: `read()`, `readText()`, `readJson()`, `readYaml()`, `readToml()`, `write()`, `writeJson()`, `writeYaml()`, `writeToml()`, `updateText()`, `readMarkdown()`,
+    `writeMarkdown()`。
 - `DirectoryEntry`:
   - `class DirectoryEntry extends Entry`
   - 表示文件系统中的一个目录条目。

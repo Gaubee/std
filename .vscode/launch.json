@@ -12,11 +12,7 @@
       "cwd": "${workspaceFolder}",
       "env": {},
       "runtimeExecutable": "/Users/kzf/.deno/bin/deno",
-      "runtimeArgs": [
-        "test",
-        "--inspect-wait",
-        "--allow-all"
-      ],
+      "runtimeArgs": ["test", "--inspect-wait", "--allow-all"],
       "attachSimplePort": 9229
     }
   ]

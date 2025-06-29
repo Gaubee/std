@@ -1,4 +1,4 @@
-import {func_remember, type Func} from "./func.ts";
+import {type Func, func_remember} from "./func.ts";
 
 type BasePath = Array<string | symbol | typeof Reflect.apply | typeof Reflect.construct>;
 /**

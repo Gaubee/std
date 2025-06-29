@@ -72,7 +72,17 @@ body > header {
   background: #8a2387; /* fallback for old browsers */
   background:
     linear-gradient(-45deg, #03001e99, #03001e99, #7303c099, #ec38bc99, #fdeff9, #7303c099, #03001e99, #03001e99),
-    linear-gradient(45deg, #03001e99, #03001e99, #7303c099, #ec38bc99, #fdeff9, #7303c099, #03001e99, #03001e99); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    linear-gradient(
+    45deg,
+    #03001e99,
+    #03001e99,
+    #7303c099,
+    #ec38bc99,
+    #fdeff9,
+    #7303c099,
+    #03001e99,
+    #03001e99
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   animation: gradient 15s ease infinite;
   background-size: 400% 400%;
   pointer-events: none;

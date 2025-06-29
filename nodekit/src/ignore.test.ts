@@ -1,7 +1,6 @@
-import {assertEquals, assert} from "@std/assert";
-import {Ignore} from "./ignore.ts";
+import {assert, assertEquals} from "@std/assert";
 import * as path from "@std/path";
-import fs from "node:fs";
+import {Ignore} from "./ignore.ts";
 
 const __dirname = path.dirname(path.fromFileUrl(import.meta.url));
 
@@ -58,7 +57,7 @@ Deno.test("Ignore with 'search' style", () => {
 
 Deno.test("Ignore.fromIgnoreFile", async (t) => {
   const tempDir = await Deno.makeTempDir();
-  
+
   await t.step("should load .gitignore and use 'git' style", async () => {
     const gitignorePath = path.join(tempDir, ".gitignore");
     const content = `
@@ -68,7 +67,7 @@ Deno.test("Ignore.fromIgnoreFile", async (t) => {
     `;
     await Deno.writeTextFile(gitignorePath, content);
     const ignore = Ignore.fromIgnoreFile(gitignorePath);
-    
+
     assertEquals(ignore.rules, ["/dist", "*.tmp"]);
     assert(ignore.isMatch("dist/index.js"));
     assert(ignore.isMatch("temp.tmp"));
@@ -103,19 +102,19 @@ config.json
     assert(ignore.isMatch("config.json"));
     assertEquals(ignore.isMatch("src/main.ts"), false);
   });
-  
-  await Deno.remove(tempDir, { recursive: true });
+
+  await Deno.remove(tempDir, {recursive: true});
 });
 
 Deno.test("Ignore should handle relative and absolute paths", () => {
-    const rules = ["build/"];
-    const cwd = path.join(__dirname, "project");
-    const ignore = new Ignore(rules, cwd, { style: "git" });
+  const rules = ["build/"];
+  const cwd = path.join(__dirname, "project");
+  const ignore = new Ignore(rules, cwd, {style: "git"});
 
-    // relative path
-    assert(ignore.isMatch("build/asset.css"));
-    // absolute path
-    assert(ignore.isMatch(path.join(cwd, "build/asset.css")));
-    // outside path
-    assertEquals(ignore.isMatch(path.join(__dirname, "other/build/asset.css")), false);
+  // relative path
+  assert(ignore.isMatch("build/asset.css"));
+  // absolute path
+  assert(ignore.isMatch(path.join(cwd, "build/asset.css")));
+  // outside path
+  assertEquals(ignore.isMatch(path.join(__dirname, "other/build/asset.css")), false);
 });

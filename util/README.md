@@ -8,7 +8,6 @@
    > - 可能是性能上更好
    > - 可能是使用体验上更易用好用
    > - 可能是条件边界覆盖更全。
-   >
 2. 这个库不会包含垫片相关的，只要在 esnext 范畴内我都会使用，所以请自行处理垫片相关的问题
 
 ## 使用 How to use
@@ -28,7 +27,7 @@ bun add @gaubee/util
 > 注意，本项目没有副作用了，对 [Tree-Shaking](https://rollupjs.org/introduction/#tree-shaking) 支持良好，你可以直接 import 一整个包，最终 bundle 的时候，只会包含你实际使用的部分。
 
 ```ts
-import {delay} from "@gaubee/util";
+import { delay } from "@gaubee/util";
 ```
 
 ### 简介
@@ -39,10 +38,8 @@ import {delay} from "@gaubee/util";
    > - 可能是性能上更好
    > - 可能是使用体验上更易用好用
    > - 可能是条件边界覆盖更全。
-   >
 2. 这个库通常不会包含垫片相关的，只要在 esnext 范畴内我都会使用，所以请自行处理垫片相关的问题
    > 例如 Promise.withResolvers
-   >
 
 ## API
 

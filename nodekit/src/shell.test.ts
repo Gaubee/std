@@ -1,9 +1,9 @@
-import { assert, assertEquals, assertNotEquals, assertRejects } from "@std/assert";
+import {assert, assertEquals, assertNotEquals, assertRejects} from "@std/assert";
 import node_fs from "node:fs";
 import node_os from "node:os";
 import node_path from "node:path";
 import process from "node:process";
-import { $, $$ } from "./shell.ts";
+import {$, $$} from "./shell.ts";
 
 Deno.test("shell ls", () => {
   const entries = $.ls(import.meta.resolve("../"));
@@ -15,8 +15,8 @@ Deno.test("shell ls", () => {
 });
 
 Deno.test("shell spawn", async () => {
-  const res = await $.spawn("pnpm", "info @gaubee/nodekit",);
-console.log("QAQ",res )
+  const res = await $.spawn("pnpm", "info @gaubee/nodekit");
+  console.log("QAQ", res);
 });
 
 Deno.test("shell template", async () => {
@@ -35,7 +35,7 @@ Deno.test("shell cd and cwd", () => {
 Deno.test("shell ls with options", () => {
   // Setup a temporary directory for testing ls
   const testDir = node_path.join(node_os.tmpdir(), "shell-ls-test");
-  node_fs.mkdirSync(testDir, { recursive: true });
+  node_fs.mkdirSync(testDir, {recursive: true});
   node_fs.writeFileSync(node_path.join(testDir, "file1.txt"), "content1");
   node_fs.writeFileSync(node_path.join(testDir, "file2.log"), "content2");
   node_fs.mkdirSync(node_path.join(testDir, "subdir"));
@@ -47,26 +47,26 @@ Deno.test("shell ls with options", () => {
 
   try {
     // Test match
-    let entries = $.ls("./", { match: "**/file*.txt" });
+    let entries = $.ls("./", {match: "**/file*.txt"});
     assertEquals(entries.length, 2);
-    assert(entries.some(e => e.name === "file1.txt"));
-    assert(entries.some(e => e.name === "file3.txt"));
+    assert(entries.some((e) => e.name === "file1.txt"));
+    assert(entries.some((e) => e.name === "file3.txt"));
 
     // Test ignore
-    entries = $.ls("./", { ignore: "*.log" });
+    entries = $.ls("./", {ignore: "*.log"});
     assertEquals(entries.length, 4); // file1.txt, subdir, .ignored, and subdir/file3.txt
-    assert(!entries.some(e => e.name === "file2.log"));
+    assert(!entries.some((e) => e.name === "file2.log"));
 
     // Test silence
     const consoleLog = console.log;
     let logCount = 0;
     console.log = () => logCount++;
-    $.ls("./", { silence: true });
+    $.ls("./", {silence: true});
     assertEquals(logCount, 0);
     console.log = consoleLog; // Restore
   } finally {
     $.cd(originalCwd);
-    node_fs.rmSync(testDir, { recursive: true, force: true });
+    node_fs.rmSync(testDir, {recursive: true, force: true});
   }
 });
 
@@ -107,15 +107,15 @@ Deno.test("shell spawn with failure", async () => {
       await $.spawn("node", ["-e", "process.exit(1)"]);
     },
     Error,
-    "code:1"
+    "code:1",
   );
 });
 
-import { normalizeFilePath } from "@gaubee/node";
+import {normalizeFilePath} from "@gaubee/node";
 Deno.test("$$ factory", () => {
   const tempDir = node_os.tmpdir();
-  const customEnv = { ...process.env, MY_VAR: "test" };
-  const custom$ = $$({ cwd: tempDir, env: customEnv });
+  const customEnv = {...process.env, MY_VAR: "test"};
+  const custom$ = $$({cwd: tempDir, env: customEnv});
 
   assertEquals(normalizeFilePath(custom$.cwd), normalizeFilePath(tempDir));
   assertEquals(custom$.env.MY_VAR, "test");

@@ -5,7 +5,7 @@
 import {normalizeFilePath} from "@gaubee/node";
 import node_fs from "node:fs";
 import node_path from "node:path";
-import {DirectoryEntry, FileEntry, type AnyEntry} from "./fs_entry.ts";
+import {type AnyEntry, DirectoryEntry, FileEntry} from "./fs_entry.ts";
 import {Ignore} from "./ignore.ts";
 
 export type WalkOptions = {

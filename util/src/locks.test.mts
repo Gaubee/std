@@ -1,7 +1,7 @@
 import assert from "node:assert";
-import {locks} from "./locks.ts";
-import {delay} from "./promise.ts";
-import {str_trim_indent} from "./string.ts";
+import { locks } from "./locks.ts";
+import { delay } from "./promise.ts";
+import { str_trim_indent } from "./string.ts";
 
 Deno.test("locks", async () => {
   const results: string[] = [];
@@ -19,7 +19,7 @@ Deno.test("locks", async () => {
   };
 
   const shared = async (name: string) => {
-    using lock = await locks.request("task1", {mode: "shared"});
+    using lock = await locks.request("task1", { mode: "shared" });
 
     log("start", name);
     await delay(100);
@@ -71,7 +71,7 @@ Deno.test("locks2", async () => {
     });
   };
   const shared = async (name: string) => {
-    await locks.run("task1", {mode: "shared"}, async () => {
+    await locks.run("task1", { mode: "shared" }, async () => {
       log("start", name);
       await delay(100);
       log("end", name);
