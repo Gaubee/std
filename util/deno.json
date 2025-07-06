@@ -1,6 +1,6 @@
 {
   "name": "@gaubee/util",
-  "version": "0.34.0",
+  "version": "0.34.1",
   "exports": {
     "./abort": "./src/abort.ts",
     "./bigint": "./src/bigint.ts",
@@ -22,6 +22,7 @@
     "./number": "./src/number.ts",
     "./object": "./src/object.ts",
     "./promise": "./src/promise.ts",
+    "./proxy": "./src/proxy.ts",
     "./pure_event": "./src/pure_event.ts",
     "./readable_stream": "./src/readable_stream.ts",
     "./string": "./src/string.ts",

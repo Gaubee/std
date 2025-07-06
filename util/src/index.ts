@@ -18,6 +18,7 @@ export * from "./math.ts";
 export * from "./number.ts";
 export * from "./object.ts";
 export * from "./promise.ts";
+export * from "./proxy.ts";
 export * from "./pure_event.ts";
 export * from "./readable_stream.ts";
 export * from "./string.ts";
