@@ -53,9 +53,9 @@ export const createResolverByRootFile = (fromPath: string | URL = process.cwd(),
         throw new Error(`Cannot find ${rootFilename} from ${fromPath}`);
       }
       rootDirname = customDirname;
-    } else {
-      rootDirname = parentDirname;
+      break;
     }
+    rootDirname = parentDirname;
   }
   return createResolver(rootDirname);
 };

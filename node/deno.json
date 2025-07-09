@@ -1,6 +1,6 @@
 {
   "name": "@gaubee/node",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "exports": {
     "./env": "./src/env.ts",
     "./path": "./src/path.ts",
