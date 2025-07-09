@@ -43,10 +43,19 @@ export const cwdResolver: PathResolver = /*@__PURE__*/ createResolver(process.cw
 /**
  * 向上寻找某一个文件名，以它所在的目录创建 resolver
  */
-export const createResolverByRootFile = (fromPath: string | URL = process.cwd(), rootFilename = "package.json"): PathResolver => {
+export const createResolverByRootFile = (fromPath: string | URL = process.cwd(), rootFilename = "package.json", else_fn?: () => string): PathResolver => {
   let rootDirname = normalizeFilePath(fromPath);
   while (false === fs.existsSync(node_path.resolve(rootDirname, rootFilename))) {
-    rootDirname = node_path.resolve(rootDirname, "..");
+    const parentDirname = node_path.dirname(rootDirname);
+    if (parentDirname === rootDirname) {
+      const customDirname = else_fn?.();
+      if (null == customDirname) {
+        throw new Error(`Cannot find ${rootFilename} from ${fromPath}`);
+      }
+      rootDirname = customDirname;
+    } else {
+      rootDirname = parentDirname;
+    }
   }
   return createResolver(rootDirname);
 };
