@@ -9,6 +9,21 @@ import * as YAML from "@std/yaml";
 import fs from "node:fs";
 export {JSONC, TOML, YAML};
 
+type ReadText = {
+  <S extends string = string>(path: string, defaultValue?: undefined): S;
+  <S extends string = string, T extends unknown = unknown>(path: string, defaultValue: () => T): S | T;
+};
+export const readText: ReadText = (path: string, defaultValue?: () => any) => {
+  try {
+    return fs.readFileSync(normalizeFilePath(path), "utf8");
+  } catch (e) {
+    if (defaultValue) {
+      return defaultValue();
+    }
+    throw e;
+  }
+};
+
 export const writeText = (path: string, content: string): void => {
   path = normalizeFilePath(path);
   try {

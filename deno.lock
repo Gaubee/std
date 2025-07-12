@@ -44,9 +44,11 @@
     "jsr:@ts-morph/common@0.24": "0.24.0",
     "npm:@inquirer/prompts@^7.5.3": "7.5.3_@types+node@22.15.21_@types+node@22.15.15",
     "npm:@types/node@*": "22.15.15",
+    "npm:@types/node@22": "22.15.15",
     "npm:@types/node@^22.15.21": "22.15.21",
     "npm:@types/node@^22.15.33": "22.15.33",
     "npm:dax-sh@~0.43.2": "0.43.2",
+    "npm:defu@^6.1.4": "6.1.4",
     "npm:expect-type@^1.2.1": "1.2.1",
     "npm:gray-matter@^4.0.3": "4.0.3",
     "npm:ignore@^7.0.5": "7.0.5",
@@ -662,6 +664,9 @@
         "undici-types@5.28.4"
       ]
     },
+    "defu@6.1.4": {
+      "integrity": "sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg=="
+    },
     "emoji-regex@10.4.0": {
       "integrity": "sha512-EC+0oUMY1Rqm4O6LLrgjtYDvcVYTy7chDnM4Q7030tP4Kwj3u/pR6gP9ygnp2CJMK5Gq+9Q2oqmrFJAz01DXjw=="
     },
@@ -919,6 +924,7 @@
             "npm:@inquirer/prompts@^7.5.3",
             "npm:@types/node@22",
             "npm:dax-sh@~0.43.2",
+            "npm:defu@^6.1.4",
             "npm:gray-matter@^4.0.3",
             "npm:ignore@^7.0.5",
             "npm:minimatch@^10.0.3",
