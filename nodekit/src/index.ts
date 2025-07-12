@@ -1,6 +1,6 @@
 export * from "./colors.ts";
 export * from "./config_file.ts";
-export * from './config.ts'
+export * from './merge-config/mod.ts'
 export * from "./fs.ts";
 export * from "./git/index.ts";
 export * from "./ignore.ts";

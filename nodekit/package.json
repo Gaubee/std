@@ -5,7 +5,6 @@
   "dependencies": {
     "@inquirer/prompts": "^7.5.3",
     "dax-sh": "^0.43.2",
-    "defu": "^6.1.4",
     "gray-matter": "^4.0.3",
     "ignore": "^7.0.5",
     "minimatch": "^10.0.3",

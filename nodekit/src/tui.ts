@@ -1,7 +1,12 @@
+import {obj_assign_props, obj_pick} from "@gaubee/util/object";
 import * as prompts from "@inquirer/prompts";
 import * as ora from "ora";
-const spinner = Object.assign(ora.default, ora);
-export type Spinner = ReturnType<typeof spinner>;
+
+const spinner: Spinner = obj_assign_props(ora.default, obj_pick(ora, "oraPromise", "spinners"));
+export type Spinner = typeof ora.default & {
+  oraPromise: typeof ora.oraPromise;
+  spinners: typeof ora.spinners;
+};
 export namespace Spinner {
   export type Spinner = ora.Spinner;
   export type Color = ora.Color;
