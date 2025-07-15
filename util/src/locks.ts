@@ -19,7 +19,7 @@ export class LockManger {
     return map_get_or_put(this.#locks, name, () => []);
   }
   /**等到可以执行的时候，返回lock对象 */
-  async request(name: string, options: LockOptions = {}) {
+  async request(name: string, options: LockOptions = {}): Promise<Lock> {
     const {mode = "exclusive", signal} = options || {};
     const _locks = this.#getLocks(name);
     const lock = new Lock(name, mode, signal, () => {
@@ -68,11 +68,14 @@ export class LockManger {
     lock.pending = false;
     return lock;
   }
-  async run<R>(name: string, options: LockOptions, callback: (lock: Lock) => Promise<R>) {
+  async run<R>(name: string, options: LockOptions, callback: (lock: Lock) => Promise<R>): Promise<R> {
     using lock = await this.request(name, options);
     return await callback(lock);
   }
-  query(name: string) {
+  query(name: string): {
+    held: Lock[];
+    pending: Lock[];
+  } {
     const locks = this.#locks.get(name);
     const held: Lock[] = [];
     const pending: Lock[] = [];
@@ -114,11 +117,11 @@ class Lock {
     }
   }
   #job = Promise.withResolvers<void>();
-  release() {
+  release(): void {
     this.#job.resolve();
     this.onRelease();
   }
-  get promise() {
+  get promise(): Promise<void> {
     return this.#job.promise;
   }
   [Symbol.dispose]() {
@@ -126,4 +129,4 @@ class Lock {
   }
 }
 
-export const locks = new LockManger();
+export const locks: LockManger = new LockManger();

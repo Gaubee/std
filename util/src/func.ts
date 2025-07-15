@@ -1,6 +1,6 @@
 import {obj_assign_props} from "./object.ts";
 import {isPromiseLike} from "./promise-helper.ts";
-import {pureEvent} from "./pure_event.ts";
+import {pureEvent, PureEventWithApply} from "./pure_event.ts";
 
 /**
  * 函数转化，一个新函数：它的第一个参数 将作为 原函数的 this
@@ -265,7 +265,7 @@ export const withEffect = <T extends object>(source: T, effect: Func<void, [T]>)
  * 执行副作用
  * @param sources
  */
-export const applyEffect = (...sources: (WithEffect | object)[]) => {
+export const applyEffect = (...sources: (WithEffect | object)[]): void => {
   for (const source of sources) {
     if (effect_symbol in source) {
       const effect = source[effect_symbol];
@@ -286,7 +286,14 @@ export const applyEffect = (...sources: (WithEffect | object)[]) => {
  * 每个函数的结果会通过 `returns` 事件的 `emit` 方法发出，数据格式为 `{ source: T; result: FuncCatch.Return<unknown, Func.Return<T>> }`。
  * `result` 是一个元组，成功时为 `[undefined, R]`，失败时为 `[E, undefined]`，并附带 `success`、`result` 和 `error` 属性。
  */
-export const func_parallel_limit = <T extends Func<void>>(funcs: Iterable<T> | AsyncIterable<T>, limit: number) => {
+export const func_parallel_limit = <T extends Func<void>>(
+  funcs: Iterable<T> | AsyncIterable<T>,
+  limit: number,
+): PureEventWithApply<{
+  source: T;
+  result: FuncCatch.Return<unknown, Func.Return<T>>;
+}> &
+  PromiseLike<void[]> => {
   const returns = pureEvent<{source: T; result: FuncCatch.Return<unknown, Func.Return<T>>}>();
   const func_iter = Symbol.asyncIterator in funcs ? funcs[Symbol.asyncIterator]() : funcs[Symbol.iterator]();
   const done = Promise.withResolvers<void[]>();

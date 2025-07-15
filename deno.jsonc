@@ -8,12 +8,33 @@
   },
   "nodeModulesDir": "auto",
   "compilerOptions": {
-    "lib": ["deno.window", "dom", "ESNext"],
-    "types": ["node"],
+    "lib": [
+      "deno.window",
+      "dom",
+      "ESNext"
+    ],
+    "types": [
+      "node"
+    ],
     "noImplicitOverride": true
   },
-  "workspace": ["flow", "tc39-shim", "util", "w3c-shim", "web", "node", "denokit", "nodekit"],
-  "exclude": [".npm", "docs"],
+  "workspace": [
+    //
+    "flow",
+    "tc39-shim",
+    "util",
+    "w3c-shim",
+    "web",
+    "node",
+    "denokit",
+    "nodekit"
+  ],
+  "exclude": [
+    ".npm",
+    "tc39-shim",
+    "w3c-shim",
+    "docs"
+  ],
   "fmt": {
     "trailingCommas": "onlyMultiLine",
     "lineWidth": 180,
@@ -23,7 +44,15 @@
   },
   "lint": {
     "rules": {
-      "exclude": ["no-explicit-any", "ban-ts-comment", "no-namespace"]
+      // "include": [
+      //   "explicit-function-return-type",
+      //   "explicit-module-boundary-types"
+      // ],
+      "exclude": [
+        "no-explicit-any",
+        "ban-ts-comment",
+        "no-namespace"
+      ]
     }
   }
 }
