@@ -1,25 +1,11 @@
 import {iter_first_not_null} from "@gaubee/util";
 
-type CustomEnvConfig<T = unknown, Env = unknown> = {
-  default: (env: Env) => T;
-  stringify: (v: T, env: Env) => string;
-  parse: (v: string, env: Env) => T;
-};
-type CustomEnvGetter<Env> = (env: Env) => string;
-type EnvConfig<Env = unknown> = string | number | boolean | CustomEnvConfig<unknown, Env> | CustomEnvGetter<Env>;
-export type DefineEnv<P extends string, KV extends Record<string, EnvConfig<any>>> = {
-  [K in keyof KV as `${Uppercase<P>}_${Uppercase<K & string>}`]: KV[K] extends CustomEnvConfig<infer V> ? V : KV[K] extends CustomEnvGetter<any> ? string : KV[K];
-  // defineEnv<P2 extends string, KV2 extends Record<string, EnvConfig<>>>()
-};
-export type DefineEnvChain<P extends string, Env> = Env & {
-  and<KV2 extends Record<string, EnvConfig<Env>>>(kv: KV2, env?: Record<string, string>): DefineEnvChain<P, Env & DefineEnv<P, KV2>>;
-  end(): Env;
-};
+type CommonEnv = Record<string, string | undefined>;
 
 declare const process: any;
 export const nodeEnvSource = () => process.env;
 declare const Deno: any;
-export const denoEnvSource = () =>
+export const denoEnvSource = (): CommonEnv =>
   new Proxy(
     {},
     {
@@ -33,8 +19,8 @@ export const denoEnvSource = () =>
     },
   );
 declare const Bun: any;
-export const bunEnvSource = () => Bun.env;
-export const storageEnvSource = (storages: Storage[] = [sessionStorage, localStorage]) =>
+export const bunEnvSource = (): CommonEnv => Bun.env;
+export const storageEnvSource = (storages: Storage[] = [sessionStorage, localStorage]): CommonEnv =>
   new Proxy(
     {},
     {
@@ -55,7 +41,7 @@ export const storageEnvSource = (storages: Storage[] = [sessionStorage, localSto
       },
     },
   );
-export const autoEnvSource = (fallback: () => Record<string, string> = () => ({})): Record<string, string | undefined> => {
+export const autoEnvSource = (fallback: () => Record<string, string> = () => ({})): CommonEnv => {
   return (
     iter_first_not_null(
       [
@@ -101,8 +87,8 @@ type SaveEnvReturn<T extends Record<string, Parser>> = {
  * @param envShape
  * @returns
  */
-export const defineSafeEnv = <ENV extends Record<string, Parser>>(envShape: ENV) => {
-  return (source: Record<string, string | undefined> = autoEnvSource()): SaveEnvReturn<ENV> => {
+export const defineSafeEnv = <ENV extends Record<string, Parser>>(envShape: ENV): ((source?: CommonEnv) => SaveEnvReturn<ENV>) => {
+  return (source: CommonEnv = autoEnvSource()): SaveEnvReturn<ENV> => {
     const env: any = {};
     for (const prop in envShape) {
       const parser = envShape[prop as keyof ENV];
