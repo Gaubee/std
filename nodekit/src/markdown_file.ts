@@ -1,17 +1,18 @@
 import {normalizeFilePath} from "@gaubee/node";
-import matter from "gray-matter";
 import fs from "node:fs";
+import {matter} from "./front-matter/index.ts";
 export {matter};
 /**
  * read markdown file
  */
-export const readMarkdown = (path: string, options?: MarkdownOptions): matter.GrayMatterFile<string> => {
-  return matter(fs.readFileSync(normalizeFilePath(path), options?.encoding)) as matter.GrayMatterFile<string>;
+export const readMarkdown = <T>(path: string, options?: MarkdownOptions): matter.Result<T> => {
+  return matter(fs.readFileSync(normalizeFilePath(path), options?.encoding));
 };
 
-export type MarkdownOptions = Pick<matter.GrayMatterOption<string, any>, "engines" | "delimiters" | "language"> & {
+export interface MarkdownOptions extends matter.ParseOptions {
   encoding?: NodeJS.BufferEncoding;
-};
+}
+
 /**
  * write markdown file
  */

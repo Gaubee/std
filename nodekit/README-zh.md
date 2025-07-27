@@ -1,3 +1,7 @@
+---
+124
+---
+
 # @gaubee/nodekit
 
 > [中文](./README-zh.md) / [English](./README.md)
@@ -30,7 +34,7 @@ yarn dlx jsr add @gaubee/nodekit
 ### Usage
 
 ```typescript
-import { someFunction } from "@gaubee/nodekit"; // 或者具体模块如 "@gaubee/nodekit/fs"
+import {someFunction} from "@gaubee/nodekit"; // 或者具体模块如 "@gaubee/nodekit/fs"
 // Your code here
 ```
 
