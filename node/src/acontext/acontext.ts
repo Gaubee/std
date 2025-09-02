@@ -1,4 +1,4 @@
-import { type AsyncContextStorage, createAsyncContextStorage } from "./async-context.ts";
+import {type AsyncContextStorage, createAsyncContextStorage} from "./async-context.ts";
 
 export type ReadonlyAcontext<T> = {
   readonly name: string;
@@ -9,13 +9,13 @@ export type ReadonlyAcontext<T> = {
 
 export type Acontext<T> = ReadonlyAcontext<T> & {
   readonly default?: () => T;
-  readonly storage: AsyncContextStorage<{ value: T }>;
+  readonly storage: AsyncContextStorage<{value: T}>;
   run<R>(value: T, cb: () => Promise<R>): Promise<R>;
   asReadonly(): ReadonlyAcontext<T>;
 };
 
 export const createAcontext = <T extends unknown>(name: string, default_fn?: Acontext<T>["default"]): Acontext<T> => {
-  const storage = createAsyncContextStorage<{ value: T }>();
+  const storage = createAsyncContextStorage<{value: T}>();
 
   const handle: Acontext<T> = {
     storage: storage,
@@ -38,7 +38,7 @@ export const createAcontext = <T extends unknown>(name: string, default_fn?: Aco
       return handle.getOrElse(() => null);
     },
     run: (value, cb) => {
-      return storage.run({ value }, cb);
+      return storage.run({value}, cb);
     },
 
     asReadonly: () => {
@@ -67,7 +67,7 @@ type AContextsValues<T extends Array<any>> = T extends []
 export const useAcontexts = <const ACS extends Array<Acontext<any>>>(ctxs: ACS) => {
   return <R extends unknown>(values: AContextsValues<ACS>, run: () => Promise<R>) => {
     // 递归的内部辅助函数
-    const runner = async (index: number): Promise<R> => {
+    const runner = (index: number): Promise<R> => {
       // 基本情况：如果所有上下文都已应用，则执行最终的 run 函数
       if (index >= ctxs.length) {
         return run();

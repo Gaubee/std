@@ -28,6 +28,15 @@ export type Func<This = any, Arguments extends readonly unknown[] = any[], Retur
   : (this: This, ...args: Arguments) => Return;
 export namespace Func {
   export type Return<F> = F extends Func ? ReturnType<F> : never;
+  export type AwaitedResult<F> =
+    | {
+        type: "resolved";
+        result: Awaited<Return<F>>;
+      }
+    | {
+        type: "rejected";
+        error: unknown;
+      };
   export type Args<F> = F extends Func ? Parameters<F> : never;
   export type This<F> = F extends Func<infer T> ? T : never;
   export type SetReturn<T, R> = Func<This<T>, Args<T>, R>;
@@ -38,6 +47,7 @@ export type FuncRemember<F extends Func, K extends KeyFun<F> | void = void> = F 
   readonly key: Func.Return<K> | undefined;
   readonly runned: boolean;
   readonly returnValue: Func.Return<F> | undefined;
+  readonly awaitedReturnValue: Func.AwaitedResult<F> | undefined;
   reset(): void;
   rerun(...args: Parameters<F>): Func.Return<F>;
 };
@@ -50,27 +60,48 @@ export namespace func_remember {
  * @returns
  */
 /*@__NO_SIDE_EFFECTS__*/
-export const func_remember = <F extends Func, K extends Func<ThisParameterType<F>, Parameters<F>> | void | void>(func: F, key?: K): FuncRemember<F, K> => {
+export const func_remember = <F extends Func, K extends Func<ThisParameterType<F>, Parameters<F>> | void | void>(func: F, key?: K, cacheAwaited?: boolean): FuncRemember<F, K> => {
   let result:
     | {
         key: Func.Return<K>;
         res: Func.Return<F>;
+        awaitedRes: Func.AwaitedResult<F> | undefined;
       }
     | undefined;
 
   const once_fn = function (this: ThisParameterType<F>, ...args: Parameters<F>) {
     const newKey = key?.apply(this, args);
     if (result === undefined || newKey !== result.key) {
+      const res = func.apply(this, args);
+
       result = {
         key: newKey,
-        res: func.apply(this, args),
+        res: res,
+        awaitedRes: undefined,
       };
+      if (cacheAwaited) {
+        if (typeof res === "object" && res && "then" in res && typeof res.then === "function") {
+          res.then(
+            (r: any) => {
+              if (result && res === result.res) {
+                result.awaitedRes = {type: "resolved", result: r};
+              }
+            },
+            (e: any) => {
+              if (result && res === result.res) {
+                result.awaitedRes = {type: "rejected", error: e};
+              }
+            },
+          );
+        } else {
+          result.awaitedRes = res;
+        }
+      }
     }
     return result.res;
   };
 
-  const once_fn_mix = Object.assign(once_fn as F, {
-    /// 注意，这的get
+  const once_fn_mix = obj_assign_props(once_fn as F, {
     get source() {
       return func;
     },
@@ -83,6 +114,9 @@ export const func_remember = <F extends Func, K extends Func<ThisParameterType<F
     get returnValue() {
       return result?.res;
     },
+    get awaitedReturnValue() {
+      return result?.awaitedRes;
+    },
     reset() {
       result = undefined;
     },
@@ -91,12 +125,7 @@ export const func_remember = <F extends Func, K extends Func<ThisParameterType<F
       return once_fn_mix(...args) as Func.Return<F>;
     },
   });
-  Object.defineProperties(once_fn_mix, {
-    source: {value: func, writable: false, configurable: true, enumerable: true},
-    key: {get: () => result?.key, configurable: true, enumerable: true},
-    runned: {get: () => result != null, configurable: true, enumerable: true},
-    returnValue: {get: () => result?.res, configurable: true, enumerable: true},
-  });
+
   return once_fn_mix;
 };
 
@@ -308,6 +337,7 @@ export const func_parallel_limit = <T extends Func<void>>(
           return;
         }
         const func = next.value;
+        console.log("qaq", func);
         //@ts-ignore
         const result = (await func_catch(func)()) as FuncCatch.Return<unknown, Func.Return<T>>;
         void returns.emit({source: func, result});
@@ -317,3 +347,29 @@ export const func_parallel_limit = <T extends Func<void>>(
 
   return obj_assign_props(returns, {then: done.promise.then.bind(done.promise)});
 };
+
+// const createTask = (ms: number, log: string) => {
+//   return Object.assign(
+//     async () => {
+//       console.log(log, "start");
+//       await delay(ms);
+//       console.log(log, "done");
+//     },
+//     {
+//       id: log,
+//     },
+//   );
+// };
+// await func_parallel_limit(
+//   [
+//     //
+//     createTask(1000, "task1"),
+//     createTask(1000, "task2"),
+//     createTask(1000, "task3"),
+//     createTask(1000, "task4"),
+//     createTask(1000, "task5"),
+//     createTask(1000, "task6"),
+//   ],
+//   2,
+// );
+// console.log("all done");
