@@ -41,14 +41,16 @@ export const async_proxyer = <T>(
     isExtensible?: (basePath: BasePath) => boolean;
     ownKeys?: (basePath: BasePath) => Array<string | symbol>;
   } = {},
+  thisArg?: PromiseLike<any>,
 ): Awaited<T> => {
   const then_fn = func_remember(() => ready.then.bind(ready));
-  type RemoveFirstArgs<T> = T extends (first: any, ...args: infer A) => any ? A : never;
-  const async_reflect = <F extends Func>(basePath: BasePath, fn: F, ...args: RemoveFirstArgs<F>) => {
-    return async_proxyer(async_call(fn, args), {...proxyConfig, basePath});
+  const async_reflect = <F extends Func<unknown, [T]>>(basePath: BasePath, fn: F, thisArg: PromiseLike<any> = ready) => {
+    return async_proxyer(async_call(fn), {...proxyConfig, basePath}, thisArg);
   };
-  const async_call = <F extends Func>(fn: F, args: RemoveFirstArgs<F>) => {
-    return ready.then((r) => fn(r, ...args));
+  const async_call = <F extends Func<unknown, [T]>>(fn: F) => {
+    return ready.then((r) => {
+      return fn(r);
+    });
   };
   const basePath = proxyConfig.basePath ?? [];
   let source: any;
@@ -73,17 +75,17 @@ export const async_proxyer = <T>(
       if (prop === "then") {
         return then_fn();
       }
-      return async_reflect([...basePath, prop], Reflect.get, prop);
+      return async_reflect([...basePath, prop], (r) => Reflect.get(r as object, prop));
     },
     set(_, prop, value) {
-      void async_call(Reflect.set, [prop, value]);
+      void async_call((r) => Reflect.set(r as object, prop, value));
       return true;
     },
-    apply(_, thisArg, argArray) {
-      return async_reflect([...basePath, Reflect.apply], Reflect.apply, thisArg, argArray);
+    apply(_, _thisArg, argArray) {
+      return async_reflect([...basePath, Reflect.apply], async (r) => Reflect.apply(r as Func, await thisArg, argArray));
     },
     construct(_, argArray) {
-      return async_reflect([...basePath, Reflect.construct], (r) => Reflect.construct(r as any, argArray, r));
+      return async_reflect([...basePath, Reflect.construct], (r) => Reflect.construct(r as any, argArray, r as any));
     },
     has(_, prop) {
       if (prop === "then") {
@@ -92,11 +94,11 @@ export const async_proxyer = <T>(
       return proxyConfig.has?.(prop, basePath) ?? false;
     },
     defineProperty(_, prop, attributes) {
-      void async_call(Reflect.defineProperty, [prop, attributes]);
+      void async_call((r) => Reflect.defineProperty(r as object, prop, attributes));
       return true;
     },
     deleteProperty(_, prop) {
-      void async_call(Reflect.deleteProperty, [prop]);
+      void async_call((r) => Reflect.deleteProperty(r as object, prop));
       return true;
     },
     getOwnPropertyDescriptor(_, prop) {
@@ -121,12 +123,12 @@ export const async_proxyer = <T>(
       return keys;
     },
     preventExtensions() {
-      void async_call(Reflect.preventExtensions, []);
+      void async_call((r) => Reflect.preventExtensions(r as object));
       Object.preventExtensions(source);
       return true;
     },
     setPrototypeOf(_, proto) {
-      void async_call(Reflect.setPrototypeOf, [proto]);
+      void async_call((r) => Reflect.setPrototypeOf(r as object, proto));
       return true;
     },
   }) as Awaited<T>;
