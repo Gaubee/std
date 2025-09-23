@@ -1,8 +1,9 @@
 {
   "name": "@gaubee/nodekit",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "exports": {
     "./colors": "./src/colors.ts",
+    "./front-matter": "./src/front-matter/index.ts",
     "./config_file": "./src/config_file.ts",
     "./merge-config": "./src/merge-config/mod.ts",
     "./markdown_file": "./src/markdown_file.ts",
