@@ -77,10 +77,9 @@ import {someFunction} from "@gaubee/nodekit"; // 或者具体模块如 "@gaubee/
 ### markdown_file
 
 - `matter`:
-  - (Re-export of `gray-matter` library)
-  - `gray-matter` 库的重新导出，用于处理 Markdown front-matter。
+  - 用于处理 Markdown front-matter。
 - `readMarkdown`:
-  - `(path: string, options?: MarkdownOptions) => matter.GrayMatterFile<string>`
+  - `(path: string, options?: MarkdownOptions) => matter.Result<any>`
   - 读取 Markdown 文件内容及其 front-matter。
 - `writeMarkdown`:
   - `(path: string, content: string, data?: object, options?: MarkdownOptions) => void`

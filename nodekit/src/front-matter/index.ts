@@ -6,9 +6,11 @@ const pattern = "^(" + optionalByteOrderMark + "(= yaml =|---)" + "$([\\s\\S]*?)
 const regex = new RegExp(pattern, "m");
 
 export interface FrontMatterResult<T = unknown> {
-  readonly attributes: T;
-  readonly body: string;
-  readonly bodyBegin: number;
+  /** metadata */
+  readonly data: T;
+  readonly content: string;
+  /**begin line number */
+  readonly contentBegin: number;
   readonly frontmatter?: string;
 }
 
@@ -16,16 +18,16 @@ export interface FrontMatterParseOptions extends ParseOptions {}
 
 let _u8d: TextDecoder | undefined;
 const u8d = () => (_u8d ??= new TextDecoder());
-function extractor<T>(string: string | Uint8Array, option?: FrontMatterParseOptions): FrontMatterResult<T> {
+function extractor<T = Record<string, any>>(string: string | Uint8Array, option?: FrontMatterParseOptions): FrontMatterResult<T> {
   string = typeof string === "string" ? string : u8d().decode(string);
   const lines = string.split(/(\r?\n)/);
   if (lines[0] && /= yaml =|---/.test(lines[0])) {
     return parse(string, option);
   } else {
     return {
-      attributes: {} as T,
-      body: string,
-      bodyBegin: 1,
+      data: {} as T,
+      content: string,
+      contentBegin: 1,
     };
   }
 }
@@ -50,9 +52,9 @@ function parse<T>(string: string, options?: FrontMatterParseOptions): FrontMatte
   const match = regex.exec(string);
   if (!match) {
     return {
-      attributes: {} as T,
-      body: string,
-      bodyBegin: 1,
+      data: {} as T,
+      content: string,
+      contentBegin: 1,
     };
   }
 
@@ -62,9 +64,9 @@ function parse<T>(string: string, options?: FrontMatterParseOptions): FrontMatte
   const line = computeLocation(match, string);
 
   return {
-    attributes: attributes as T,
-    body: body,
-    bodyBegin: line,
+    data: attributes as T,
+    content: body,
+    contentBegin: line,
     frontmatter: yaml,
   };
 }

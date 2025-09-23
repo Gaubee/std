@@ -75,10 +75,9 @@ import { someFunction } from "@gaubee/nodekit"; // or specific module like "@gau
 ### markdown_file
 
 - `matter`:
-  - (Re-export of `gray-matter` library)
-  - Re-export of the `gray-matter` library for handling Markdown front-matter.
+  - handling Markdown front-matter.
 - `readMarkdown`:
-  - `(path: string, options?: MarkdownOptions) => matter.GrayMatterFile<string>`
+  - `(path: string, options?: MarkdownOptions) => matter.Result<any>`
   - Reads Markdown file content and its front-matter.
 - `writeMarkdown`:
   - `(path: string, content: string, data?: object, options?: MarkdownOptions) => void`

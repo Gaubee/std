@@ -1,6 +1,6 @@
 {
   "name": "@gaubee/nodekit",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "exports": {
     "./colors": "./src/colors.ts",
     "./front-matter": "./src/front-matter/index.ts",
@@ -22,7 +22,7 @@
     "@std/path": "jsr:@std/path@^1.1.0",
     "@std/toml": "jsr:@std/toml@^1.0.8",
     "@std/yaml": "jsr:@std/yaml@^1.0.8",
-    "dax-sh": "jsr:@david/dax@^0.43.2"
+    "execa": "npm:execa@^9.6.0"
   },
   "compilerOptions": {
     "types": ["node"]

@@ -1,12 +1,11 @@
 import {normalizeFilePath} from "@gaubee/node";
 import {obj_lazify} from "@gaubee/util";
-import type matter from "gray-matter";
 import type {Buffer} from "node:buffer";
 import node_fs from "node:fs";
 import node_path from "node:path";
 import process from "node:process";
 import {type JsonStringifyOptions, readJson, readToml, readYaml, writeJson, writeToml, writeYaml, type YamlStringifyOptions} from "./config_file.ts";
-import {type MarkdownOptions, readMarkdown, writeMarkdown} from "./markdown_file.ts";
+import {type MarkdownOptions, matter, readMarkdown, writeMarkdown} from "./markdown_file.ts";
 export type AnyEntry = FileEntry | DirectoryEntry;
 
 abstract class Entry {
@@ -90,7 +89,7 @@ export class FileEntry extends Entry {
       this.write(newContent);
     }
   }
-  readMarkdown(options?: MarkdownOptions): matter.GrayMatterFile<string> {
+  readMarkdown<T = any>(options?: MarkdownOptions): matter.Result<T> {
     return readMarkdown(this.path, options);
   }
   writeMarkdown(content: string, data?: object, options?: MarkdownOptions): void {
