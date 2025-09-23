@@ -203,8 +203,8 @@ export const dntMonorepo = async (
 
   // pnpm install
   $.cd(npmDir);
-  console.log("$.cwd", $.cwd, await $`pwd`.text());
-  await $`pnpm install`.printCommand();
+  console.log("$.cwd", $.cwd, (await $`pwd`).stdout);
+  await $`pnpm install`;
 };
 
 const gen_filter_func = (filter: string) => {
