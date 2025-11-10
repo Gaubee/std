@@ -337,7 +337,6 @@ export const func_parallel_limit = <T extends Func<void>>(
           return;
         }
         const func = next.value;
-        console.log("qaq", func);
         //@ts-ignore
         const result = (await func_catch(func)()) as FuncCatch.Return<unknown, Func.Return<T>>;
         void returns.emit({source: func, result});
